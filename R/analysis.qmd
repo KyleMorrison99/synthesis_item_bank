@@ -1,0 +1,1459 @@
+---
+title: "Synthesis item bank"
+author: "Kyle Morrison"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    code-fold: false 
+    code-download: true
+    theme: darkly
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: true
+editor:
+  default-output: console
+---
+
+# **Packages & Data**
+## *Packages*
+
+```{r}
+rm(list = ls())
+
+pacman::p_load(tidyverse,
+               here,
+               kableExtra,
+               magrittr, 
+               patchwork,
+               viridis,
+               scales,
+               forcats,
+               udpipe
+               )
+```
+
+## *Data*
+```{r}
+# Read the CSV files
+data <- read_csv(here("data", "item_bank_reporting_guideline_pilot.csv"))
+study <- read_csv(here("data", "item_bank_reporting_guideline_studies_pilot.csv"))
+concept <- read_csv(here("data", "item_bank_reporting_guideline_long_pilot.csv"))
+```
+
+
+# *Basic summary of guideline level details* 
+```{r}
+# Unique Guidelines 
+number_unique_guide <- study %>% 
+  distinct(study_id) %>% 
+  nrow() ##  
+
+# Unique Checklist
+number_unique_checklist <- data %>% 
+distinct(checklist) %>% 
+  nrow() ##
+
+# overall cumulative counts
+guide_per_year <- study %>%
+  filter(!is.na(year)) %>%
+  distinct(year, study_id) %>%
+  count(year, name = "n") %>%
+  complete(year = full_seq(year, 1), fill = list(n = 0)) %>%
+  arrange(year) %>%
+  mutate(cum_n = cumsum(n))
+
+  
+```
+
+## Figure 1b
+```{r}
+# settings
+lollipop_years <- c(2000, 2005, 2010, 2015, 2020, 2025)
+guideline_levels <- c("Update", "Extension", "Original")
+legend_order <- c("Original", "Extension", "Update")
+
+pal <- c(
+  "Original" = "#54478c",
+  "Extension" = "#048ba8",
+  "Update" = "#16db93"
+)
+
+# cumulative counts by guideline type
+guide_type_year <- study %>%
+  filter(!is.na(year), !is.na(guideline_extension)) %>%
+  distinct(year, study_id, guideline_extension) %>%
+  mutate(
+    guideline_extension = tolower(guideline_extension),
+    guideline_extension = case_when(
+      guideline_extension %in% c("original", "origional") ~ "Original",
+      guideline_extension == "update" ~ "Update",
+      guideline_extension == "extension" ~ "Extension",
+      TRUE ~ str_to_title(guideline_extension)
+    ),
+    guideline_extension = factor(guideline_extension, levels = guideline_levels)
+  ) %>%
+  count(year, guideline_extension, name = "n") %>%
+  complete(
+    year = full_seq(year, 1),
+    guideline_extension,
+    fill = list(n = 0)
+  ) %>%
+  arrange(guideline_extension, year) %>%
+  group_by(guideline_extension) %>%
+  mutate(cum_n = cumsum(n)) %>%
+  ungroup()
+
+# smooth each category separately
+smooth_type_year <- guide_type_year %>%
+  group_by(guideline_extension) %>%
+  group_modify(~ {
+    x_seq <- seq(min(.x$year), max(.x$year), length.out = 500)
+    spline_fn <- splinefun(.x$year, .x$cum_n, method = "monoH.FC")
+
+    tibble(
+      year = x_seq,
+      cum_n = spline_fn(x_seq)
+    )
+  }) %>%
+  ungroup()
+
+# lollipop labels from overall totals
+lollipop_data <- guide_per_year %>%
+  filter(year %in% lollipop_years)
+
+max_cum <- max(guide_per_year$cum_n, na.rm = TRUE)
+offset <- max_cum * 0.018
+label_offset <- max_cum * 0.03
+
+count_cum_type <- ggplot() +
+  geom_area(
+    data = smooth_type_year,
+    aes(x = year, y = cum_n, fill = guideline_extension),
+    position = "stack",
+    color = NA,
+    alpha = 0.95
+  ) +
+  geom_segment(
+    data = lollipop_data,
+    aes(x = year, xend = year, y = 0, yend = cum_n + offset),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_point(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset),
+    color = "black",
+    size = 3
+  ) +
+  geom_text(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset + label_offset, label = comma(cum_n)),
+    vjust = 0,
+    fontface = "bold",
+    size = 3.3,
+    color = "black",
+    show.legend = FALSE
+  ) +
+  scale_fill_manual(
+    values = pal,
+    breaks = legend_order,
+    name = NULL
+  ) +
+  guides(
+    fill = guide_legend(
+      ncol = 1,
+      byrow = TRUE,
+      override.aes = list(alpha = 1, colour = NA),
+      keyheight = unit(0.55, "cm"),
+      keywidth = unit(0.55, "cm")
+    )
+  ) +
+  scale_x_continuous(
+    breaks = lollipop_years,
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 60, by = 10),
+    labels = comma,
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(
+    ylim = c(0, 60),
+    clip = "off"
+  ) +
+  labs(
+    x = "Publication Year",
+    y = "Cumulative number of reporting guidelines"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.ticks.y = element_line(color = "black"),
+    axis.title.y = element_text(color = "black"),
+    axis.line.x = element_line(linewidth = 0.8, color = "black"),
+    axis.line.y = element_line(linewidth = 0.8, color = "black"),
+    legend.position = "inside",
+    legend.position.inside = c(0.03, 0.97),
+    legend.justification = c(0, 1),
+    legend.direction = "vertical",
+    legend.background = element_rect(
+      fill = alpha("white", 0.9),
+      color = "grey70"
+    ),
+    legend.key = element_rect(fill = NA, color = NA),
+    legend.text = element_text(color = "black", size = 10.5),
+    legend.spacing.y = unit(0.08, "cm"),
+    plot.margin = margin(12, 12, 6, 12)
+  )
+
+count_cum_type
+
+ggsave(
+  filename = here::here("figures", "count_cum_type.jpg"),
+  plot     = count_cum_type,
+  width    = 10.8,
+  height   = 11.0,
+  units    = "cm",
+  dpi      = 300,
+  bg       = "white"
+)
+```
+
+## Figure 1c
+```{r}
+# settings
+lollipop_years <- c(2000, 2005, 2010, 2015, 2020, 2025)
+discipline_levels <- c("Medicine", "Psychology", "Environmental science", "Other")
+legend_order <- c("Medicine", "Psychology", "Environmental science", "Other")
+
+pal <- c(
+  "Medicine" = "#f29e4c",
+  "Psychology" = "#efea5a",
+  "Environmental science" = "#83e377",
+  "Other" = "#0db39e"
+)
+
+# cumulative counts by discipline
+discipline_year <- study %>%
+  filter(!is.na(year), !is.na(discipline)) %>%
+  distinct(year, study_id, discipline) %>%
+  mutate(
+    discipline = str_squish(str_to_lower(discipline)),
+    discipline = case_when(
+      discipline == "medicine" ~ "Medicine",
+      discipline == "psychology" ~ "Psychology",
+      discipline == "environmental science" ~ "Environmental science",
+      TRUE ~ "Other"
+    ),
+    discipline = factor(discipline, levels = discipline_levels)
+  ) %>%
+  count(year, discipline, name = "n") %>%
+  complete(
+    year = full_seq(year, 1),
+    discipline,
+    fill = list(n = 0)
+  ) %>%
+  arrange(discipline, year) %>%
+  group_by(discipline) %>%
+  mutate(cum_n = cumsum(n)) %>%
+  ungroup()
+
+# smooth each discipline separately
+smooth_discipline_year <- discipline_year %>%
+  group_by(discipline) %>%
+  group_modify(~ {
+    x_seq <- seq(min(.x$year), max(.x$year), length.out = 500)
+    spline_fn <- splinefun(.x$year, .x$cum_n, method = "monoH.FC")
+
+    tibble(
+      year = x_seq,
+      cum_n = spline_fn(x_seq)
+    )
+  }) %>%
+  ungroup()
+
+# overall cumulative totals for lollipops
+guide_per_year <- study %>%
+  filter(!is.na(year)) %>%
+  distinct(year, study_id) %>%
+  count(year, name = "n") %>%
+  complete(
+    year = full_seq(year, 1),
+    fill = list(n = 0)
+  ) %>%
+  arrange(year) %>%
+  mutate(cum_n = cumsum(n))
+
+lollipop_data <- guide_per_year %>%
+  filter(year %in% lollipop_years)
+
+max_cum <- max(guide_per_year$cum_n, na.rm = TRUE)
+offset <- max_cum * 0.018
+label_offset <- max_cum * 0.03
+
+count_cum_discipline <- ggplot() +
+  geom_area(
+    data = smooth_discipline_year,
+    aes(x = year, y = cum_n, fill = discipline),
+    position = "stack",
+    color = NA,
+    alpha = 0.95
+  ) +
+  geom_segment(
+    data = lollipop_data,
+    aes(x = year, xend = year, y = 0, yend = cum_n + offset),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_point(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset),
+    color = "black",
+    size = 3
+  ) +
+  geom_text(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset + label_offset, label = comma(cum_n)),
+    vjust = 0,
+    fontface = "bold",
+    size = 3.3,
+    color = "black",
+    show.legend = FALSE
+  ) +
+  scale_fill_manual(
+    values = pal,
+    breaks = legend_order,
+    name = NULL
+  ) +
+  guides(
+    fill = guide_legend(
+      ncol = 1,
+      byrow = TRUE,
+      override.aes = list(alpha = 1, colour = NA),
+      keyheight = unit(0.55, "cm"),
+      keywidth = unit(0.55, "cm")
+    )
+  ) +
+  scale_x_continuous(
+    breaks = lollipop_years,
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 60, by = 10),
+    labels = comma,
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(
+    ylim = c(0, 60),
+    clip = "off"
+  ) +
+  labs(
+    x = "Publication Year",
+    y = "Cumulative number of reporting guidelines"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.ticks.y = element_line(color = "black"),
+    axis.title.y = element_text(color = "black"),
+    axis.line.x = element_line(linewidth = 0.8, color = "black"),
+    axis.line.y = element_line(linewidth = 0.8, color = "black"),
+    legend.position = "inside",
+    legend.position.inside = c(0.03, 0.97),
+    legend.justification = c(0, 1),
+    legend.direction = "vertical",
+    legend.background = element_rect(
+      fill = alpha("white", 0.9),
+      color = "grey70"
+    ),
+    legend.key = element_rect(fill = NA, color = NA),
+    legend.text = element_text(color = "black", size = 10.5),
+    legend.spacing.y = unit(0.08, "cm"),
+    plot.margin = margin(12, 12, 6, 12)
+  )
+
+count_cum_discipline
+
+ggsave(
+  filename = here::here("figures", "count_cum_discipline.jpg"),
+  plot     = count_cum_discipline,
+  width    = 10.8,
+  height   = 11.0,
+  units    = "cm",
+  dpi      = 300,
+  bg       = "white"
+)
+```
+
+## Figure Sx
+```{r}
+# settings
+lollipop_years <- c(2000, 2005, 2010, 2015, 2020, 2025)
+
+methodology_levels <- c(
+  "Systematic review/meta-analysis",
+  "Qualitative reviews",
+  "Abstract",
+  "Within-review parts",
+  "Scoping review/Systematic map",
+  "Other"
+)
+
+legend_order <- methodology_levels
+
+pal <- c(
+  "Systematic review/meta-analysis" = "#54478c",
+  "Qualitative reviews" = "#048ba8",
+  "Abstract" = "#16db93",
+  "Within-review parts" = "#b9e769",
+  "Scoping review/Systematic map" = "#efea5a",
+  "Other" = "#f29e4c"
+)
+
+# cumulative counts by grouped methodology
+methodology_year <- study %>%
+  filter(!is.na(year), !is.na(methodology)) %>%
+  distinct(year, study_id, methodology) %>%
+  mutate(
+    methodology_group = str_squish(str_to_lower(methodology)),
+    methodology_group = case_when(
+      str_detect(methodology_group, "scoping review|scoping reviews|systematic map") ~ "Scoping review/Systematic map",
+      str_detect(methodology_group, "abstracts") ~ "Abstract",
+      methodology_group == "search strategies" ~ "Within-review parts",
+      str_detect(methodology_group, "qualitative|meta-ethnography|mixed-methods|realist review|meta-narrative review") ~ "Qualitative reviews",
+      str_detect(methodology_group, "systematic review|systematic reviews|meta-analyses|overview of systematic reviews|rapid review|living systematic reviews") ~ "Systematic review/meta-analysis",
+      TRUE ~ "Other"
+    ),
+    methodology_group = factor(methodology_group, levels = methodology_levels)
+  ) %>%
+  count(year, methodology_group, name = "n") %>%
+  complete(
+    year = full_seq(year, 1),
+    methodology_group,
+    fill = list(n = 0)
+  ) %>%
+  arrange(methodology_group, year) %>%
+  group_by(methodology_group) %>%
+  mutate(cum_n = cumsum(n)) %>%
+  ungroup()
+
+# smooth each methodology group separately
+smooth_methodology_year <- methodology_year %>%
+  group_by(methodology_group) %>%
+  group_modify(~ {
+    x_seq <- seq(min(.x$year), max(.x$year), length.out = 500)
+    spline_fn <- splinefun(.x$year, .x$cum_n, method = "monoH.FC")
+
+    tibble(
+      year = x_seq,
+      cum_n = spline_fn(x_seq)
+    )
+  }) %>%
+  ungroup()
+
+# overall cumulative totals for lollipops
+guide_per_year <- study %>%
+  filter(!is.na(year)) %>%
+  distinct(year, study_id) %>%
+  count(year, name = "n") %>%
+  complete(
+    year = full_seq(year, 1),
+    fill = list(n = 0)
+  ) %>%
+  arrange(year) %>%
+  mutate(cum_n = cumsum(n))
+
+lollipop_data <- guide_per_year %>%
+  filter(year %in% lollipop_years)
+
+max_cum <- max(guide_per_year$cum_n, na.rm = TRUE)
+offset <- max_cum * 0.018
+label_offset <- max_cum * 0.03
+
+count_cum_methodology <- ggplot() +
+  geom_area(
+    data = smooth_methodology_year,
+    aes(x = year, y = cum_n, fill = methodology_group),
+    position = "stack",
+    color = NA,
+    alpha = 0.95
+  ) +
+  geom_segment(
+    data = lollipop_data,
+    aes(x = year, xend = year, y = 0, yend = cum_n + offset),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_point(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset),
+    color = "black",
+    size = 3
+  ) +
+  geom_text(
+    data = lollipop_data,
+    aes(x = year, y = cum_n + offset + label_offset, label = comma(cum_n)),
+    vjust = 0,
+    fontface = "bold",
+    size = 3.3,
+    color = "black",
+    show.legend = FALSE
+  ) +
+  scale_fill_manual(
+    values = pal,
+    breaks = legend_order,
+    name = NULL
+  ) +
+  guides(
+    fill = guide_legend(
+      ncol = 1,
+      byrow = TRUE,
+      override.aes = list(alpha = 1, colour = NA),
+      keyheight = unit(0.55, "cm"),
+      keywidth = unit(0.55, "cm")
+    )
+  ) +
+  scale_x_continuous(
+    breaks = lollipop_years,
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 60, by = 10),
+    labels = comma,
+    expand = c(0, 0)
+  ) +
+  coord_cartesian(
+    ylim = c(0, 60),
+    clip = "off"
+  ) +
+  labs(
+    x = "Publication Year",
+    y = "Cumulative number of reporting guidelines"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.y = element_text(color = "black"),
+    axis.ticks.y = element_line(color = "black"),
+    axis.title.y = element_text(color = "black"),
+    axis.line.x = element_line(linewidth = 0.8, color = "black"),
+    axis.line.y = element_line(linewidth = 0.8, color = "black"),
+    legend.position = "inside",
+    legend.position.inside = c(0.03, 0.97),
+    legend.justification = c(0, 1),
+    legend.direction = "vertical",
+    legend.background = element_rect(
+      fill = alpha("white", 0.9),
+      color = "grey70"
+    ),
+    legend.key = element_rect(fill = NA, color = NA),
+    legend.text = element_text(color = "black", size = 10.5),
+    legend.spacing.y = unit(0.08, "cm"),
+    plot.margin = margin(12, 12, 6, 12)
+  )
+
+count_cum_methodology
+
+ggsave(
+  filename = here::here("figures", "count_cum_methodology.jpg"),
+  plot     = count_cum_methodology,
+  width    = 10.8,
+  height   = 11.0,
+  units    = "cm",
+  dpi      = 300,
+  bg       = "white"
+)
+```
+
+# *Basic summary of item level details*
+
+## Total items, total concepts and unique concepts
+
+### Total items
+```{r}
+length(data$reporting_item)  # Number of items
+
+item_per_section <- data %>% 
+  group_by(standardised_section) %>% 
+  summarise(n =n())
+
+
+section_order <- c(
+  "Other",
+  "Discussion",
+  "Results",
+  "Methodology",
+  "Introduction",
+  "Abstract",
+  "Title"
+)
+
+item_per_section_plot <- item_per_section %>%
+  filter(!is.na(standardised_section)) %>%
+  mutate(
+    standardised_section = str_squish(standardised_section),
+    standardised_section = case_when(
+      str_to_lower(standardised_section) == "other" ~ "Other",
+      TRUE ~ standardised_section
+    )
+  ) %>%
+  group_by(standardised_section) %>%
+  summarise(n = sum(n), .groups = "drop") %>%
+  mutate(
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  ) %>%
+  filter(!is.na(standardised_section))
+
+bar_section <- ggplot(item_per_section_plot, aes(x = standardised_section, y = n)) +
+  geom_col(
+    fill = "#BD4D52",
+    width = 0.72
+  ) +
+  geom_text(
+    aes(label = comma(n)),
+    hjust = -0.15,
+    size = 4,
+    fontface = "bold",
+    color = "black"
+  ) +
+  coord_flip(clip = "off") +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.10))
+  ) +
+  labs(
+    x = NULL,
+    y = "Number of items"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey85", linewidth = 0.4),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.title.x = element_text(color = "black"),
+    plot.margin = margin(10, 30, 10, 10)
+  )
+
+bar_section
+
+paper_items_by_section <- data %>%
+  filter(!is.na(standardised_section), !is.na(reporting_item), !is.na(study_id)) %>%
+  left_join(
+    study %>% select(study_id, DOI, methodology, discipline),
+    by = "study_id"
+  ) %>%
+  mutate(
+    standardised_section = str_squish(as.character(standardised_section)),
+    reporting_item = str_squish(as.character(reporting_item)),
+    DOI = str_squish(as.character(DOI)),
+    methodology = str_squish(as.character(methodology)),
+    discipline = str_squish(as.character(discipline)),
+    standardised_section = case_when(
+      str_to_lower(standardised_section) == "other" ~ "Other information",
+      TRUE ~ standardised_section
+    ),
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  ) %>%
+  arrange(standardised_section, study_id, reporting_item) %>%
+  group_by(standardised_section) %>%
+  mutate(Row = row_number()) %>%
+  ungroup() %>%
+  select(
+    Section = standardised_section,
+    Row,
+    study_id,
+    methodology,
+    discipline,
+    Item = reporting_item,
+    DOI
+  )
+
+section_tables <- split(
+  paper_items_by_section %>% select(-Section),
+  paper_items_by_section$Section
+)
+
+```
+
+### Total Concepts and unique concepts
+```{r}
+length(concept$standardised_reporting_item_elements)
+
+concept_per_item <- concept %>% 
+  group_by(standardised_section) %>% 
+  summarise(n =n())
+
+
+section_order <- c(
+  "Other information",
+  "Discussion",
+  "Results",
+  "Methodology",
+  "Introduction",
+  "Abstract",
+  "Title"
+)
+
+concept_per_item_plot <- concept_per_item %>%
+  filter(!is.na(standardised_section))  %>%
+  group_by(standardised_section) %>%
+  summarise(n = sum(n), .groups = "drop") %>%
+  mutate(
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  ) %>%
+  filter(!is.na(standardised_section))
+
+bar_concept_per_item <- ggplot(concept_per_item_plot, aes(x = standardised_section, y = n)) +
+  geom_col(
+    fill = "#BD4D52",
+    width = 0.72
+  ) +
+  geom_text(
+    aes(label = comma(n)),
+    hjust = -0.15,
+    size = 4,
+    fontface = "bold",
+    color = "black"
+  ) +
+  coord_flip(clip = "off") +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.10))
+  ) +
+  labs(
+    x = NULL,
+    y = "Number of concepts"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey85", linewidth = 0.4),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.title.x = element_text(color = "black"),
+    plot.margin = margin(10, 30, 10, 10)
+  )
+
+bar_concept_per_item
+
+length(unique(concept$standardised_reporting_item_elements))
+
+
+concept_per_item <- concept %>% 
+  filter(!is.na(standardised_section), !is.na(standardised_reporting_item_elements)) %>%
+  group_by(standardised_section) %>% 
+  summarise(n = n_distinct(standardised_reporting_item_elements), .groups = "drop")
+
+
+section_order <- c(
+  "Other information",
+  "Discussion",
+  "Results",
+  "Methodology",
+  "Introduction",
+  "Abstract",
+  "Title"
+)
+
+concept_per_item_plot <- concept_per_item %>%
+  mutate(
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  ) %>%
+  filter(!is.na(standardised_section))
+
+bar_concept_per_item <- ggplot(concept_per_item_plot, aes(x = standardised_section, y = n)) +
+  geom_col(
+    fill = "#BD4D52",
+    width = 0.72
+  ) +
+  geom_text(
+    aes(label = comma(n)),
+    hjust = -0.15,
+    size = 4,
+    fontface = "bold",
+    color = "black"
+  ) +
+  coord_flip(clip = "off") +
+  scale_y_continuous(
+    labels = comma,
+    expand = expansion(mult = c(0, 0.10))
+  ) +
+  labs(
+    x = NULL,
+    y = "Number of unique concepts"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(color = "grey85", linewidth = 0.4),
+    axis.text.y = element_text(color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.title.x = element_text(color = "black"),
+    plot.margin = margin(10, 30, 10, 10)
+  )
+
+bar_concept_per_item
+
+unique_elements_by_subsection <- concept %>%
+  filter(
+    !is.na(standardised_section),
+    !is.na(standardised_subsection),
+    !is.na(standardised_reporting_item_elements),
+    !is.na(study_id)
+  ) %>%
+  left_join(
+    study %>% select(study_id, year, DOI, methodology, discipline),
+    by = "study_id"
+  ) %>%
+  mutate(
+    standardised_section = str_squish(as.character(standardised_section)),
+    standardised_subsection = str_squish(as.character(standardised_subsection)),
+    standardised_reporting_item_elements = str_squish(as.character(standardised_reporting_item_elements)),
+    DOI = str_squish(as.character(DOI)),
+    methodology = str_squish(as.character(methodology)),
+    discipline = str_squish(as.character(discipline)),
+    standardised_section = case_when(
+      str_to_lower(standardised_section) == "other" ~ "Other information",
+      TRUE ~ standardised_section
+    ),
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  ) %>%
+  group_by(standardised_subsection, standardised_reporting_item_elements) %>%
+  arrange(year, study_id, .by_group = TRUE) %>%
+  slice_min(order_by = year, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  arrange(standardised_section, standardised_subsection, standardised_reporting_item_elements) %>%
+  group_by(standardised_subsection) %>%
+  mutate(Row = row_number()) %>%
+  ungroup() %>%
+  select(
+    Subsection = standardised_subsection,
+    Section = standardised_section,
+    Row,
+    Concept = standardised_reporting_item_elements,
+    `Year of first mention` = year,
+    `First guideline mention` = study_id,
+    methodology,
+    discipline,
+    DOI
+  )
+
+concept_summary_by_subsection <- concept %>%
+  filter(
+    !is.na(standardised_section),
+    !is.na(standardised_subsection),
+    !is.na(standardised_reporting_item_elements),
+    !is.na(study_id)
+  ) %>%
+  left_join(
+    study %>% select(study_id, year, DOI, methodology, discipline),
+    by = "study_id"
+  ) %>%
+  mutate(
+    standardised_section = str_squish(as.character(standardised_section)),
+    standardised_subsection = str_squish(as.character(standardised_subsection)),
+    standardised_reporting_item_elements = str_squish(as.character(standardised_reporting_item_elements)),
+    DOI = str_squish(as.character(DOI)),
+    methodology = str_squish(as.character(methodology)),
+    discipline = str_squish(as.character(discipline)),
+    standardised_section = case_when(
+      str_to_lower(standardised_section) == "other" ~ "Other information",
+      TRUE ~ standardised_section
+    ),
+    standardised_section = factor(
+      standardised_section,
+      levels = section_order
+    )
+  )
+
+concept_counts <- concept_summary_by_subsection %>%
+  group_by(standardised_section, standardised_subsection, standardised_reporting_item_elements) %>%
+  summarise(
+    total_count = n(),
+    .groups = "drop"
+  )
+
+concept_first_mentions <- concept_summary_by_subsection %>%
+  group_by(standardised_subsection, standardised_reporting_item_elements) %>%
+  arrange(year, study_id, .by_group = TRUE) %>%
+  slice_min(order_by = year, n = 1, with_ties = FALSE) %>%
+  ungroup() %>%
+  select(
+    standardised_section,
+    standardised_subsection,
+    standardised_reporting_item_elements,
+    year,
+    study_id,
+    methodology,
+    discipline,
+    DOI
+  )
+
+concept_table_data <- concept_counts %>%
+  left_join(
+    concept_first_mentions,
+    by = c("standardised_subsection", "standardised_reporting_item_elements")
+  ) %>%
+  arrange(
+    standardised_subsection,
+    desc(total_count),
+    standardised_reporting_item_elements
+  ) %>%
+  group_by(standardised_subsection) %>%
+  mutate(Row = row_number()) %>%
+  ungroup() %>%
+  select(
+    Subsection = standardised_subsection,
+    Row,
+    Concept = standardised_reporting_item_elements,
+    `Total count` = total_count,
+    `Year first came up` = year,
+    `First guideline mention` = study_id,
+    methodology,
+    discipline,
+    DOI
+  )
+```
+
+## Overlapping concepts between items
+```{r}
+concept_sets <- concept %>%
+  filter(
+    !is.na(study_id),
+    !is.na(standardised_reporting_item_elements)
+  ) %>%
+  left_join(
+    study %>% select(study_id, year),
+    by = "study_id"
+  ) %>%
+  mutate(
+    standardised_reporting_item_elements = str_squish(as.character(standardised_reporting_item_elements)),
+    guideline = if_else(!is.na(checklist) & checklist != "", checklist, as.character(study_id))
+  ) %>%
+  distinct(guideline, study_id, standardised_reporting_item_elements)
+
+set_list <- concept_sets %>%
+  group_by(guideline) %>%
+  summarise(
+    concepts = list(sort(unique(standardised_reporting_item_elements))),
+    n_concepts = n_distinct(standardised_reporting_item_elements),
+    .groups = "drop"
+  )
+
+
+pairwise_overlap <- combn(set_list$guideline, 2, simplify = FALSE) %>%
+  map_dfr(function(x) {
+    a <- set_list$concepts[[match(x[1], set_list$guideline)]]
+    b <- set_list$concepts[[match(x[2], set_list$guideline)]]
+
+    inter <- intersect(a, b)
+    union_ab <- union(a, b)
+
+    tibble(
+      guideline_1 = x[1],
+      guideline_2 = x[2],
+      n_1 = length(a),
+      n_2 = length(b),
+      shared_n = length(inter),
+      unique_1_n = length(setdiff(a, b)),
+      unique_2_n = length(setdiff(b, a)),
+      jaccard = length(inter) / length(union_ab)
+    )
+  })
+
+pairwise_overlap %>%
+  arrange(desc(jaccard), desc(shared_n))
+
+overlap_stats <- pairwise_overlap %>%
+  summarise(
+    n = n(),
+    mean_jaccard = mean(jaccard, na.rm = TRUE),
+    median_jaccard = median(jaccard, na.rm = TRUE),
+    q1_jaccard = quantile(jaccard, probs = 0.25, na.rm = TRUE),
+    q3_jaccard = quantile(jaccard, probs = 0.75, na.rm = TRUE)
+  )
+
+overlap_stats
+
+overlap_dist <- ggplot(pairwise_overlap, aes(x = jaccard)) +
+  geom_histogram(
+    bins = 30,
+    fill = "#BD4D52",
+    color = "white",
+    alpha = 0.95
+  ) +
+  scale_x_continuous(
+    labels = label_number(accuracy = 0.01),
+    limits = c(0, 1)
+  ) +
+  labs(
+    x = "Pairwise Jaccard overlap",
+    y = "Count"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.text = element_text(color = "black"),
+    axis.title = element_text(color = "black")
+  )
+
+
+
+heatmap_data <- bind_rows(
+  pairwise_overlap,
+  pairwise_overlap %>%
+    transmute(
+      guideline_1 = guideline_2,
+      guideline_2 = guideline_1,
+      n_1 = n_2,
+      n_2 = n_1,
+      shared_n = shared_n,
+      unique_1_n = unique_2_n,
+      unique_2_n = unique_1_n,
+      jaccard = jaccard
+    ),
+  tibble(
+    guideline_1 = set_list$guideline,
+    guideline_2 = set_list$guideline,
+    n_1 = set_list$n_concepts,
+    n_2 = set_list$n_concepts,
+    shared_n = set_list$n_concepts,
+    unique_1_n = 0,
+    unique_2_n = 0,
+    jaccard = 1
+  )
+)
+
+guideline_order <- set_list %>%
+  arrange(desc(n_concepts)) %>%
+  pull(guideline)
+
+heatmap_data <- heatmap_data %>%
+  mutate(
+    guideline_1 = factor(guideline_1, levels = guideline_order),
+    guideline_2 = factor(guideline_2, levels = rev(guideline_order))
+  )
+
+overlap_heatmap <- ggplot(heatmap_data, aes(x = guideline_1, y = guideline_2, fill = jaccard)) +
+  geom_tile(color = "white", linewidth = 0.2) +
+  scale_fill_gradient(
+    low = "white",
+    high = "#BD4D52",
+    limits = c(0, 1),
+    labels = label_number(accuracy = 0.01)
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Jaccard overlap"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1, size = 7),
+    axis.text.y = element_text(size = 7),
+    legend.position = "right"
+  )
+
+overlap_heatmap
+```
+
+
+## Readability 
+
+```{r}
+# =========================================================
+# 0) helper functions
+# =========================================================
+
+calc_ttr <- function(x) {
+  x <- x[!is.na(x) & x != ""]
+  if (length(x) == 0) return(NA_real_)
+  dplyr::n_distinct(x) / length(x)
+}
+
+calc_log_ttr <- function(x) {
+  x <- x[!is.na(x) & x != ""]
+  n_tokens <- length(x)
+  n_types <- dplyr::n_distinct(x)
+  if (n_tokens <= 1 || n_types <= 1) return(NA_real_)
+  log(n_types) / log(n_tokens)
+}
+
+calc_mattr <- function(x, window = 10) {
+  x <- x[!is.na(x) & x != ""]
+  n <- length(x)
+  if (n == 0) return(NA_real_)
+  if (n < window) return(calc_ttr(x))
+  starts <- seq_len(n - window + 1)
+  mean(purrr::map_dbl(starts, ~ calc_ttr(x[.x:(.x + window - 1)])))
+}
+
+boot_ci <- function(x, stat_fun, R = 5000, conf = 0.95, seed = 1234) {
+  x <- x[is.finite(x) & !is.na(x)]
+  n <- length(x)
+
+  if (n == 0) {
+    return(c(est = NA_real_, lower = NA_real_, upper = NA_real_))
+  }
+
+  set.seed(seed)
+  reps <- replicate(R, stat_fun(sample(x, size = n, replace = TRUE)))
+  alpha <- 1 - conf
+
+  c(
+    est = stat_fun(x),
+    lower = unname(quantile(reps, probs = alpha / 2, na.rm = TRUE)),
+    upper = unname(quantile(reps, probs = 1 - alpha / 2, na.rm = TRUE))
+  )
+}
+
+summarise_metric <- function(df, var, R = 5000, conf = 0.95) {
+  x <- df[[var]]
+  x <- x[is.finite(x) & !is.na(x)]
+
+  mean_ci   <- boot_ci(x, mean, R = R, conf = conf)
+  median_ci <- boot_ci(x, median, R = R, conf = conf)
+  q1_ci     <- boot_ci(x, function(z) quantile(z, 0.25, na.rm = TRUE), R = R, conf = conf)
+  q3_ci     <- boot_ci(x, function(z) quantile(z, 0.75, na.rm = TRUE), R = R, conf = conf)
+
+  tibble(
+    metric = var,
+    n = length(x),
+    mean = mean(x, na.rm = TRUE),
+    mean_ci_lower = mean_ci["lower"],
+    mean_ci_upper = mean_ci["upper"],
+    sd = sd(x, na.rm = TRUE),
+    median = median(x, na.rm = TRUE),
+    median_ci_lower = median_ci["lower"],
+    median_ci_upper = median_ci["upper"],
+    q1 = quantile(x, 0.25, na.rm = TRUE),
+    q1_ci_lower = q1_ci["lower"],
+    q1_ci_upper = q1_ci["upper"],
+    q3 = quantile(x, 0.75, na.rm = TRUE),
+    q3_ci_lower = q3_ci["lower"],
+    q3_ci_upper = q3_ci["upper"],
+    iqr = IQR(x, na.rm = TRUE)
+  )
+}
+
+# =========================================================
+# 1) source items from concept
+# =========================================================
+
+items <- concept %>%
+  filter(!is.na(reporting_item)) %>%
+  mutate(
+    reporting_item = str_squish(as.character(reporting_item))
+  ) %>%
+  filter(reporting_item != "") %>%
+  distinct(reporting_item) %>%
+  mutate(item_id = row_number())
+
+# =========================================================
+# 2) tokenization for diversity/repetition
+# =========================================================
+
+item_tokens <- items %>%
+  unnest_tokens(word, reporting_item)
+
+# =========================================================
+# 3) POS tagging for lexical density
+# =========================================================
+# Run download once if you do not already have the model file.
+# If already downloaded, replace model_path with your local .udpipe file.
+
+model_info <- udpipe_download_model(language = "english")
+ud_model <- udpipe_load_model(model_info$file_model)
+
+anno <- udpipe_annotate(
+  ud_model,
+  x = items$reporting_item,
+  doc_id = items$item_id
+)
+
+anno_df <- as.data.frame(anno) %>%
+  as_tibble() %>%
+  mutate(
+    doc_id = as.integer(doc_id),
+    token = str_squish(as.character(token)),
+    upos = as.character(upos)
+  ) %>%
+  filter(!is.na(token), token != "", !is.na(upos))
+
+content_upos <- c("NOUN", "PROPN", "VERB", "ADJ", "ADV")
+
+lexical_density_stats <- anno_df %>%
+  group_by(doc_id) %>%
+  summarise(
+    token_count_pos = n(),
+    content_token_count = sum(upos %in% content_upos),
+    lexical_density = content_token_count / token_count_pos,
+    .groups = "drop"
+  ) %>%
+  rename(item_id = doc_id)
+
+# =========================================================
+# 4) lexical diversity metrics
+# =========================================================
+
+lexdiv_stats <- item_tokens %>%
+  group_by(item_id) %>%
+  summarise(
+    token_count = n(),
+    unique_tokens = n_distinct(word),
+    ttr = unique_tokens / token_count,
+    log_ttr = if_else(
+      token_count > 1 & unique_tokens > 1,
+      log(unique_tokens) / log(token_count),
+      NA_real_
+    ),
+    mean_word_frequency = token_count / unique_tokens,
+    mattr_10 = calc_mattr(word, window = 10),
+    .groups = "drop"
+  )
+
+checklist_tokens <- concept %>%
+  filter(!is.na(checklist), !is.na(reporting_item)) %>%
+  mutate(
+    reporting_item = str_squish(as.character(reporting_item))
+  ) %>%
+  filter(reporting_item != "") %>%
+  distinct(checklist, reporting_item) %>%
+  group_by(checklist) %>%
+  mutate(item_order = row_number()) %>%
+  ungroup() %>%
+  arrange(checklist, item_order) %>%
+  unnest_tokens(word, reporting_item)
+
+checklist_level_mattr <- checklist_tokens %>%
+  group_by(checklist) %>%
+  summarise(
+    n_tokens = n(),
+    unique_tokens = n_distinct(word),
+    mattr_10 = calc_mattr(word, window = 10),
+    .groups = "drop"
+  )
+
+checklist_level_mattr
+
+# =========================================================
+# 5) repetition metrics
+# =========================================================
+
+bigram_stats <- items %>%
+  unnest_tokens(bigram, reporting_item, token = "ngrams", n = 2) %>%
+  group_by(item_id) %>%
+  summarise(
+    n_bigrams = n(),
+    unique_bigrams = n_distinct(bigram),
+    repeated_bigram_rate = if_else(
+      n_bigrams > 0,
+      1 - unique_bigrams / n_bigrams,
+      0
+    ),
+    .groups = "drop"
+  )
+
+trigram_stats <- items %>%
+  unnest_tokens(trigram, reporting_item, token = "ngrams", n = 3) %>%
+  group_by(item_id) %>%
+  summarise(
+    n_trigrams = n(),
+    unique_trigrams = n_distinct(trigram),
+    repeated_trigram_rate = if_else(
+      n_trigrams > 0,
+      1 - unique_trigrams / n_trigrams,
+      0
+    ),
+    .groups = "drop"
+  )
+
+# =========================================================
+# 6) concepts per item
+# =========================================================
+
+concepts_per_item <- concept %>%
+  filter(!is.na(reporting_item), !is.na(standardised_reporting_item_elements)) %>%
+  mutate(
+    reporting_item = str_squish(as.character(reporting_item)),
+    standardised_reporting_item_elements = str_squish(as.character(standardised_reporting_item_elements))
+  ) %>%
+  filter(reporting_item != "", standardised_reporting_item_elements != "") %>%
+  group_by(reporting_item) %>%
+  summarise(
+    concepts_per_item = n_distinct(standardised_reporting_item_elements),
+    .groups = "drop"
+  )
+
+# =========================================================
+# 7) item-level metrics table
+# =========================================================
+
+item_metrics <- items %>%
+  left_join(lexical_density_stats, by = "item_id") %>%
+  left_join(lexdiv_stats, by = "item_id") %>%
+  left_join(bigram_stats, by = "item_id") %>%
+  left_join(trigram_stats, by = "item_id") %>%
+  left_join(concepts_per_item, by = "reporting_item") %>%
+  mutate(
+    n_bigrams = coalesce(n_bigrams, 0L),
+    repeated_bigram_rate = coalesce(repeated_bigram_rate, 0),
+    n_trigrams = coalesce(n_trigrams, 0L),
+    repeated_trigram_rate = coalesce(repeated_trigram_rate, 0),
+    concepts_per_item = coalesce(concepts_per_item, 0L)
+  ) %>%
+  select(
+    item_id,
+    reporting_item,
+    token_count,
+    token_count_pos,
+    content_token_count,
+    lexical_density,
+    unique_tokens,
+    ttr,
+    log_ttr,
+    mattr_10,
+    mean_word_frequency,
+    n_bigrams,
+    repeated_bigram_rate,
+    n_trigrams,
+    repeated_trigram_rate,
+    concepts_per_item
+  )
+
+# =========================================================
+# 8) uncertainty summaries for continuous metrics
+# =========================================================
+
+metric_vars <- c(
+  "token_count",
+  "lexical_density",
+  "ttr",
+  "log_ttr",
+  "mattr_10",
+  "mean_word_frequency",
+  "repeated_bigram_rate",
+  "repeated_trigram_rate",
+  "concepts_per_item"
+)
+
+metric_summaries <- map_dfr(
+  metric_vars,
+  ~ summarise_metric(item_metrics, .x, R = 5000, conf = 0.95)
+)
+
+# =========================================================
+# 9) duplicate item rate + exact binomial CI
+# =========================================================
+
+duplicate_rows <- concept %>%
+  filter(!is.na(reporting_item)) %>%
+  mutate(
+    reporting_item = str_squish(as.character(reporting_item))
+  ) %>%
+  filter(reporting_item != "") %>%
+  mutate(is_duplicate = duplicated(reporting_item))
+
+dup_n <- nrow(duplicate_rows)
+dup_x <- sum(duplicate_rows$is_duplicate)
+
+dup_test <- binom.test(dup_x, dup_n, conf.level = 0.95)
+
+duplicate_rate_summary <- tibble(
+  metric = "duplicate_item_rate",
+  n = dup_n,
+  estimate = unname(dup_test$estimate),
+  ci_lower = dup_test$conf.int[1],
+  ci_upper = dup_test$conf.int[2],
+  duplicates = dup_x,
+  unique_items = n_distinct(duplicate_rows$reporting_item)
+)
+
+# =========================================================
+# 10) compact manuscript-style table
+# =========================================================
+
+report_table <- metric_summaries %>%
+  mutate(
+    mean_with_ci = sprintf(
+      "%.3f (95%% CI %.3f to %.3f)",
+      mean, mean_ci_lower, mean_ci_upper
+    ),
+    median_with_ci = sprintf(
+      "%.3f (95%% CI %.3f to %.3f)",
+      median, median_ci_lower, median_ci_upper
+    ),
+    q1_with_ci = sprintf(
+      "%.3f (95%% CI %.3f to %.3f)",
+      q1, q1_ci_lower, q1_ci_upper
+    ),
+    q3_with_ci = sprintf(
+      "%.3f (95%% CI %.3f to %.3f)",
+      q3, q3_ci_lower, q3_ci_upper
+    ),
+    median_iqr = sprintf(
+      "%.3f (Q1 %.3f; Q3 %.3f)",
+      median, q1, q3
+    )
+  ) %>%
+  select(
+    metric,
+    n,
+    mean_with_ci,
+    sd,
+    median_with_ci,
+    q1_with_ci,
+    q3_with_ci,
+    median_iqr,
+    iqr
+  )
+
+# =========================================================
+# 11) optional rounded display tables
+# =========================================================
+
+metric_summaries_rounded <- metric_summaries %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+duplicate_rate_summary_rounded <- duplicate_rate_summary %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+report_table
+
+metric_summaries_rounded
+duplicate_rate_summary_rounded
+item_metrics
+
+
+```
+
+
+
