@@ -1,0 +1,427 @@
+---
+title: "Reporting item bank datapage"
+subtitle: "Interactive exploration of reporting items and concepts across evidence synthesis guidelines"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    page-layout: full
+    css: styles.css
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r setup}
+#| include: false
+
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+
+suppressPackageStartupMessages({
+  library(here)
+  library(readr)
+  library(dplyr)
+  library(DT)
+  library(crosstalk)
+  library(htmltools)
+})
+
+clean_utf8 <- function(df) {
+  df |>
+    mutate(across(where(is.character), ~ iconv(.x, from = "", to = "UTF-8", sub = "byte")))
+}
+
+stat_card <- function(value, label) {
+  div(
+    class = "stat-card",
+    span(class = "stat-value", format(value, big.mark = ",")),
+    span(class = "stat-label", label)
+  )
+}
+
+dt_buttons <- function(filename_stub) {
+  list(
+    list(
+      extend = "collection",
+      text = "⬇ Download filtered",
+      buttons = list(
+        list(
+          extend = "csv",
+          text = "CSV",
+          filename = filename_stub,
+          exportOptions = list(
+            columns = ":visible",
+            modifier = list(search = "applied")
+          )
+        ),
+        list(
+          extend = "excel",
+          text = "Excel",
+          filename = filename_stub,
+          exportOptions = list(
+            columns = ":visible",
+            modifier = list(search = "applied")
+          )
+        ),
+        list(
+          extend = "copy",
+          text = "Copy",
+          exportOptions = list(
+            columns = ":visible",
+            modifier = list(search = "applied")
+          )
+        )
+      )
+    ),
+    list(extend = "colvis", text = "Columns ▾")
+  )
+}
+
+dt_options <- function(filename_stub) {
+  list(
+    dom = "Bfrtip",
+    buttons = dt_buttons(filename_stub),
+    pageLength = 10,
+    lengthMenu = list(c(10, 25, 50, 100, -1), c("10", "25", "50", "100", "All")),
+    autoWidth = TRUE,
+    scrollX = TRUE,
+    deferRender = TRUE,
+    searchDelay = 350,
+    language = list(search = "Search all columns:")
+  )
+}
+```
+
+```{=html}
+<style>
+body { font-size: 15px; }
+h2 { border-bottom: 2px solid #e9ecef; padding-bottom: 0.3rem; margin-top: 2.5rem; }
+
+.stat-card-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 1.25rem;
+}
+.stat-card {
+  flex: 1 1 180px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.6rem;
+  padding: 0.9rem 1.1rem;
+}
+.stat-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #2c3e50;
+  display: block;
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.filter-panel {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.7rem;
+  padding: 1rem 1.15rem 0.85rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.filter-panel-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #495057;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.25rem;
+}
+.filter-grid label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+.reset-btn {
+  font-size: 0.78rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 1rem;
+}
+
+.result-count {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0.25rem 0 1rem;
+}
+.result-count strong { color: #2c3e50; }
+
+.crosstalk-input.crosstalk-input-select .selectize-control.single .selectize-input {
+  position: relative;
+  padding-right: 2rem;
+}
+.crosstalk-input.crosstalk-input-select .selectize-control.single .selectize-input::after {
+  content: "▾";
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #555;
+  font-size: 0.85em;
+}
+
+.download-buttons {
+  margin: 1rem 0 1.75rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.download-buttons .btn {
+  border-radius: 0.45rem;
+  font-size: 0.86rem;
+}
+
+.dataTables_wrapper .dt-buttons { margin-bottom: 0.5rem; }
+table.dataTable thead th {
+  background-color: #2c3e50;
+  color: #fff;
+}
+.table-note {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 0.35rem;
+}
+</style>
+```
+
+## Background
+
+This datapage accompanies a systematic compilation of reporting items from evidence synthesis reporting guidelines. It provides a harmonized **item bank** and **concept-level dataset** that can be filtered by guideline, methodology, and discipline, and exported for reuse.
+
+::: callout-note
+## How to use this page
+
+- Use the **Item bank** tab for individual reporting items and the **Concepts** tab for standardized concept mappings.
+- Filter with the controls above each table. Filters combine with AND logic.
+- Search within specific columns using the table header boxes, or use the global search box.
+- Use **⬇ Download filtered** for the current filtered view, or the full-dataset buttons for everything.
+:::
+
+## Datasets {.panel-tabset}
+
+### Item bank
+
+```{r load-items}
+data <- read_csv(
+  here("data", "item_bank_reporting_guideline_compiled.csv"),
+  locale = locale(encoding = "UTF-8")
+) |>
+  clean_utf8()
+
+study <- read_csv(
+  here("data", "item_bank_reporting_guideline.csv"),
+  locale = locale(encoding = "UTF-8")
+) |>
+  clean_utf8()
+
+items_joined <- data |>
+  left_join(
+    study |>
+      select(study_id, methodology_category, discipline),
+    by = "study_id"
+  ) |>
+  rename(
+    guideline = checklist,
+    methodology = methodology_category
+  ) |>
+  mutate(
+    guideline = as.factor(guideline),
+    methodology = as.factor(methodology),
+    discipline = as.factor(discipline)
+  )
+
+items_display <- items_joined |>
+  select(
+    guideline,
+    study_id,
+    checklist_item_id,
+    methodology,
+    discipline,
+    section,
+    topic,
+    reporting_item_number,
+    reporting_item,
+    standardised_section,
+    language
+  ) |>
+  clean_utf8()
+
+sd_items <- SharedData$new(
+  items_display,
+  key = ~checklist_item_id,
+  group = "items"
+)
+```
+
+::: {.stat-card-row}
+```{r items-stats}
+#| results: asis
+tagList(
+  stat_card(nrow(items_display), "Total items"),
+  stat_card(n_distinct(items_display$guideline), "Guidelines"),
+  stat_card(n_distinct(items_display$discipline), "Disciplines"),
+  stat_card(n_distinct(items_display$methodology), "Methodologies")
+)
+```
+:::
+
+::: {.filter-panel}
+::: {.filter-panel-title}
+Filter the item bank
+<button class="btn btn-outline-secondary reset-btn" onclick="location.reload()">Reset filters ↺</button>
+:::
+::: {.filter-grid}
+```{r items-filters}
+filter_select("guideline_items", "Guideline", sd_items, ~guideline, multiple = TRUE)
+filter_select("methodology_items", "Methodology", sd_items, ~methodology, multiple = TRUE)
+filter_select("discipline_items", "Discipline", sd_items, ~discipline, multiple = TRUE)
+```
+:::
+:::
+
+<div class="result-count">Use the filters and table search to narrow the view. The table below starts with <strong>10 rows</strong> per page.</div>
+
+```{r items-table}
+datatable(
+  sd_items,
+  filter = "top",
+  extensions = c("Buttons"),
+  rownames = FALSE,
+  options = dt_options("item_bank_filtered")
+)
+```
+
+<div class="table-note">The filtered download exports the currently matched rows, not just the visible page.</div>
+
+**Download full item bank datasets (all rows, unfiltered):**
+
+<div class="download-buttons">
+[⬇ Full item bank CSV](../data/item_bank_reporting_guideline_compiled.csv){.btn .btn-primary .btn-sm role="button"}
+[⬇ Full study metadata CSV](../data/item_bank_reporting_guideline.csv){.btn .btn-outline-secondary .btn-sm role="button"}
+</div>
+
+### Concepts
+
+```{r load-concepts}
+concept <- read_csv(
+  here("data", "item_bank_reporting_guideline_concepts.csv"),
+  locale = locale(encoding = "UTF-8")
+) |>
+  clean_utf8()
+
+concept_joined <- concept |>
+  left_join(
+    study |>
+      select(study_id, methodology_category, discipline),
+    by = "study_id"
+  ) |>
+  rename(
+    guideline = checklist,
+    methodology = methodology_category
+  ) |>
+  mutate(
+    guideline = as.factor(guideline),
+    methodology = as.factor(methodology),
+    discipline = as.factor(discipline)
+  )
+
+concept_display <- concept_joined |>
+  select(
+    study_id,
+    guideline,
+    checklist_item_id,
+    methodology,
+    discipline,
+    section,
+    topic,
+    reporting_item_number,
+    standardised_reporting_item_elements,
+    standardised_section,
+    standardised_subsection
+  ) |>
+  clean_utf8()
+
+sd_concepts <- SharedData$new(
+  concept_display,
+  key = ~paste(checklist_item_id, reporting_item_number),
+  group = "concepts"
+)
+```
+
+::: {.stat-card-row}
+```{r concepts-stats}
+#| results: asis
+tagList(
+  stat_card(nrow(concept_display), "Total concept mappings"),
+  stat_card(n_distinct(concept_display$guideline), "Guidelines"),
+  stat_card(n_distinct(concept_display$standardised_section), "Standardised sections"),
+  stat_card(n_distinct(concept_display$standardised_subsection), "Standardised subsections")
+)
+```
+:::
+
+::: {.filter-panel}
+::: {.filter-panel-title}
+Filter the concept dataset
+<button class="btn btn-outline-secondary reset-btn" onclick="location.reload()">Reset filters ↺</button>
+:::
+::: {.filter-grid}
+```{r concepts-filters}
+filter_select("guideline_concepts", "Guideline", sd_concepts, ~guideline, multiple = TRUE)
+filter_select("methodology_concepts", "Methodology", sd_concepts, ~methodology, multiple = TRUE)
+filter_select("discipline_concepts", "Discipline", sd_concepts, ~discipline, multiple = TRUE)
+```
+:::
+:::
+
+<div class="result-count">Use the filters and table search to narrow the view. The table below starts with <strong>10 rows</strong> per page.</div>
+
+```{r concepts-table}
+datatable(
+  sd_concepts,
+  filter = "top",
+  extensions = c("Buttons"),
+  rownames = FALSE,
+  options = dt_options("concepts_filtered")
+)
+```
+
+<div class="table-note">The filtered download exports the currently matched rows, not just the visible page.</div>
+
+**Download full concept dataset (all rows, unfiltered):**
+
+<div class="download-buttons">
+[⬇ Full concepts CSV](../data/item_bank_reporting_guideline_long_pilot.csv){.btn .btn-primary .btn-sm role="button"}
+</div>
+
+## Citation and reuse
+
+If you use these data, please cite:
+
+> [Add full paper citation here.]
+
+You are encouraged to fork or clone the GitHub repository backing this datapage, open issues for suggested improvements or corrections, and contribute extensions.
