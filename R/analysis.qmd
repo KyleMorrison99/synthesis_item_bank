@@ -448,7 +448,7 @@ pal <- c(
   "Abstract" = "#16db93",
   "Literature Search" = "#b9e769",
   "Scoping reviews" = "#efea5a",
-  "Other" = "#f29e4c"
+  "Bibliometrics" = "#f29e4c"
 )
 
 # clean methodology labels first
@@ -461,9 +461,9 @@ methodology_base <- study %>%
       str_detect(methodology_group, "scoping review|scoping reviews|systematic map") ~ "Scoping reviews",
       str_detect(methodology_group, "abstracts") ~ "Abstract",
       methodology_group == "search strategies" ~ "Literature Search",
-      str_detect(methodology_group, "qualitative|meta-ethnography|mixed-methods|realist review|meta-narrative review") ~ "Qualitative reviews",
+      str_detect(methodology_group, "qualitative|meta-ethnography|mixed-methods|realist review|meta-narrative review|meta-epidemiology") ~ "Qualitative reviews",
       str_detect(methodology_group, "systematic review|systematic reviews|meta-analyses|overview of systematic reviews|rapid review|living systematic reviews") ~ "Systematic reviews",
-      TRUE ~ "Other"
+      str_detect(methodology_group, "bibliometrics") ~ "Bibliometrics"
     )
   )
 
@@ -661,15 +661,15 @@ final_figure <- gridExtra::arrangeGrob(
 grid::grid.newpage()
 grid::grid.draw(final_figure)
 
-# ggsave(
- # filename = here::here("figures", "figure_all_three.jpg"),
-  # plot     = final_figure,
-  # width    = 25,
-  # height   = 30,
- # units    = "cm",
- # dpi      = 300,
- # bg       = "white"
-# )
+ ggsave(
+  filename = here::here("figures", "figure_all_three.jpg"),
+   plot     = final_figure,
+   width    = 25,
+   height   = 30,
+  units    = "cm",
+  dpi      = 300,
+  bg       = "white"
+ )
 ```
 
 # *Basic summary of item level details*
@@ -680,6 +680,24 @@ grid::grid.draw(final_figure)
 ```{r}
 
 length(data$reporting_item)  # Number of items
+
+# Number of items per study/guideline
+items_per_checklist <- data %>%
+  group_by(checklist) %>%
+  summarise(n_items = n(), .groups = "drop")
+
+# Mean and range across studies/guidelines
+mean(items_per_checklist$n_items)
+range(items_per_checklist$n_items)
+
+# Or all in one summary line
+items_per_checklist %>%
+  summarise(
+    mean_items  = mean(n_items),
+    min_items   = min(n_items),
+    max_items   = max(n_items),
+    sd_items    = sd(n_items)
+  )
 
 col_point <- "#54478c"
 col_stem  <- "#cfc8e8"
@@ -797,7 +815,6 @@ items_by_methodology <- data %>%
   count(methodology_category, name = "n_items", sort = TRUE)
   
   
-
 items_by_discipline <- data %>%
   left_join(study_unique, by = "study_id") %>%
   count(discipline, name = "n_items", sort = TRUE)
@@ -808,12 +825,14 @@ items_by_discipline <- data %>%
 ### Reporting items for each section
 ```{r}
 study_lookup <- study %>%
-  distinct(study_id, year, DOI)
+  distinct(study_id, year, DOI) %>%
+  mutate(across(where(is.character), ~ stri_enc_toutf8(.x, validate = TRUE)))
 
 tables_by_section <- data %>%
   left_join(study_lookup, by = "study_id") %>%
   filter(!is.na(standardised_section)) %>%
   mutate(
+    across(where(is.character), ~ stri_enc_toutf8(.x, validate = TRUE)),
     standardised_section = str_squish(as.character(standardised_section)),
     standardised_section = case_when(
       str_to_lower(standardised_section) == "other" ~ "Other",
@@ -831,30 +850,19 @@ tables_by_section <- data %>%
     .groups = "drop"
   ) %>%
   arrange(standardised_section, year, reporting_item) %>%
-  group_split(standardised_section)
-
-names(tables_by_section) <- names(tables_by_section)[names(tables_by_section) %in%
-  unique(as.character(
-    data %>%
-      left_join(study_lookup, by = "study_id") %>%
-      filter(!is.na(standardised_section)) %>%
-      mutate(
-        standardised_section = str_squish(as.character(standardised_section)),
-        standardised_section = case_when(
-          str_to_lower(standardised_section) == "other" ~ "Other",
-          TRUE ~ standardised_section
-        )
-      ) %>%
-      pull(standardised_section)
-  ))]
-
-
+  group_nest(standardised_section) %>%
+  mutate(
+    sheet_name = as.character(standardised_section),
+    sheet_name = stri_enc_toutf8(sheet_name, validate = TRUE),
+    sheet_name = substr(sheet_name, 1, 31),
+    sheet_name = make.unique(sheet_name)
+  )
 
 wb <- createWorkbook()
 
-iwalk(tables_by_section, ~ {
-  addWorksheet(wb, .y)
-  writeData(wb, .y, .x)
+iwalk(seq_len(nrow(tables_by_section)), function(i, ...) {
+  addWorksheet(wb, tables_by_section$sheet_name[i])
+  writeData(wb, tables_by_section$sheet_name[i], tables_by_section$data[[i]])
 })
 
 saveWorkbook(wb, file.path("data", "tables_by_section.xlsx"), overwrite = TRUE)
@@ -993,7 +1001,7 @@ squeeze01 <- function(y, n = length(y)) {
 # 2) build item-level dataset with year + study_id
 # =========================================================
 
-items <- concept %>%
+items <- data  %>% # total is 2,191 as we remove languages other than english
   filter(!is.na(reporting_item), !is.na(study_id)) %>%
   mutate(reporting_item = str_squish(as.character(reporting_item))) %>%
   filter(reporting_item != "") %>%
@@ -1026,6 +1034,28 @@ lexdiv_stats <- item_tokens %>%
     mattr_10 = calc_mattr(word, window = 10),
     .groups = "drop"
   )
+
+
+
+token_count_stats <- lexdiv_stats %>%
+  summarise(
+    n_items = n(),
+    mean_tokens = mean(token_count, na.rm = TRUE),
+    sd_tokens = sd(token_count, na.rm = TRUE),
+    median_tokens = median(token_count, na.rm = TRUE),
+    min_tokens = min(token_count, na.rm = TRUE),
+    max_tokens = max(token_count, na.rm = TRUE)
+  )
+
+token_count_stats_fmt <- token_count_stats %>%
+  mutate(
+    mean_sd_n = sprintf(
+      "%.2f (SD %.2f), n = %d items",
+      mean_tokens, sd_tokens, n_items
+    )
+  )
+
+token_count_stats_fmt
 
 # =========================================================
 # 4) POS tagging for lexical density
@@ -1076,6 +1106,7 @@ item_metrics <- items %>%
   left_join(lexical_density_stats, by = "item_id") %>%
   select(
     item_id,
+    checklist_item_id,
     study_id,
     year,
     reporting_item,
@@ -1155,29 +1186,7 @@ fit_lexdens <- brm(
   file = "fit_lexdens_brms_gam_studyid"
 )
 
-# =========================================================
-# 9) fitted smooths
-# =========================================================
 
-year_grid <- tibble(
-  year = seq(min(model_dat$year), max(model_dat$year), by = 1)
-)
-
-mattr_fitted <- fitted(
-  fit_mattr,
-  newdata = year_grid,
-  re_formula = NA,
-  summary = TRUE
-) %>%
-  as.data.frame()
-
-lexdens_fitted <- fitted(
-  fit_lexdens,
-  newdata = year_grid,
-  re_formula = NA,
-  summary = TRUE
-) %>%
-  as.data.frame()
 
 # =========================================================
 # 10) save objects
@@ -1190,193 +1199,266 @@ saveRDS(item_metrics, file = here::here("R.data", "item_metrics_for_brms.rds"))
 saveRDS(model_dat, file = here::here("R.data", "model_dat_mattr_lexdens.rds"))
 saveRDS(fit_mattr, file = here::here("R.data", "fit_mattr_brms_gam_studyid.rds"))
 saveRDS(fit_lexdens, file = here::here("R.data", "fit_lexdens_brms_gam_studyid.rds"))
-saveRDS(plot_mattr_df, file = here::here("R.data", "plot_mattr_df_brms.rds"))
-saveRDS(plot_lexdens_df, file = here::here("R.data", "plot_lexdens_df_brms.rds"))
+
+
+```
+
+
+```{r}
+
+year_mean <- mean(model_dat$year)  # must match the centering used when fitting
+
+
+avg_slope <- function(fit, year_min, year_max, step = 0.1) {
+  grid <- seq(year_min, year_max, by = step)
+  newdata <- tibble(year_c = grid - year_mean)
+
+  draws <- posterior_epred(fit, newdata = newdata, re_formula = NA)  # draws x grid
+
+  d_year <- diff(grid)
+  slope_draws_by_gap <- (draws[, -1, drop = FALSE] - draws[, -ncol(draws), drop = FALSE]) /
+    matrix(d_year, nrow = nrow(draws), ncol = length(d_year), byrow = TRUE)
+
+  avg_slope_draws <- rowMeans(slope_draws_by_gap)  # one avg slope per posterior draw
+
+  tibble(
+    mean_slope_per_year = mean(avg_slope_draws),
+    lower_95 = as.numeric(quantile(avg_slope_draws, 0.025)),
+    upper_95 = as.numeric(quantile(avg_slope_draws, 0.975))
+  )
+}
+
+# =========================================================
+# Helper 2: endpoint-to-endpoint total & annualized change
+# =========================================================
+
+endpoint_change <- function(fit, year_min, year_max) {
+  newdata <- tibble(year_c = c(year_min, year_max) - year_mean)
+  draws <- posterior_epred(fit, newdata = newdata, re_formula = NA)  # draws x 2
+
+  total_draws <- draws[, 2] - draws[, 1]
+  per_year_draws <- total_draws / (year_max - year_min)
+
+  tibble(
+    total_change      = mean(total_draws),
+    total_lower_95    = as.numeric(quantile(total_draws, 0.025)),
+    total_upper_95    = as.numeric(quantile(total_draws, 0.975)),
+    per_year_change   = mean(per_year_draws),
+    per_year_lower_95 = as.numeric(quantile(per_year_draws, 0.025)),
+    per_year_upper_95 = as.numeric(quantile(per_year_draws, 0.975))
+  )
+}
+
+# =========================================================
+# MATTR
+# =========================================================
+
+yr_min <- min(model_dat$year)
+yr_max <- max(model_dat$year)
+
+mattr_avg_slope   <- avg_slope(fit_mattr, yr_min, yr_max)
+mattr_endpoints   <- endpoint_change(fit_mattr, yr_min, yr_max)
+
+cat("\n--- MATTR ---\n")
+cat("Average marginal slope (per year):\n"); print(round(mattr_avg_slope, 4))
+cat("Endpoint-to-endpoint change (", yr_min, "to", yr_max, "):\n")
+print(round(mattr_endpoints, 4))
+
+# =========================================================
+# Lexical density (overall)
+# =========================================================
+
+lexdens_avg_slope <- avg_slope(fit_lexdens, yr_min, yr_max)
+lexdens_endpoints <- endpoint_change(fit_lexdens, yr_min, yr_max)
+
+cat("\n--- Lexical density (overall) ---\n")
+cat("Average marginal slope (per year):\n"); print(round(lexdens_avg_slope, 4))
+cat("Endpoint-to-endpoint change (", yr_min, "to", yr_max, "):\n")
+print(round(lexdens_endpoints, 4))
+
+# =========================================================
+# Lexical density, split pre-/post-2020
+# (supports the "particularly after 2020" claim)
+# =========================================================
+
+if (yr_min < 2020 && yr_max > 2020) {
+  lexdens_slope_pre2020  <- avg_slope(fit_lexdens, yr_min, 2020)
+  lexdens_slope_post2020 <- avg_slope(fit_lexdens, 2020, yr_max)
+
+  cat("\n--- Lexical density, pre-2020 slope (", yr_min, "-2020) ---\n")
+  print(round(lexdens_slope_pre2020, 4))
+  cat("\n--- Lexical density, post-2020 slope (2020-", yr_max, ") ---\n")
+  print(round(lexdens_slope_post2020, 4))
+}
+
 
 ```
 
 ```{r}
 
- # -------------------------------------------------
-# shared settings
-# -------------------------------------------------
+ # shared settings
 year_breaks <- c(2000, 2005, 2010, 2015, 2020, 2025)
 
 fig_theme <- theme_minimal(base_size = 13) +
   theme(
     panel.grid = element_blank(),
-    axis.title.x = element_text(color = "black", margin = margin(t = 8)),
-    axis.title.y = element_text(color = "black", margin = margin(r = 8)),
+    axis.title = element_text(color = "black", margin = margin(t = 6, r = 6)),
     axis.text = element_text(color = "black"),
-    axis.line.x = element_line(linewidth = 0.8, color = "black"),
-    axis.line.y = element_line(linewidth = 0.8, color = "black"),
+    axis.line = element_line(linewidth = 0.7, color = "black"),
     axis.ticks = element_line(color = "black"),
-    plot.title = element_text(
-      size = 12.5,
-      face = "bold",
-      color = "black",
-      hjust = 0
-    ),
+    plot.title = element_text(size = 12.5, face = "bold", color = "black", hjust = 0),
     plot.title.position = "plot"
   )
 
-# -------------------------------------------------
+# observed yearly means
+obs_mattr <- model_dat %>%
+  group_by(year) %>%
+  summarise(mean_obs = mean(mattr_beta, na.rm = TRUE), .groups = "drop")
+
+obs_lexdens <- model_dat %>%
+  group_by(year) %>%
+  summarise(mean_obs = mean(lexical_density_beta, na.rm = TRUE), .groups = "drop")
+
+# prediction grid
+year_grid <- tibble(year = seq(min(model_dat$year), max(model_dat$year), by = 1)) %>%
+  mutate(
+    year_c = year - mean(model_dat$year, na.rm = TRUE),
+    study_id = NA
+  )
+
+# fitted values
+mattr_fitted <- fitted(
+  fit_mattr,
+  newdata = year_grid,
+  re_formula = NA,
+  allow_new_levels = TRUE,
+  summary = TRUE
+) %>%
+  as.data.frame() %>%
+  bind_cols(year_grid)
+
+lexdens_fitted <- fitted(
+  fit_lexdens,
+  newdata = year_grid,
+  re_formula = NA,
+  allow_new_levels = TRUE,
+  summary = TRUE
+) %>%
+  as.data.frame() %>%
+  bind_cols(year_grid)
+
 # a) reporting items by section
-# -------------------------------------------------
-p_items <- ggplot(
-  item_per_section_plot,
-  aes(x = n, y = standardised_section)
-) +
+p_items <- ggplot(item_per_section_plot, aes(x = n, y = standardised_section)) +
   geom_segment(
-    aes(
-      x = 0, xend = n,
-      y = standardised_section, yend = standardised_section
-    ),
-    linewidth = 2.1,
+    aes(x = 0, xend = n, y = standardised_section, yend = standardised_section),
+    linewidth = 2,
     colour = col_stem,
     lineend = "round"
   ) +
   geom_point(
-    size = 4.6,
+    size = 4.3,
     shape = 21,
-    stroke = 0.95,
+    stroke = 0.9,
     fill = col_point,
     colour = "black"
   ) +
   geom_text(
-    aes(label = comma(n)),
-    nudge_y = 0.28,
+    aes(label = scales::comma(n)),
+    nudge_y = 0.25,
     hjust = 0.5,
-    vjust = 0,
+    size = 3.3,
     fontface = "bold",
-    size = 3.4,
     colour = col_text
   ) +
-  scale_x_continuous(
-    labels = comma,
-    expand = expansion(mult = c(0, 0.10))
-  ) +
-  labs(
-    title = "a) Reporting items by section",
-    x = "Number of items",
-    y = NULL
-  ) +
+  scale_x_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.08))) +
+  labs(title = "a) Reporting items by section", x = "Number of items", y = NULL) +
   coord_cartesian(clip = "off") +
   fig_theme +
   theme(
-    panel.grid.major.x = element_line(color = "grey88", linewidth = 0.35),
+    panel.grid.major.x = element_line(color = "grey90", linewidth = 0.35),
     axis.ticks.y = element_blank(),
-    plot.margin = margin(12, 12, 12, 12)
+    plot.margin = margin(10, 10, 10, 10)
   )
 
-# -------------------------------------------------
 # b) lexical diversity over time
-# -------------------------------------------------
 p_mattr <- ggplot() +
   geom_ribbon(
-    data = plot_mattr_df,
+    data = mattr_fitted,
     aes(x = year, ymin = Q2.5, ymax = Q97.5),
     fill = "#048ba8",
-    alpha = 0.22
+    alpha = 0.20
   ) +
   geom_line(
-    data = plot_mattr_df,
+    data = mattr_fitted,
     aes(x = year, y = Estimate),
     colour = "#54478c",
-    linewidth = 1.15
+    linewidth = 1.1
   ) +
   geom_point(
     data = obs_mattr,
     aes(x = year, y = mean_obs),
     shape = 21,
-    size = 2.7,
-    stroke = 0.9,
+    size = 2.8,
+    stroke = 0.8,
     colour = "black",
     fill = "#54478c"
   ) +
-  scale_x_continuous(
-    breaks = year_breaks,
-    expand = expansion(mult = c(0.01, 0.02))
-  ) +
-  labs(
-    title = "b) Lexical diversity over time",
-    x = NULL,
-    y = NULL
-  ) +
+  scale_x_continuous(breaks = year_breaks, expand = expansion(mult = c(0.01, 0.02))) +
+  labs(title = "b) Lexical diversity over time", x = NULL, y = NULL) +
   coord_cartesian(clip = "off") +
   fig_theme +
-  theme(
-    plot.margin = margin(12, 12, 6, 6)
-  )
+  theme(plot.margin = margin(10, 10, 5, 5))
 
-# -------------------------------------------------
-# c) mean lexical density over time
-# -------------------------------------------------
+# c) lexical density over time
 p_lexdens <- ggplot() +
   geom_ribbon(
-    data = plot_lexdens_df,
+    data = lexdens_fitted,
     aes(x = year, ymin = Q2.5, ymax = Q97.5),
     fill = "#efea5a",
-    alpha = 0.28
+    alpha = 0.26
   ) +
   geom_line(
-    data = plot_lexdens_df,
+    data = lexdens_fitted,
     aes(x = year, y = Estimate),
     colour = "#f29e4c",
-    linewidth = 1.15
+    linewidth = 1.1
   ) +
   geom_point(
     data = obs_lexdens,
     aes(x = year, y = mean_obs),
     shape = 21,
-    size = 2.7,
-    stroke = 0.9,
+    size = 2.8,
+    stroke = 0.8,
     colour = "black",
     fill = "#f29e4c"
   ) +
-  scale_x_continuous(
-    breaks = year_breaks,
-    expand = expansion(mult = c(0.01, 0.02))
-  ) +
-  labs(
-    title = "c) Lexical density over time",
-    x = "Publication year",
-    y = NULL
-  ) +
+  scale_x_continuous(breaks = year_breaks, expand = expansion(mult = c(0.01, 0.02))) +
+  labs(title = "c) Lexical density over time", x = "Publication year", y = NULL) +
   coord_cartesian(clip = "off") +
   fig_theme +
-  theme(
-    plot.margin = margin(6, 12, 12, 6)
-  )
+  theme(plot.margin = margin(5, 10, 10, 5))
 
-# -------------------------------------------------
-# combine layout: A on left spanning rows, B/C stacked right
-# -------------------------------------------------
+# combine
 layout_design <- "
 AB
 AC
 "
 
 combined_abc <- p_items + p_mattr + p_lexdens +
-  plot_layout(
-    design = layout_design,
-    widths = c(1.15, 2)
-  )
+  plot_layout(design = layout_design, widths = c(1.05, 1.95))
 
 combined_abc
 
-# -------------------------------------------------
 # save
-# -------------------------------------------------
-# ggsave(
-#  filename = here("figures", "items_mattr_lexdens_abc_side.png"),
-# plot = combined_abc,
-#  width = 24,
-# height = 15,
-#  units = "cm",
-# dpi = 300,
-#  bg = "white"
-# )
+ggsave(
+  filename = here::here("figures", "items_mattr_lexdens_abc_side.png"),
+  plot = combined_abc,
+  width = 24,
+  height = 15,
+  units = "cm",
+  dpi = 300,
+  bg = "white"
+)
 ```
 
 
@@ -1541,99 +1623,9 @@ cleveland_concepts
 
 #### Tables of concepts per item
 ```{r}
-section_order <- c(
-  "Other information",
-  "Discussion",
-  "Results",
-  "Methodology",
-  "Introduction",
-  "Abstract",
-  "Title"
-)
-
-concept_tables_by_section <- concept %>%
-  filter(
-    !is.na(standardised_section),
-    !is.na(standardised_reporting_item_elements)
-  ) %>%
-  mutate(
-    standardised_section = str_squish(as.character(standardised_section)),
-    standardised_section = case_when(
-      str_to_lower(standardised_section) %in% c("other", "other information") ~ "Other information",
-      TRUE ~ standardised_section
-    ),
-    standardised_section = factor(
-      standardised_section,
-      levels = section_order
-    ),
-    standardised_reporting_item_elements =
-      str_squish(as.character(standardised_reporting_item_elements))
-  ) %>%
-  filter(
-    !is.na(standardised_section),
-    standardised_reporting_item_elements != ""
-  ) %>%
-  count(
-    standardised_section,
-    standardised_reporting_item_elements,
-    name = "total_count"
-  ) %>%
-  arrange(standardised_section, desc(total_count), standardised_reporting_item_elements) %>%
-  group_by(standardised_section) %>%
-  group_split() %>%
-  set_names(
-    concept %>%
-      filter(
-        !is.na(standardised_section),
-        !is.na(standardised_reporting_item_elements)
-      ) %>%
-      mutate(
-        standardised_section = str_squish(as.character(standardised_section)),
-        standardised_section = case_when(
-          str_to_lower(standardised_section) %in% c("other", "other information") ~ "Other information",
-          TRUE ~ standardised_section
-        ),
-        standardised_section = factor(
-          standardised_section,
-          levels = section_order
-        ),
-        standardised_reporting_item_elements =
-          str_squish(as.character(standardised_reporting_item_elements))
-      ) %>%
-      filter(
-        !is.na(standardised_section),
-        standardised_reporting_item_elements != ""
-      ) %>%
-      count(
-        standardised_section,
-        standardised_reporting_item_elements,
-        name = "total_count"
-      ) %>%
-      group_by(standardised_section) %>%
-      group_keys() %>%
-      pull(standardised_section) %>%
-      as.character()
-  ) |>
-  map(~ select(.x, -standardised_section))
-
-concept_tables_by_section
-
-concept_tables_by_section_ordered <- concept_tables_by_section[section_order]
-
-openxlsx::write.xlsx(
-  concept_tables_by_section_ordered,
-  file = file.path("data", "concept_tables_by_section.xlsx"),
-  overwrite = TRUE
-)
-```
-
-## Overlapping concepts between items
-```{r}
-
 # =========================================================
 # 1) One row per study_id
 # =========================================================
-
 study_lookup <- study %>%
   transmute(
     study_id,
@@ -1782,7 +1774,7 @@ format_overlap_stats <- function(overlap_stats) {
 }
 
 # =========================================================
-# 7) Plot theme helpers
+# 7) Plot: distribution
 # =========================================================
 
 plot_overlap_dist <- function(pairwise_overlap, title_text, fill_col) {
@@ -1822,8 +1814,17 @@ plot_overlap_dist <- function(pairwise_overlap, title_text, fill_col) {
     )
 }
 
-make_heatmap_data <- function(set_list, pairwise_overlap) {
-  bind_rows(
+# =========================================================
+# 8) Plot: full heatmap (with Jaccard colour legend)
+# =========================================================
+
+plot_overlap_heatmap <- function(set_list, pairwise_overlap, title_text, high_col) {
+  group_order <- set_list %>%
+    arrange(desc(n_concepts)) %>%
+    pull(group) %>%
+    as.character()
+
+  heatmap_data <- bind_rows(
     pairwise_overlap,
     pairwise_overlap %>%
       transmute(
@@ -1846,18 +1847,7 @@ make_heatmap_data <- function(set_list, pairwise_overlap) {
       unique_2_n = 0,
       jaccard = 1
     )
-  )
-}
-
-plot_overlap_heatmap <- function(set_list, pairwise_overlap, title_text, high_col) {
-  heatmap_data <- make_heatmap_data(set_list, pairwise_overlap)
-
-  group_order <- set_list %>%
-    arrange(desc(n_concepts)) %>%
-    pull(group) %>%
-    as.character()
-
-  heatmap_data <- heatmap_data %>%
+  ) %>%
     mutate(
       group_1 = factor(as.character(group_1), levels = group_order),
       group_2 = factor(as.character(group_2), levels = rev(group_order))
@@ -1869,14 +1859,22 @@ plot_overlap_heatmap <- function(set_list, pairwise_overlap, title_text, high_co
       low = "#f7f7f7",
       high = high_col,
       limits = c(0, 1),
-      labels = label_number(accuracy = 0.01)
+      breaks = seq(0, 1, 0.25),
+      labels = label_number(accuracy = 0.01),
+      name = "Jaccard\noverlap",
+      guide = guide_colorbar(
+        barwidth = unit(0.5, "cm"),
+        barheight = unit(4, "cm"),
+        ticks.colour = "black",
+        frame.colour = "black",
+        title.position = "top"
+      )
     ) +
     coord_fixed() +
     labs(
       title = title_text,
       x = NULL,
-      y = NULL,
-      fill = "Jaccard overlap"
+      y = NULL
     ) +
     theme_classic(base_size = 16) +
     theme(
@@ -1899,41 +1897,30 @@ plot_overlap_heatmap <- function(set_list, pairwise_overlap, title_text, high_co
       ),
       axis.line = element_line(color = "black", linewidth = 0.7),
       axis.ticks = element_blank(),
-      legend.position = "none",
+      legend.position = "right",
+      legend.title = element_text(size = 11, face = "bold", hjust = 0),
+      legend.text = element_text(size = 10),
       panel.border = element_blank(),
       plot.margin = margin(t = 15, r = 18, b = 40, l = 40)
     )
 }
 
 # =========================================================
-# 7b) Top-20 focused heatmap helpers
+# 9) Plot: top-20 guideline heatmap (with Jaccard colour legend)
 # =========================================================
-
-compute_guideline_mean_overlap <- function(pairwise_df) {
-  if (nrow(pairwise_df) == 0) {
-    return(tibble(group = character(), mean_jaccard = numeric()))
-  }
-
-  bind_rows(
-    pairwise_df %>%
-      transmute(group = group_1, other = group_2, jaccard = jaccard),
-    pairwise_df %>%
-      transmute(group = group_2, other = group_1, jaccard = jaccard)
-  ) %>%
-    group_by(group) %>%
-    summarise(
-      mean_jaccard = mean(jaccard, na.rm = TRUE),
-      .groups = "drop"
-    ) %>%
-    arrange(desc(mean_jaccard))
-}
 
 plot_topN_guidelines_heatmap <- function(set_list, pairwise_overlap, title_text, high_col, top_n = 20) {
   if (nrow(set_list) == 0 || nrow(pairwise_overlap) == 0) {
     return(NULL)
   }
 
-  mean_overlap <- compute_guideline_mean_overlap(pairwise_overlap)
+  mean_overlap <- bind_rows(
+    pairwise_overlap %>% transmute(group = group_1, other = group_2, jaccard = jaccard),
+    pairwise_overlap %>% transmute(group = group_2, other = group_1, jaccard = jaccard)
+  ) %>%
+    group_by(group) %>%
+    summarise(mean_jaccard = mean(jaccard, na.rm = TRUE), .groups = "drop") %>%
+    arrange(desc(mean_jaccard))
 
   top_groups <- mean_overlap %>%
     slice_head(n = top_n) %>%
@@ -1946,7 +1933,30 @@ plot_topN_guidelines_heatmap <- function(set_list, pairwise_overlap, title_text,
     return(NULL)
   }
 
-  heatmap_data <- make_heatmap_data(set_list, pairwise_overlap) %>%
+  heatmap_data <- bind_rows(
+    pairwise_overlap,
+    pairwise_overlap %>%
+      transmute(
+        group_1 = group_2,
+        group_2 = group_1,
+        n_1 = n_2,
+        n_2 = n_1,
+        shared_n = shared_n,
+        unique_1_n = unique_2_n,
+        unique_2_n = unique_1_n,
+        jaccard = jaccard
+      ),
+    tibble(
+      group_1 = as.character(set_list$group),
+      group_2 = as.character(set_list$group),
+      n_1 = set_list$n_concepts,
+      n_2 = set_list$n_concepts,
+      shared_n = set_list$n_concepts,
+      unique_1_n = 0,
+      unique_2_n = 0,
+      jaccard = 1
+    )
+  ) %>%
     filter(
       as.character(group_1) %in% top_groups,
       as.character(group_2) %in% top_groups
@@ -1962,7 +1972,16 @@ plot_topN_guidelines_heatmap <- function(set_list, pairwise_overlap, title_text,
       low = "#f7f7f7",
       high = high_col,
       limits = c(0, 1),
-      labels = label_number(accuracy = 0.01)
+      breaks = seq(0, 1, 0.25),
+      labels = label_number(accuracy = 0.01),
+      name = "Jaccard\noverlap",
+      guide = guide_colorbar(
+        barwidth = unit(0.5, "cm"),
+        barheight = unit(3.2, "cm"),
+        ticks.colour = "black",
+        frame.colour = "black",
+        title.position = "top"
+      )
     ) +
     coord_fixed() +
     labs(
@@ -1991,14 +2010,16 @@ plot_topN_guidelines_heatmap <- function(set_list, pairwise_overlap, title_text,
       ),
       axis.line = element_line(color = "black", linewidth = 0.7),
       axis.ticks = element_blank(),
-      legend.position = "none",
+      legend.position = "right",
+      legend.title = element_text(size = 10, face = "bold", hjust = 0),
+      legend.text = element_text(size = 9),
       panel.border = element_blank(),
       plot.margin = margin(t = 15, r = 15, b = 35, l = 15)
     )
 }
 
 # =========================================================
-# 8) Save helper
+# 10) Save helper
 # =========================================================
 
 save_plot_both <- function(plot_obj, filename_stub, width, height) {
@@ -2023,7 +2044,7 @@ save_plot_both <- function(plot_obj, filename_stub, width, height) {
 }
 
 # =========================================================
-# 9) Colours
+# 11) Colours
 # =========================================================
 
 guideline_col  <- "#5c8f7a"
@@ -2032,7 +2053,7 @@ method_col     <- "#4f88a2"
 type_col       <- "#74bda3"
 
 # =========================================================
-# 10) OVERALL guideline-to-guideline overlap
+# 12) OVERALL guideline-to-guideline overlap
 # =========================================================
 
 guideline_set_list <- make_set_list(concept_sets_base, guideline)
@@ -2062,19 +2083,19 @@ guideline_top20_overlap_heatmap <- plot_topN_guidelines_heatmap(
 )
 
 save_plot_both(guideline_overlap_dist, "guideline_overlap_distribution", 8.3, 5.8)
-save_plot_both(guideline_overlap_heatmap, "guideline_overlap_heatmap", 11.7, 11.2)
+save_plot_both(guideline_overlap_heatmap, "guideline_overlap_heatmap", 12.7, 11.2)
 
 if (!is.null(guideline_top20_overlap_heatmap)) {
   save_plot_both(
     guideline_top20_overlap_heatmap,
     "guideline_top20_overlap_heatmap",
-    9.5,
+    10.5,
     9.0
   )
 }
 
 # =========================================================
-# 11) DISCIPLINE overlap
+# 13) DISCIPLINE overlap
 # =========================================================
 
 discipline_set_list <- make_set_list(concept_sets_base, discipline)
@@ -2096,10 +2117,10 @@ discipline_overlap_heatmap <- plot_overlap_heatmap(
 )
 
 save_plot_both(discipline_overlap_dist, "discipline_overlap_distribution", 8.3, 5.8)
-save_plot_both(discipline_overlap_heatmap, "discipline_overlap_heatmap", 10.5, 9.5)
+save_plot_both(discipline_overlap_heatmap, "discipline_overlap_heatmap", 11.5, 9.5)
 
 # =========================================================
-# 12) METHODOLOGY overlap
+# 14) METHODOLOGY overlap
 # =========================================================
 
 method_set_list <- make_set_list(concept_sets_base, methodology)
@@ -2121,10 +2142,10 @@ method_overlap_heatmap <- plot_overlap_heatmap(
 )
 
 save_plot_both(method_overlap_dist, "methodology_overlap_distribution", 8.3, 5.8)
-save_plot_both(method_overlap_heatmap, "methodology_overlap_heatmap", 10.8, 9.8)
+save_plot_both(method_overlap_heatmap, "methodology_overlap_heatmap", 11.8, 9.8)
 
 # =========================================================
-# 13) GUIDELINE TYPE overlap
+# 15) GUIDELINE TYPE overlap
 # =========================================================
 
 type_set_list <- make_set_list(concept_sets_base, guideline_type)
@@ -2146,10 +2167,10 @@ type_overlap_heatmap <- plot_overlap_heatmap(
 )
 
 save_plot_both(type_overlap_dist, "guideline_type_overlap_distribution", 8.3, 5.8)
-save_plot_both(type_overlap_heatmap, "guideline_type_overlap_heatmap", 8.5, 7.5)
+save_plot_both(type_overlap_heatmap, "guideline_type_overlap_heatmap", 9.5, 7.5)
 
 # =========================================================
-# 14) Combine summary tables
+# 16) Combine summary tables
 # =========================================================
 
 all_overlap_stats <- bind_rows(
@@ -2172,7 +2193,7 @@ readr::write_csv(all_overlap_stats, here::here("figures", "all_overlap_stats.csv
 readr::write_csv(all_overlap_stats_fmt, here::here("figures", "all_overlap_stats_formatted.csv"))
 
 # =========================================================
-# 15) Optional: print objects to console
+# 17) Optional: print objects to console
 # =========================================================
 
 guideline_overlap_stats
@@ -2181,12 +2202,210 @@ method_overlap_stats
 type_overlap_stats
 all_overlap_stats
 all_overlap_stats_fmt
+
+# =========================================================
+# Concepts per item: counts + mean/SD summary
+# =========================================================
+
+concepts_per_item <- concept %>%
+  filter(
+    !is.na(checklist_item_id),                               # <- swap in your item ID column
+    !is.na(standardised_reporting_item_elements)
+  ) %>%
+  mutate(
+    standardised_reporting_item_elements =
+      str_squish(as.character(standardised_reporting_item_elements))
+  ) %>%
+  filter(standardised_reporting_item_elements != "") %>%
+  distinct(checklist_item_id, standardised_reporting_item_elements) %>%
+  group_by(checklist_item_id) %>%
+  summarise(
+    n_concepts = n_distinct(standardised_reporting_item_elements),
+    .groups = "drop"
+  )
+
+concepts_per_item_stats <- concepts_per_item %>%
+  summarise(
+    n_items = n(),
+    mean_concepts = mean(n_concepts, na.rm = TRUE),
+    sd_concepts = sd(n_concepts, na.rm = TRUE),
+    median_concepts = median(n_concepts, na.rm = TRUE),
+    min_concepts = min(n_concepts, na.rm = TRUE),
+    max_concepts = max(n_concepts, na.rm = TRUE)
+  )
+
+concepts_per_item_stats_fmt <- concepts_per_item_stats %>%
+  mutate(
+    mean_sd_n = sprintf(
+      "%.2f (SD %.2f), n = %d items",
+      mean_concepts, sd_concepts, n_items
+    )
+  )
+
+concepts_per_item_stats_fmt
+```
+
+```{r}
+# =========================================================
+# A) Concept prevalence: how many groups contain each concept
+#    (core vs peripheral concepts) — run per grouping level
+# =========================================================
+
+concept_prevalence <- function(set_list) {
+  set_list %>%
+    tidyr::unnest(concepts) %>%
+    rename(concept = concepts) %>%
+    count(concept, name = "n_groups_present") %>%
+    mutate(
+      pct_groups_present = n_groups_present / n_distinct(set_list$group) * 100
+    ) %>%
+    arrange(desc(n_groups_present))
+}
+
+guideline_concept_prevalence  <- concept_prevalence(guideline_set_list)
+discipline_concept_prevalence <- concept_prevalence(discipline_set_list)
+method_concept_prevalence     <- concept_prevalence(method_set_list)
+type_concept_prevalence       <- concept_prevalence(type_set_list)
+
+# Classify concepts as core (>=75% of groups), common (25-75%), peripheral (<25%)
+classify_prevalence <- function(prevalence_df) {
+  prevalence_df %>%
+    mutate(
+      tier = case_when(
+        pct_groups_present >= 75 ~ "Core (>=75% groups)",
+        pct_groups_present >= 25 ~ "Common (25-75% groups)",
+        TRUE ~ "Peripheral (<25% groups)"
+      )
+    )
+}
+
+guideline_concept_prevalence  <- classify_prevalence(guideline_concept_prevalence)
+discipline_concept_prevalence <- classify_prevalence(discipline_concept_prevalence)
+method_concept_prevalence     <- classify_prevalence(method_concept_prevalence)
+type_concept_prevalence       <- classify_prevalence(type_concept_prevalence)
+
+readr::write_csv(guideline_concept_prevalence,  here::here("figures", "guideline_concept_prevalence.csv"))
+readr::write_csv(discipline_concept_prevalence, here::here("figures", "discipline_concept_prevalence.csv"))
+readr::write_csv(method_concept_prevalence,     here::here("figures", "methodology_concept_prevalence.csv"))
+readr::write_csv(type_concept_prevalence,       here::here("figures", "guideline_type_concept_prevalence.csv"))
+
+# =========================================================
+# B) Concept-level contribution to pairwise overlap
+#    (which concepts most often appear in shared vs unique sets)
+# =========================================================
+
+calc_concept_contributions <- function(set_list) {
+  if (nrow(set_list) < 2) return(tibble())
+
+  pairs <- combn(seq_len(nrow(set_list)), 2, simplify = FALSE)
+
+  purrr::map_dfr(pairs, function(idx) {
+    a <- set_list$concepts[[idx[1]]]
+    b <- set_list$concepts[[idx[2]]]
+    shared  <- intersect(a, b)
+    unique_a <- setdiff(a, b)
+    unique_b <- setdiff(b, a)
+
+    bind_rows(
+      tibble(concept = shared,   role = "shared"),
+      tibble(concept = unique_a, role = "unique"),
+      tibble(concept = unique_b, role = "unique")
+    )
+  }) %>%
+    count(concept, role) %>%
+    tidyr::pivot_wider(names_from = role, values_from = n, values_fill = 0) %>%
+    mutate(
+      total = shared + unique,
+      pct_shared = shared / total * 100
+    ) %>%
+    arrange(desc(shared))
+}
+
+guideline_concept_contrib  <- calc_concept_contributions(guideline_set_list)
+discipline_concept_contrib <- calc_concept_contributions(discipline_set_list)
+method_concept_contrib     <- calc_concept_contributions(method_set_list)
+type_concept_contrib       <- calc_concept_contributions(type_set_list)
+
+readr::write_csv(guideline_concept_contrib,  here::here("figures", "guideline_concept_contribution.csv"))
+readr::write_csv(discipline_concept_contrib, here::here("figures", "discipline_concept_contribution.csv"))
+readr::write_csv(method_concept_contrib,     here::here("figures", "methodology_concept_contribution.csv"))
+readr::write_csv(type_concept_contrib,       here::here("figures", "guideline_type_concept_contribution.csv"))
+
+# Top drivers of similarity (highest pct_shared, appears in most pairs)
+top_shared_concepts <- function(contrib_df, n = 15) {
+  contrib_df %>% arrange(desc(shared)) %>% slice_head(n = n)
+}
+
+# Top drivers of divergence (concepts almost always unique, never shared)
+top_unique_concepts <- function(contrib_df, n = 15) {
+  contrib_df %>% filter(shared == 0) %>% arrange(desc(unique)) %>% slice_head(n = n)
+}
+
+guideline_top_shared  <- top_shared_concepts(guideline_concept_contrib)
+guideline_top_unique  <- top_unique_concepts(guideline_concept_contrib)
+
+# =========================================================
+# C) MDS ordination of guidelines using 1 - Jaccard distance
+# =========================================================
+
+build_jaccard_dist_matrix <- function(set_list, pairwise_overlap) {
+  groups <- as.character(set_list$group)
+  n <- length(groups)
+  m <- matrix(0, n, n, dimnames = list(groups, groups))
+
+  for (i in seq_len(nrow(pairwise_overlap))) {
+    g1 <- pairwise_overlap$group_1[i]
+    g2 <- pairwise_overlap$group_2[i]
+    d  <- 1 - pairwise_overlap$jaccard[i]
+    m[g1, g2] <- d
+    m[g2, g1] <- d
+  }
+  as.dist(m)
+}
+
+guideline_dist <- build_jaccard_dist_matrix(guideline_set_list, guideline_pairwise_overlap)
+guideline_mds  <- cmdscale(guideline_dist, k = 2, eig = TRUE)
+
+guideline_mds_df <- as_tibble(guideline_mds$points, .name_repair = "unique") %>%
+  rename(MDS1 = 1, MDS2 = 2) %>%
+  mutate(guideline = rownames(guideline_mds$points)) %>%
+  left_join(
+    study_lookup %>% distinct(study_id, discipline, methodology, guideline_type) %>%
+      mutate(guideline = as.character(study_id)),
+    by = "guideline"
+  )
+
+variance_explained <- guideline_mds$eig[1:2] / sum(guideline_mds$eig[guideline_mds$eig > 0]) * 100
+
+readr::write_csv(guideline_mds_df, here::here("figures", "guideline_mds_coordinates.csv"))
+
+mds_plot <- ggplot(guideline_mds_df, aes(x = MDS1, y = MDS2, color = methodology)) +
+  geom_point(size = 3, alpha = 0.85) +
+  labs(
+    title = "MDS of checklists by concept overlap (Jaccard distance)",
+    x = sprintf("Dim 1 (%.1f%%)", variance_explained[1]),
+    y = sprintf("Dim 2 (%.1f%%)", variance_explained[2]),
+    color = "Methodology"
+  ) +
+  theme_classic(base_size = 15) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, margin = margin(b = 10)),
+    legend.position = "right"
+  )
+
+save_plot_both(mds_plot, "guideline_mds_by_methodology", 8.5, 6.5)
+
+
 ```
 
 
 ```{r}
 # =========================================================
-# 1) ORIGINAL Cleveland plot code unchanged
+# 1) Cleveland plot — panel a)
+#    - unique-concept number labels are hidden if they'd
+#      fall left of the axis (too close to x = 0 to fit)
+#    - points are clipped at the axis instead of drawing
+#      over it (coord_cartesian(clip = "on"))
 # =========================================================
 
 section_order <- c(
@@ -2232,6 +2451,21 @@ concept_section_summary <- concept %>%
 max_x <- max(concept_section_summary$total_concepts, na.rm = TRUE)
 label_pad <- max_x * 0.04
 
+# Only keep the unique-concept number label when there's enough room
+# for it to sit fully to the left of the point, inside the axis.
+# Below this threshold the label would land at/left of x = 0, so we
+# drop it instead of letting it overlap or spill past the axis.
+label_fit_threshold <- label_pad * 1.6
+
+concept_section_summary <- concept_section_summary %>%
+  mutate(
+    unique_label = ifelse(
+      unique_concepts >= label_fit_threshold,
+      comma(unique_concepts),
+      NA_character_
+    )
+  )
+
 cleveland_concepts <- ggplot(
   concept_section_summary,
   aes(y = standardised_section)
@@ -2261,13 +2495,14 @@ cleveland_concepts <- ggplot(
     colour = "black"
   ) +
   geom_text(
-    aes(x = unique_concepts, label = comma(unique_concepts)),
+    aes(x = unique_concepts, label = unique_label),
     nudge_x = -label_pad,
     nudge_y = -0.18,
     hjust = 1,
     size = 3.4,
     fontface = "bold",
-    colour = col_unique
+    colour = col_unique,
+    na.rm = TRUE
   ) +
   geom_text(
     aes(x = total_concepts, label = comma(total_concepts)),
@@ -2289,9 +2524,9 @@ cleveland_concepts <- ggplot(
   scale_x_continuous(
     limits = c(0, NA),
     labels = comma,
-    expand = expansion(mult = c(0, 0.14))
+    expand = expansion(mult = c(0, 0.16))
   ) +
-  coord_cartesian(clip = "off") +
+  coord_cartesian(clip = "on") +
   labs(
     title = "a) Total and unique concepts by section",
     x = "Number of concepts",
@@ -2332,8 +2567,9 @@ cleveland_concepts <- ggplot(
     plot.title.position = "plot",
     plot.margin = margin(12, 18, 12, 12)
   )
+
 # =========================================================
-# 2) Overlap data and top-20 heatmap
+# 2) Overlap data and top-20 heatmap — panel b)
 # =========================================================
 
 study_lookup <- study %>%
@@ -2489,57 +2725,69 @@ plot_topN_guidelines_heatmap <- function(set_list, pairwise_overlap, top_n = 20,
       group_2 = factor(as.character(group_2), levels = rev(top_groups))
     )
 
-ggplot(heatmap_data, aes(x = group_1, y = group_2, fill = jaccard)) +
-  geom_tile(color = "white", linewidth = 0.45) +
-  scale_fill_gradient(
-    low = "#f7f7f7",
-    high = high_col,
-    limits = c(0, 1)
-  ) +
-  coord_cartesian(clip = "off") +
-  labs(
-    title = "b) Mean pairwise concept overlap",
-    x = NULL,
-    y = NULL,
-    caption = "Top 20 reporting guidelines with the highest mean overlap"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    panel.grid = element_blank(),
-    axis.text.x = element_text(
-      angle = 45,
-      hjust = 1,
-      vjust = 1,
-      size = 7.5,
-      color = "black"
-    ),
-    axis.text.y = element_text(
-      size = 8.2,
-      color = "black"
-    ),
-    axis.title.x = element_text(color = "black", margin = margin(t = 8)),
-    axis.title.y = element_text(color = "black", margin = margin(r = 8)),
-    axis.line.x = element_line(linewidth = 0.8, color = "black"),
-    axis.line.y = element_line(linewidth = 0.8, color = "black"),
-    axis.ticks = element_blank(),
-    plot.title = element_text(
-      size = 12.5,
-      face = "bold",
-      color = "black",
-      hjust = 0
-    ),
-    plot.title.position = "plot",
-    plot.caption.position = "plot",
-    plot.caption = element_text(
-      size = 9.5,
-      face = "italic",
-      color = "grey35",
-      hjust = 0,
-      margin = margin(t = 6)
-    ),
-    legend.position = "none",
-    plot.margin = margin(12, 12, 12, 6)
-  )
+  ggplot(heatmap_data, aes(x = group_1, y = group_2, fill = jaccard)) +
+    geom_tile(color = "white", linewidth = 0.45) +
+    scale_fill_gradient(
+      low = "#f7f7f7",
+      high = high_col,
+      limits = c(0, 1),
+      breaks = seq(0, 1, 0.25),
+      labels = label_number(accuracy = 0.01),
+      name = "Jaccard\noverlap",
+      guide = guide_colorbar(
+        barwidth = unit(0.45, "cm"),
+        barheight = unit(3.4, "cm"),
+        ticks.colour = "black",
+        frame.colour = "black",
+        title.position = "top"
+      )
+    ) +
+    coord_cartesian(clip = "off") +
+    labs(
+      title = "b) Mean pairwise concept overlap",
+      x = NULL,
+      y = NULL,
+      caption = "Top 20 reporting guidelines with the highest mean overlap"
+    ) +
+    theme_minimal(base_size = 13) +
+    theme(
+      panel.grid = element_blank(),
+      axis.text.x = element_text(
+        angle = 45,
+        hjust = 1,
+        vjust = 1,
+        size = 7.5,
+        color = "black"
+      ),
+      axis.text.y = element_text(
+        size = 8.2,
+        color = "black"
+      ),
+      axis.title.x = element_text(color = "black", margin = margin(t = 8)),
+      axis.title.y = element_text(color = "black", margin = margin(r = 8)),
+      axis.line.x = element_line(linewidth = 0.8, color = "black"),
+      axis.line.y = element_line(linewidth = 0.8, color = "black"),
+      axis.ticks = element_blank(),
+      plot.title = element_text(
+        size = 12.5,
+        face = "bold",
+        color = "black",
+        hjust = 0
+      ),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.caption = element_text(
+        size = 9.5,
+        face = "italic",
+        color = "grey35",
+        hjust = 0,
+        margin = margin(t = 6)
+      ),
+      legend.position = "right",
+      legend.title = element_text(size = 9.5, face = "bold", hjust = 0),
+      legend.text = element_text(size = 8.5),
+      plot.margin = margin(12, 12, 12, 6)
+    )
 }
 
 guideline_set_list <- make_set_list(concept_sets_base, guideline)
@@ -2553,11 +2801,11 @@ plot_b_overlap <- plot_topN_guidelines_heatmap(
 )
 
 # =========================================================
-# 3) Combine without changing left plot
+# 3) Combine
 # =========================================================
 
 combined_ab <- cleveland_concepts + plot_b_overlap +
-  plot_layout(widths = c(1.05, 1))
+  plot_layout(widths = c(1, 1.18))
 
 combined_ab
 
@@ -2568,7 +2816,7 @@ combined_ab
 ggsave(
   filename = here("figures", "concepts_overlap_ab_side.png"),
   plot = combined_ab,
-  width = 24,
+  width = 27,
   height = 15,
   units = "cm",
   dpi = 300,
@@ -2578,9 +2826,117 @@ ggsave(
 ggsave(
   filename = here("figures", "concepts_overlap_ab_side.pdf"),
   plot = combined_ab,
-  width = 24,
+  width = 27,
   height = 12,
   units = "cm",
   bg = "white"
 )
 ```
+
+
+```{r}
+library(tidyverse)
+library(brms)
+library(tidybayes)
+
+## ---- 1. Join (same as before) ----
+model_data <- concepts_per_item %>%
+  inner_join(item_metrics, by = "checklist_item_id") %>%
+  select(checklist_item_id, study_id, n_concepts, mattr_10, lexical_density, token_count)
+
+## ---- 2. Standardize predictors ----
+model_data <- model_data %>%
+  mutate(
+    mattr_z = as.numeric(scale(mattr_10)),
+    lexdens_z = as.numeric(scale(lexical_density)),
+    log_tokens_z = as.numeric(scale(log(token_count)))
+  )
+
+## ---- 3. Priors (same structure for both models) ----
+priors <- c(
+  prior(normal(0, 1), class = "b"),
+  prior(normal(0, 2), class = "Intercept"),
+  prior(exponential(1), class = "sd"),
+  prior(gamma(0.01, 0.01), class = "shape")
+)
+
+## ---- 4a. Model 1: MATTR ----
+nb_brm_mattr <- brm(
+  n_concepts ~ mattr_z + log_tokens_z + (1 | study_id),
+  data = model_data,
+  family = negbinomial(),
+  prior = priors,
+  chains = 4, cores = 4, iter = 4000, warmup = 1000,
+  seed = 123,
+  control = list(adapt_delta = 0.95)
+)
+
+## ---- 4b. Model 2: Lexical density ----
+nb_brm_lexdens <- brm(
+  n_concepts ~ lexdens_z + log_tokens_z + (1 | study_id),
+  data = model_data,
+  family = negbinomial(),
+  prior = priors,
+  chains = 4, cores = 4, iter = 4000, warmup = 1000,
+  seed = 123,
+  control = list(adapt_delta = 0.95)
+)
+
+## ---- 5. Diagnostics for both ----
+summary(nb_brm_mattr)
+summary(nb_brm_lexdens)
+
+pp_check(nb_brm_mattr, ndraws = 100)
+pp_check(nb_brm_lexdens, ndraws = 100)
+
+## ---- 6. IRRs for both ----
+mattr_irr <- nb_brm_mattr %>%
+  spread_draws(b_mattr_z) %>%
+  mutate(irr = exp(b_mattr_z)) %>%
+  median_qi(irr, .width = c(0.80, 0.95)) %>%
+  mutate(term = "mattr_10")
+
+lexdens_irr <- nb_brm_lexdens %>%
+  spread_draws(b_lexdens_z) %>%
+  mutate(irr = exp(b_lexdens_z)) %>%
+  median_qi(irr, .width = c(0.80, 0.95)) %>%
+  mutate(term = "lexical_density")
+
+bind_rows(mattr_irr, lexdens_irr)
+
+## ---- 7. Conditional effects plots ----
+conditional_effects(nb_brm_mattr, effects = "mattr_z")
+conditional_effects(nb_brm_lexdens, effects = "lexdens_z")
+```
+
+```{r}
+concepts_by_section <- concept %>%
+  mutate(
+    across(where(is.character), ~ stri_enc_toutf8(.x, validate = TRUE)),
+    standardised_section = str_squish(as.character(standardised_section)),
+    standardised_section = case_when(
+      str_to_lower(standardised_section) == "other" ~ "Other",
+      TRUE ~ standardised_section
+    ),
+    standardised_section = factor(standardised_section, levels = section_order),
+    standardised_reporting_item_elements = str_squish(as.character(standardised_reporting_item_elements))
+  ) %>%
+  filter(!is.na(standardised_section), !is.na(standardised_reporting_item_elements)) %>%
+  count(standardised_section, standardised_reporting_item_elements, name = "total_count") %>%
+  arrange(standardised_section, desc(total_count)) %>%
+  group_nest(standardised_section) %>%
+  mutate(
+    sheet_name = as.character(standardised_section),
+    sheet_name = stri_enc_toutf8(sheet_name, validate = TRUE),
+    sheet_name = substr(sheet_name, 1, 31),
+    sheet_name = make.unique(sheet_name)
+  )
+
+wb <- createWorkbook()
+iwalk(seq_len(nrow(concepts_by_section)), function(i, ...) {
+  addWorksheet(wb, concepts_by_section$sheet_name[i])
+  writeData(wb, concepts_by_section$sheet_name[i], concepts_by_section$data[[i]])
+})
+saveWorkbook(wb, file.path("data", "concept_tables_by_section.xlsx"), overwrite = TRUE)
+```
+

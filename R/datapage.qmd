@@ -321,7 +321,6 @@ datatable(
 
 <div class="download-buttons">
 [⬇ Full item bank CSV](../data/item_bank_reporting_guideline_compiled.csv){.btn .btn-primary .btn-sm role="button"}
-[⬇ Full study metadata CSV](../data/item_bank_reporting_guideline.csv){.btn .btn-outline-secondary .btn-sm role="button"}
 </div>
 
 ### Concepts
