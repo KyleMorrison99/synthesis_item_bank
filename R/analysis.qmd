@@ -241,7 +241,7 @@ count_cum_type <- ggplot() +
     plot.margin = margin(12, 12, 6, 12)
   )
 
-count_cum_type
+count_cum_type 
 
 #ggsave(
  # filename = here::here("figures", "count_cum_type.jpg"),

@@ -1,0 +1,193 @@
+---
+title: "ARIES Datapage"
+author: ""
+format:
+  docx: default
+---
+
+# ARIES
+Agnostic Reporting Items for Evidence Syntheses (ARIES). Concepts appearing 50% or more of all checklists (n = 20). Each row represents a unique reporting concept—a distinct piece of information that guidelines recommend authors report, regardless of the specific wording used across checklists.
+
+## Checklist table
+
+| # | Concept | Yes | No | NA | Write-in section |
+|---|---|---|---|---|---|
+| 1 | Report the scientific literature databases used to conduct the literature search | ☐ | ☐ | ☐ | |
+| 2 | Report the methodology used to assess the risk of bias in studies included in the review | ☐ | ☐ | ☐ | |
+| 3 | Report the eligibility criteria for the review | ☐ | ☐ | ☐ | |
+| 4 | Report the methodology used to conduct the review | ☐ | ☐ | ☐ | |
+| 5 | Report the characteristics extracted from each of the included studies | ☐ | ☐ | ☐ | |
+| 6 | Report the search terms used to conduct the literature search strategy for each scientific literature database | ☐ | ☐ | ☐ | |
+| 7 | Report the strategy to perform the statistical synthesis | ☐ | ☐ | ☐ | |
+| 8 | Report any limitations in the review methodology | ☐ | ☐ | ☐ | |
+| 9 | Report the method used to assess study eligibility for inclusion in the review | ☐ | ☐ | ☐ | |
+| 10 | Report the sources and types of financial or non-financial support received for the review | ☐ | ☐ | ☐ | |
+| 11 | Report each data extraction variable for which data were sought | ☐ | ☐ | ☐ | |
+| 12 | Report the implications of the review results | ☐ | ☐ | ☐ | |
+| 13 | Report the rationale for conducting the review | ☐ | ☐ | ☐ | |
+| 14 | Report the strategy used to collect data from the studies included in the review | ☐ | ☐ | ☐ | |
+| 15 | Report the questions the authors sought to address in the review | ☐ | ☐ | ☐ | |
+| 16 | Report the results of the risk of bias assessment | ☐ | ☐ | ☐ | |
+| 17 | Report the results of the study selection process | ☐ | ☐ | ☐ | |
+| 18 | Report any limitations applied to the search strategy | ☐ | ☐ | ☐ | |
+| 19 | Report the effect measure used in the synthesis of the results | ☐ | ☐ | ☐ | |
+| 20 | Report the methodology used to explore sources of heterogeneity | ☐ | ☐ | ☐ | |
+
+## Guidance
+
+### 1. Report the scientific literature databases used to conduct the literature search
+**Elaboration**  
+Authors should specify which bibliographic databases and registers were searched so readers can judge the scope, coverage, and replicability of the search. This includes discipline-specific, multidisciplinary, and specialist sources where relevant.
+
+**Example**  
+“The literature search was conducted in several major subject-specific databases, one multidisciplinary database, and a specialised register relevant to the topic.”
+
+### 2. Report the methodology used to assess the risk of bias in studies included in the review
+**Elaboration**  
+Authors should describe the approach used to appraise methodological quality or risk of bias, including the tool or framework, how it was applied, and how disagreements were handled. This enables readers to understand and compare the validity judgements across reviews.
+
+**Example**  
+“Risk of bias in included studies was assessed using a structured, domain-based tool applied independently by two reviewers, with disagreements resolved through discussion.”
+
+### 3. Report the eligibility criteria for the review
+**Elaboration**  
+Eligibility criteria should be clearly defined for key elements such as population, phenomena, interventions or exposures, comparators, outcomes, study designs, settings, time frame, and language. Explicit criteria make the study selection process transparent and reproducible.
+
+**Example**  
+“Studies were eligible if they addressed the central review question, used an empirical design, reported outcome data relevant to the question, and were published within the predefined time period.”
+
+### 4. Report the methodology used to conduct the review
+**Elaboration**  
+Authors should outline the overall review process, including protocol or registration status, search methods, screening workflow, data collection procedures, and planned synthesis approach. This concept captures the procedural backbone of the review rather than only its results.
+
+**Example**  
+“The review followed prespecified methods documented in a protocol, including defined search procedures, duplicate study selection, standardised data collection, and planned methods for synthesising evidence.”
+
+### 5. Report the characteristics extracted from each of the included studies
+**Elaboration**  
+Authors should specify which study- and participant-level characteristics were collected (for example, design, setting, sample details, exposures or interventions, comparators, and outcomes). These characteristics help readers understand clinical, contextual, and methodological diversity.
+
+**Example**  
+“For each study, we collected information on design, setting, participant characteristics, key variables or interventions, comparators, outcomes, and follow-up or observation period.”
+
+### 6. Report the search terms used to conduct the literature search strategy for each scientific literature database
+**Elaboration**  
+Authors should report the main search concepts and terms used in each database, including controlled vocabulary and free-text, and how these were combined. Transparent search strategies allow replication and critical appraisal of comprehensiveness.
+
+**Example**  
+“In each database, we combined relevant subject headings with keywords reflecting the main concepts of the review question (for example, population, key variables, and outcomes), adapting the syntax to each database.”
+
+### 7. Report the strategy to perform the statistical synthesis
+**Elaboration**  
+Authors should describe whether and how they combined study findings, including the choice of synthesis approach (quantitative, qualitative, or mixed), and how heterogeneity or variation across studies was handled. This concept is intended to be method-agnostic, covering meta-analysis as well as other synthesis forms.
+
+**Example**  
+“When studies were sufficiently comparable, results were combined using an appropriate quantitative or structured synthesis method; when comparability was limited, findings were summarised using a prespecified qualitative or narrative approach.”
+
+### 8. Report any limitations in the review methodology
+**Elaboration**  
+Authors should discuss limitations arising from their review methods, such as constraints in searching, eligibility decisions, data collection, or synthesis choices that might influence the findings. Distinguishing review-level limitations from evidence-level limitations supports more balanced interpretation.
+
+**Example**  
+“The review did not include all possible information sources, applied language restrictions, and used eligibility criteria that may have excluded unconventional but potentially relevant studies.”
+
+### 9. Report the method used to assess study eligibility for inclusion in the review
+**Elaboration**  
+Authors should describe how records were screened and full texts were assessed against eligibility criteria, including the number of reviewers, independence of decisions, consensus procedures, and any use of automation tools. This clarifies the rigour and potential biases in the study selection process.
+
+**Example**  
+“Titles and abstracts were screened using prespecified criteria, followed by full-text assessment by two reviewers working independently; reasons for excluding each ineligible study were recorded.”
+
+### 10. Report the sources and types of financial or non-financial support received for the review
+**Elaboration**  
+Authors should report all sources of financial and non-financial support (such as institutional resources, software, or data access) and clarify the role of these supporters in the review. Transparent reporting supports assessment of potential conflicts of interest.
+
+**Example**  
+“The review received financial support from a funding organisation and non-financial support from an institution, including access to relevant tools and resources; these organisations did not influence the review methods or reporting.”
+
+### 11. Report each data extraction variable for which data were sought
+**Elaboration**  
+Authors should list the specific variables they planned to collect from each study, beyond stating that “data were extracted.” This item focuses on variable-level transparency so readers know what information underpins the synthesis.
+
+**Example**  
+“We sought data on study design, participant or setting characteristics, key exposures or interventions, outcome measures, follow-up duration, and any reported effect estimates or summary statistics relevant to the review question.”
+
+### 12. Report the implications of the review results
+**Elaboration**  
+Authors should discuss how the findings might influence practice, policy, or future research, explicitly linking implications to the strength and limitations of the evidence base. This encourages cautious, evidence-aligned interpretation rather than overgeneralisation.
+
+**Example**  
+“The findings suggest potential implications for decision-making in this area, indicate where current approaches appear promising or uncertain, and highlight specific questions that future studies should address.”
+
+### 13. Report the rationale for conducting the review
+**Elaboration**  
+Authors should explain why the review was undertaken, such as unresolved uncertainty, conflicting findings, emerging concerns, or stakeholder or policy needs. This situates the review within the broader evidence and decision-making context.
+
+**Example**  
+“The review was conducted to bring together dispersed evidence, clarify inconsistencies in existing studies, and provide a more coherent basis for decisions related to this topic.”
+
+### 14. Report the strategy used to collect data from the studies included in the review
+**Elaboration**  
+Authors should describe how data were obtained and managed from included studies, including use of standardised forms, duplicate extraction, data checking, and contact with authors when information was missing or unclear. Operational detail supports confidence in data accuracy and completeness.
+
+**Example**  
+“Data were collected using standardised forms, with one reviewer extracting and another verifying the entries; when important information was unclear or missing, study authors were contacted when feasible.”
+
+### 15. Report the questions the authors sought to address in the review
+**Elaboration**  
+Authors should state the primary and any secondary review questions in clear, answerable terms, often structured around core elements such as population, condition, and outcomes. This clarifies what the synthesis is designed to address, beyond general aims.
+
+**Example**  
+“The primary question examined whether the phenomenon of interest differed between defined groups or conditions; secondary questions explored how results varied across study designs, settings, or other key characteristics.”
+
+### 16. Report the results of the risk of bias assessment
+**Elaboration**  
+Authors should present the distribution of risk-of-bias or quality assessments across studies and domains, and indicate how these judgements influence the interpretation of findings. This keeps appraisal of internal validity visible and integrated into the synthesis.
+
+**Example**  
+“Most studies showed some concerns in at least one methodological domain, while a smaller proportion met criteria for low concern across all domains; these patterns were taken into account when interpreting the overall findings.”
+
+### 17. Report the results of the study selection process
+**Elaboration**  
+Authors should report how many records were identified, screened, assessed for eligibility, and included, along with common reasons for exclusion, typically using a structured flow. This makes the selection pathway transparent and reveals potential bottlenecks.
+
+**Example**  
+“The search identified several thousand records; after removing duplicates and screening titles and abstracts, a subset of full-text reports was assessed, resulting in a final group of included studies, with common exclusion reasons such as wrong topic or insufficient data recorded.”
+
+### 18. Report any limitations applied to the search strategy
+**Elaboration**  
+Authors should state any restrictions applied during searching, such as language limits, date limits, database restrictions, or limits on publication type. These restrictions affect comprehensiveness and should be explicit.
+
+**Example**  
+“The search was limited to studies published in English between 2000 and 2024 and excluded conference abstracts and dissertations.”
+
+### 19. Report the effect measure used in the synthesis of the results
+**Elaboration**  
+Authors should specify the effect measure or summary statistic used to combine or compare results, and why it was chosen. This is essential for interpreting the synthesis correctly and understanding how outcomes were standardised.
+
+**Example**  
+“Effect sizes were summarised using risk ratios for binary outcomes and standardised mean differences for continuous outcomes.”
+
+### 20. Report the methodology used to explore sources of heterogeneity
+**Elaboration**  
+Authors should explain how they investigated between-study variation, including subgroup analysis, meta-regression, sensitivity analysis, or qualitative comparison, where applicable. Transparent reporting of heterogeneity exploration helps readers judge the robustness of the synthesis.
+
+**Example**  
+“Heterogeneity was explored using prespecified subgroup analyses by study design and setting, alongside sensitivity analyses excluding studies at higher risk of bias.”
+
+## Glossary
+
+- **Bibliographic database**: A searchable index of published research records, such as MEDLINE or Embase.
+- **Register**: A list or database of studies, often trials or reviews, used to identify relevant research not yet fully published.
+- **Risk of bias**: A judgement about how much a study’s design, conduct, or reporting may have distorted its findings.
+- **Comparator**: The group, condition, or intervention against which another is compared.
+- **Controlled vocabulary**: Standardised indexing terms used by databases to improve search precision, such as MeSH terms.
+- **Free-text terms**: Keywords searched as written, without relying on database indexing.
+- **Synthesis**: The process of combining evidence across studies, whether quantitatively or qualitatively.
+- **Heterogeneity**: Differences between studies in populations, methods, interventions, outcomes, or results.
+- **Effect measure**: A statistic used to summarise the size or direction of an effect, such as a risk ratio or mean difference.
+- **Subgroup analysis**: An analysis that examines whether effects differ across predefined categories.
+- **Meta-regression**: A statistical method for exploring whether study characteristics explain variation in results.
+- **Sensitivity analysis**: A check to see whether results change when assumptions or study sets are altered.
+- **Standardised forms**: Structured templates used to collect data consistently across studies.
+- **Protocol**: A preplanned document describing the review question, methods, and analysis approach.

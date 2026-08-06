@@ -2,7 +2,7 @@
 title: "Reporting item bank datapage"
 subtitle: "Interactive exploration of reporting items and concepts across evidence synthesis guidelines"
 format:
-  html:
+  pdf:
     theme: cosmo
     toc: true
     toc-location: left
