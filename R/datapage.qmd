@@ -1,4 +1,5 @@
 ---
+---
 title: "Reporting item bank datapage"
 subtitle: "Interactive exploration of reporting items and concepts across evidence synthesis guidelines"
 format:
@@ -8,10 +9,12 @@ format:
     toc-location: left
     page-layout: full
     css: styles.css
+    output-file: index
 execute:
   echo: false
   message: false
   warning: false
+---
 ---
 
 ```{r setup}
