@@ -1,369 +1,351 @@
 concept,unique,shared,total,pct_shared
-Report any limitations in the review methodology,16,28,44,63.63636363636363
-Report the characteristics extracted from each of the included studies,16,28,44,63.63636363636363
-Report the method used to assess study eligibility for inclusion in the review,16,28,44,63.63636363636363
-Report the results of the study selection process,16,28,44,63.63636363636363
-Report each data extraction variable for which data were sought,21,21,42,50
-Report the methodology used to assess the risk of bias in studies included in the review,21,21,42,50
-Report the methodology used to conduct the review,21,21,42,50
-Report the scientific literature databases used to conduct the literature search,21,21,42,50
-Report the strategy to perform the statistical synthesis,21,21,42,50
-Report an interpretation of the results,24,15,39,38.46153846153847
-Report the eligibility criteria for the review,24,15,39,38.46153846153847
-Report the objectives of the review,24,15,39,38.46153846153847
-Report the questions the authors sought to address in the review,24,15,39,38.46153846153847
-Report the rationale for selecting the methodology used to conduct the review,24,15,39,38.46153846153847
-Report the sources and types of financial or non-financial support received for the review,24,15,39,38.46153846153847
-Report the strategy used to collect data from the studies included in the review,24,15,39,38.46153846153847
-Report any contact with study authors to retrieve additional information relevant to the literature search strategy,25,10,35,28.57142857142857
-Report any limitations applied to the search strategy,25,10,35,28.57142857142857
-Report each of the studies excluded during full-text screening,25,10,35,28.57142857142857
-Report the complete quantitative results of the statistical synthesis,25,10,35,28.57142857142857
-Report the date that the literature search was conducted,25,10,35,28.57142857142857
-Report the implications of the review results,25,10,35,28.57142857142857
-Report the number of reviewers who conducted the selection process,25,10,35,28.57142857142857
-Report the rationale for conducting the review,25,10,35,28.57142857142857
-Report the relevant study designs in eligiblity criteria of the review,25,10,35,28.57142857142857
-Report the relevant timeframe in eligiblity criteria of the review,25,10,35,28.57142857142857
-Report the search terms used to conduct the literature search strategy for each each scientific literature database,25,10,35,28.57142857142857
-Report any deviations from the protocol or preregistration,24,6,30,20
-Report the affiliations for each author,24,6,30,20
-Report the effect measure used in the synthesis of the results,24,6,30,20
-Report the framework used to formulate the review question,24,6,30,20
-Report the name of the registry for the preregistration/protocol,24,6,30,20
-Report the rationale for selecting each of the variables in the data collection process,24,6,30,20
-Report the registration number of the preregistration/protocol,24,6,30,20
-Report the registries used in the literature search,24,6,30,20
-Report the relevant populations in eligiblity criteria of the review,24,6,30,20
-Report the relevant publication status in eligibility criteria of the review,24,6,30,20
-Report the results of the risk of bias assessment,24,6,30,20
-Report the strategy to retrieve grey literature,24,6,30,20
-Report the total number of records identified across all sources in the literature search strategy,24,6,30,20
-Report any conflicts of interest that may influence the results of the review,21,3,24,12.5
-Report any ethics approval that was sought in the review,21,3,24,12.5
-Report any limitations identified in the studies included in the review,21,3,24,12.5
-Report each outcome for which data were extracted from the included studies,21,3,24,12.5
-Report the aim of the review,21,3,24,12.5
-Report the data extracted from each included study,21,3,24,12.5
-Report the dependency structure accounted for in the statistical analysis,21,3,24,12.5
-Report the financial support received for the review,21,3,24,12.5
-Report the full name of each of the authors,21,3,24,12.5
-Report the implications of the review results for future research,21,3,24,12.5
-Report the implications of the review results for policy,21,3,24,12.5
-Report the implications of the review results for practice,21,3,24,12.5
-Report the method used to assess consistency of data extraction between the reviewers who conducted screening,21,3,24,12.5
-Report the method used to assess for potential risk of bias due to missing studies,21,3,24,12.5
-Report the methodology used to explore sources of heterogeneity,21,3,24,12.5
-Report the methodology used to prepare the data for statistical synthesis,21,3,24,12.5
-Report the rationale for selecting the scientific literature databases used in the literature search,21,3,24,12.5
-Report the reason for exclusion for each study rejected at full-text screening,21,3,24,12.5
-Report the relevant comparators in eligiblity criteria of the review,21,3,24,12.5
-Report the relevant geographical locations in eligiblity criteria of the review,21,3,24,12.5
-Report the relevant interventions in eligiblity criteria of the review,21,3,24,12.5
-Report the relevant languages in the eligibility criteria in the review,21,3,24,12.5
-Report the results from each of the sensitivity analysis,21,3,24,12.5
-Report the strategy to perfom the literature search,21,3,24,12.5
-Report the strategy used to address reports not published in the primary language of the review in the study selection process,21,3,24,12.5
-Report the total number of people which conducted the literature search,21,3,24,12.5
-Report whether a protocol or preregistration is publicly available,21,3,24,12.5
-Report whether the literature screening was conducted independently,21,3,24,12.5
-Report a visualisation of the characteristics from each of the included studies,16,1,17,5.88235294117647
-Report any additional analyses conducted in the review,16,1,17,5.88235294117647
-Report any additional literature search strategies used in the review,16,1,17,5.88235294117647
-Report any contact with study authors to retrieve additional information relevant to the data collection process,16,1,17,5.88235294117647
-Report background information on the topic of the review,16,1,17,5.88235294117647
-Report each study from which data were collected in the reference list,16,1,17,5.88235294117647
-Report quotations for each of the characteristics extracted from each of the included studies,16,1,17,5.88235294117647
-Report the abstract in a structured format,16,1,17,5.88235294117647
-Report the agreement rate between the reviewers who conducted the data collection process,16,1,17,5.88235294117647
-Report the aspects of the studies examined for eligibility,16,1,17,5.88235294117647
-Report the contact details for each author,16,1,17,5.88235294117647
-Report the contribution of each author to the review,16,1,17,5.88235294117647
-Report the data characteristics of studies included in the statistical synthesis,16,1,17,5.88235294117647
-Report the data extraction strategy used in the review,16,1,17,5.88235294117647
-Report the description for all of the data extraction variables,16,1,17,5.88235294117647
-Report the error around the pooled effect size point estimate,16,1,17,5.88235294117647
-Report the experience of each of the people which conducted the literature search,16,1,17,5.88235294117647
-Report the languages used in the scientific literature databases,16,1,17,5.88235294117647
-Report the method used in sensitivity analysis to test the robustness of the results,16,1,17,5.88235294117647
-Report the method used to visualise the results of the synthesis,16,1,17,5.88235294117647
-Report the moderator variables included in the meta-regression analysis,16,1,17,5.88235294117647
-Report the number of reviewers who conducted the data collection process,16,1,17,5.88235294117647
-Report the number of reviewers who conducted the risk of bias assessment,16,1,17,5.88235294117647
-Report the number of studies included in the review,16,1,17,5.88235294117647
-Report the pooled effect size point estimate,16,1,17,5.88235294117647
-Report the qualifications of each person who conducted the literature search,16,1,17,5.88235294117647
-Report the qualifications of the people who conducted the study selection process,16,1,17,5.88235294117647
-Report the rationale for selecting each moderator variable,16,1,17,5.88235294117647
-Report the rationale for selecting the strategy used to conduct the statistical synthesis,16,1,17,5.88235294117647
-Report the rationale for selecting the studies used to conduct the citation search,16,1,17,5.88235294117647
-Report the rationale for selecting the study design of each study included in the review,16,1,17,5.88235294117647
-Report the response rate of the total number of authors contacted for data collection,16,1,17,5.88235294117647
-Report the result of the exploration of heterogeneity,16,1,17,5.88235294117647
-Report the results from the certainty of the evidence assessment,16,1,17,5.88235294117647
-Report the results from the publiction bias assessment,16,1,17,5.88235294117647
-Report the results of the heterogeneity assessment,16,1,17,5.88235294117647
-Report the results of the overall statistical syntheses,16,1,17,5.88235294117647
-Report the results of the qualitative syntheses,16,1,17,5.88235294117647
-Report the sample size from each of the studies,16,1,17,5.88235294117647
-Report the search terms used to conduct the literature search strategy for each registry,16,1,17,5.88235294117647
-Report the search terms used to conduct the literature search within the scientific databases,16,1,17,5.88235294117647
-Report the software used to manage screening decisions during the study selection process,16,1,17,5.88235294117647
-Report the strategy used to address missing data for the variables of interest,16,1,17,5.88235294117647
-Report the strategy used to estimate the comprehenisiveness of the literature search strategy,16,1,17,5.88235294117647
-Report the strategy used to perform the qualitative synthesis,16,1,17,5.88235294117647
-Report the studies which were used to conduct a citation search,16,1,17,5.88235294117647
-Report the summary effect size point estimates,16,1,17,5.88235294117647
-Report the use of controlled-vocabulary term explosion was conducted in the scientific literature database,16,1,17,5.88235294117647
-Report the version number of the review,16,1,17,5.88235294117647
-Report the version of the scientific literature databases used to conduct the literature search,16,1,17,5.88235294117647
-Report whether the data extraction was conducted independently,16,1,17,5.88235294117647
-Report a citation for each of the studies included in the review,9,0,9,0
-Report a figure showing the characteristics of each included study,9,0,9,0
-Report a flow diagram summarising the outcomes of the study selection process,9,0,9,0
-Report a justification for any anticipated changes to the review in future versions,9,0,9,0
-Report a justification for any changes done to the methodology,9,0,9,0
-Report a logic model for the interventions included in the review,9,0,9,0
-Report a measure of interrater agreement for the study selection process,9,0,9,0
-Report a plain-language statement for the general public,9,0,9,0
-Report a quote from each study used to inform each extracted data characteristic,9,0,9,0
-Report a summary of the evidence included in the review,9,0,9,0
-Report a table of the characteristics of each included study,9,0,9,0
-Report a visualisation of the data characteristics,9,0,9,0
-Report a visualisation of the effect size estimates,9,0,9,0
-Report a visualisation of the heterogeneity assessment results,9,0,9,0
-Report an evaluation of the interventions used in each included study,9,0,9,0
-Report an explanation of how the interventions used in each included study may work,9,0,9,0
-Report an interpretation of the certainty of evidence,9,0,9,0
-Report an interpretation of the effect size measure used,9,0,9,0
-Report an interpretation of the heterogeneity assement results,9,0,9,0
-Report an interpretation of the publication bias assessment results,9,0,9,0
-Report an interpretation of the risk of bias assesment results,9,0,9,0
-Report an interpretation of the use of alternative priors,9,0,9,0
-Report any additional studies found when updating the literature search strategy,9,0,9,0
-Report any alternative effect measures used in the sensitivity analysis,9,0,9,0
-Report any anticipated changes to the review in future versions of the review,9,0,9,0
-Report any assumptions made about the interventions in each included study,9,0,9,0
-Report any assumptions made during the data collection process,9,0,9,0
-Report any changes made to the methodology since the previous version of the review,9,0,9,0
-Report any changes to the results during the update of the review,9,0,9,0
-Report any changes to the screening process results during the update of the review,9,0,9,0
-Report any contact with organisations to retrieve additional information relevant to the literature search strategy,9,0,9,0
-Report any corrections applied to the effect size measure used,9,0,9,0
-Report any identified issues with the individual patient data items extracted,9,0,9,0
-Report any issues identified in the individual patient data,9,0,9,0
-Report any limitations in the characteristics of the included data,9,0,9,0
-Report any limitations in the review methdology,9,0,9,0
-Report any peer-review process used to assess the comprehensiveness of the literature search strategy,9,0,9,0
-Report any remaining gaps in understanding identified following the review,9,0,9,0
-Report any restrictions on the literature search strategy,9,0,9,0
-Report any statistical tests used to identify outliers,9,0,9,0
-Report any strengths identified in the studies included in the review,9,0,9,0
-Report any strengths in the review methodology,9,0,9,0
-Report any tools used to translate the scientific literature database search strings into additional languages,9,0,9,0
-Report any update to the search strategy undertaken during the review,9,0,9,0
-Report any validation of the structure of each model used,9,0,9,0
-Report each argument used in each function of the analysis software for the statistical synthesis,9,0,9,0
-Report each comparator from which data were extracted in the included studies,9,0,9,0
-Report each data extraction variable used for moderator analysis,9,0,9,0
-Report each intervention for which data were extracted from the included studies,9,0,9,0
-Report each population for which data were extracted from the included studies,9,0,9,0
-Report each study design for which data were extracted from the included studies,9,0,9,0
-Report how agreement between reviewers for the risk of bias assessment outcomes was calculated,9,0,9,0
-Report how articles authored by the screening team were handled during the selection process,9,0,9,0
-Report how conflicts of interest were managed,9,0,9,0
-Report how crowdsourcing was incorporated into the literature screening process,9,0,9,0
-Report how dependent effect sizes were handled during the data collection process,9,0,9,0
-Report how dependent effect sizes were handled during the selection process,9,0,9,0
-Report how disadvantage was defined in the rationale of the review,9,0,9,0
-Report how disagreements among reviewers in the certainty assessment were resolved,9,0,9,0
-Report how disagreements between reviewers in screening decisions were resolved,9,0,9,0
-Report how disagreements between reviewers in the data extraction were resolved,9,0,9,0
-Report how disagreements between reviewers in the risk of bias assessment were resolved,9,0,9,0
-Report how missing data in the synthesis was handled in the statistical analyses,9,0,9,0
-Report how the automation tool used for the certainty assessment was trained automaton tool was trained,9,0,9,0
-Report how the automation tool used for the risk of bias assessment was trained automaton tool was trained,9,0,9,0
-Report how the automation tool used for the risk of bias assessment was trained automaton tool was validated,9,0,9,0
-Report how the error around the effect size estimate was calculated,9,0,9,0
-Report how the fragility index was calculated,9,0,9,0
-Report how the internally classified automation tool for the data collection process was trained,9,0,9,0
-Report how the internally classified automation tool for the data collection process was validated,9,0,9,0
-Report how the internally classified automation tool used in the selection process was trained,9,0,9,0
-Report how the internally classified automation tool used in the selection process was validated,9,0,9,0
-Report how the risk of bias assessment was incorporated into the statistical synthesis,9,0,9,0
-Report how zero-event data were handled during the statistical synthesis,9,0,9,0
-Report quotations for each characteristic extracted from each included study,9,0,9,0
-Report references to previous versions of the review,9,0,9,0
-Report references to previously published reviews on the topic,9,0,9,0
-Report the agreement rate between the reviewers who conducted the literature screening process,9,0,9,0
-Report the automation tool used in the literature screening process,9,0,9,0
-Report the chosen prior,9,0,9,0
-Report the code required to reproduce the statistical synthesis,9,0,9,0
-Report the conceptual structure used to design the Boolean operators in the literature database search,9,0,9,0
-Report the conditions under which the data are available,9,0,9,0
-Report the consistency of literature screening outcomes between reviewers,9,0,9,0
-Report the contact details for the corresponding authors,9,0,9,0
-Report the counts of events and non-events in each group within each study,9,0,9,0
-Report the data which the citation search was conducted,9,0,9,0
-Report the date that the scientific literature databases used to conduct the literature search,9,0,9,0
-Report the dates that the literature database search was conducted,9,0,9,0
-Report the dependency structure accounted for in the statistical synthesis,9,0,9,0
-Report the direction of the effect size estimate,9,0,9,0
-Report the direction of the pooled effect size point estimate,9,0,9,0
-Report the directionality of the summary effect size measure found in the review,9,0,9,0
-Report the effect size point estimates for each individual study,9,0,9,0
-Report the eligibility criteria for the statistical synthesis,9,0,9,0
-Report the error around the effect size estimate was calculated,9,0,9,0
-Report the error around the effect size point estimates,9,0,9,0
-Report the error around the effect size point estimates for each individual study,9,0,9,0
-Report the error around the effect size point estimates for each meta-regression,9,0,9,0
-Report the error around the pooled effect size point estimates,9,0,9,0
-Report the extent to which the conclusions are generalisable,9,0,9,0
-Report the formulae used to calculate the effect measure used in the synthesis of results,9,0,9,0
-Report the functions used in the analysis software for the statistical synthesis,9,0,9,0
-Report the graphical method used to assess publication bias,9,0,9,0
-Report the hypothesis addressed by the review,9,0,9,0
-Report the implications of missing data for the review,9,0,9,0
-Report the implications of the result of the review,9,0,9,0
-Report the implications of the review results for educators,9,0,9,0
-Report the institutional subscriptions used to access the scientific literature databases,9,0,9,0
-Report the interventions used in each study synthesised in the review,9,0,9,0
-Report the keywords used in the study,9,0,9,0
-Report the languages used in the registries and literature databases,9,0,9,0
-Report the living mode parameters,9,0,9,0
-Report the magnitude of the pooled effect size point estimate,9,0,9,0
-Report the measures of model performance,9,0,9,0
-Report the metadata associated with each data extraction variable,9,0,9,0
-Report the method used to assess study eligibility for inclusion in the statistical synthesis,9,0,9,0
-Report the method used to handle missing data in the statistical synthesis,9,0,9,0
-Report the methodology of the qualitative synthesis,9,0,9,0
-Report the methodology used to account for heteroscedasticity,9,0,9,0
-Report the methodology used to assess heterogeneity,9,0,9,0
-Report the methodology used to assess the certainty of evidence included in the review,9,0,9,0
-Report the methodology used to assess the certainty of the evidence included in the review,9,0,9,0
-Report the methodology used to conduct the review in the keywords,9,0,9,0
-Report the methodology used to identify key knowledge gaps among the included data characteristics,9,0,9,0
-Report the methodology used to obtain posterior inferences,9,0,9,0
-Report the methodology used to update the literature search strategy,9,0,9,0
-Report the methods used to formulate recommendations regarding the suitability of OMIs,9,0,9,0
-Report the number of individual patient data items extracted,9,0,9,0
-Report the number of records remaining after duplicate removal,9,0,9,0
-Report the number of reviewers who conducted the certainty of evidence assessment,9,0,9,0
-Report the number of studies for which data collection was cross-checked,9,0,9,0
-Report the number of studies included in the statistical syntheis,9,0,9,0
-Report the number of studies screened by more than one reviewer,9,0,9,0
-Report the organisations contacted to obtain information,9,0,9,0
-Report the outcomes used in each study included in the statistical synthesis,9,0,9,0
-Report the p-value associated with the summary effect estimate,9,0,9,0
-Report the p-value for the heterogeneity assessment results,9,0,9,0
-Report the p-value for the results of the publication bias assessment,9,0,9,0
-Report the people who conducted the statistical synthesis,9,0,9,0
-Report the performance of the automation tool used to assess the risk of bias,9,0,9,0
-Report the planned retirement for the review,9,0,9,0
-Report the planned review timeline as specified in the protocol or preregistration,9,0,9,0
-Report the planned schedule for updating the review,9,0,9,0
-Report the populations used in each study included in the statistical synthesis,9,0,9,0
-Report the potential impact of the limitations in the review process,9,0,9,0
-Report the potential implications of the review findings,9,0,9,0
-Report the power of the statistical synthesis,9,0,9,0
-Report the precision of the heterogeneity assessment results,9,0,9,0
-Report the primary results of the review,9,0,9,0
-Report the process used to select the model parameters in the statistical synthesis,9,0,9,0
-Report the purpose of the literature search,9,0,9,0
-Report the qualifications of each author,9,0,9,0
-Report the qualifications of the reviewers who conducted the data collection process,9,0,9,0
-Report the rationale for each risk of bias assessment judgement,9,0,9,0
-Report the rationale for including each study in relation to the objectives of the review,9,0,9,0
-Report the rationale for including the selected interventions in the studies included in the review,9,0,9,0
-Report the rationale for including the selected study designs in the eligibility criteria,9,0,9,0
-Report the rationale for not conducting a statistical synthesis,9,0,9,0
-Report the rationale for selecting study authors to contact for additional information,9,0,9,0
-Report the rationale for selecting the effect size measure used,9,0,9,0
-Report the rationale for selecting the methodology used to visualise the synthesis results,9,0,9,0
-Report the rationale for selecting the models used in the statistical synthesis,9,0,9,0
-Report the rationale for selecting the moderator variables included in the review,9,0,9,0
-Report the rationale for selecting the tool used to conduct the risk of bias assessment,9,0,9,0
-Report the rationale for the assumed dependency structure accounted for in the statistical synthesis,9,0,9,0
-Report the rationale for the eligibility criteria in the review,9,0,9,0
-Report the rationale for the methodology used to address missing data in the statistical synthesis,9,0,9,0
-Report the rationale for the results of the certainty of evidence assessement used in the review,9,0,9,0
-Report the records rejected by the automation tools during the literature screening process,9,0,9,0
-Report the relationship between each of the study characteristics,9,0,9,0
-Report the relevant data formats in eligibility criteria of the review,9,0,9,0
-Report the relevant outcomes in eligiblity criteria of the review,9,0,9,0
-Report the relevant publication status in eligiblity criteria of the review,9,0,9,0
-Report the reliability of the collected items based on challenges during the data collection process,9,0,9,0
-Report the reliability of the conclusion in the review,9,0,9,0
-Report the reporting guideline used for the review,9,0,9,0
-Report the results from the model selection process,9,0,9,0
-Report the results of any analysis conducted due to the living mode,9,0,9,0
-Report the results of the model selection,9,0,9,0
-Report the results of the model selection process,9,0,9,0
-Report the reuse of search strategies from other reviews,9,0,9,0
-Report the role of stakeholders in formulating the objectives of the review,9,0,9,0
-Report the screening decisions made by each reviewer who conducted the study selection process,9,0,9,0
-Report the search strategy used to identify grey literature,9,0,9,0
-Report the software packages used to perform the statistical synthesis,9,0,9,0
-Report the software used to conduct the data collection process,9,0,9,0
-Report the software used to deduplicate the search records during the literature search,9,0,9,0
-Report the software used to perform the statistical synthesis,9,0,9,0
-Report the source of the extracted data within the included study,9,0,9,0
-Report the sources of information the literature search strategy sought,9,0,9,0
-Report the strategy for the data collection process,9,0,9,0
-Report the strategy to perform the individual patient data statistical syntheses,9,0,9,0
-Report the strategy used to deduplicate the search records during the scientific database search,9,0,9,0
-Report the strategy used to develop the scientific literature database search string,9,0,9,0
-Report the strategy used to retrieve information from potentially relevant authors.,9,0,9,0
-Report the strategy used to search for literature in additional languages,9,0,9,0
-Report the structure of each model used in the statistical synthesis,9,0,9,0
-Report the studies included in the statistical synthesis,9,0,9,0
-Report the study design of each study included in the review,9,0,9,0
-Report the summary effect size point estimates for each meta-regression,9,0,9,0
-Report the time frame which data was extracted,9,0,9,0
-Report the tool used to conduct the risk of bias assessment,9,0,9,0
-Report the tools used to conduct the certainity of evidence assessment,9,0,9,0
-Report the total number of authors contacted for information regarding the data collection process,9,0,9,0
-Report the total number of authors contacted for information regarding the study selection process,9,0,9,0
-Report the total number of authors who did not provide information when contacted,9,0,9,0
-Report the total number of organisational websites used to conduct the literature search,9,0,9,0
-Report the total number of registries used to conduct the literature search,9,0,9,0
-Report the total number of scientific literature databases used to conduct the literature search,9,0,9,0
-Report the total number of studies included in the review,9,0,9,0
-Report the total number of studies used in the heterogeneiety investigation,9,0,9,0
-Report the type of data extracted from each of the included studies,9,0,9,0
-Report the type of replication unit,9,0,9,0
-Report the use of an additional filters on the search in conjunction with the search terms,9,0,9,0
-Report the use of any guidelines used to inform the conduct of the review,9,0,9,0
-Report the use of any internally classified automation tool(s) in the data collection process,9,0,9,0
-Report the use of any internally classified automation tool(s) in the literature screening process,9,0,9,0
-Report the use of automation tool(s) in the literature screening process,9,0,9,0
-Report the use of automation tools in designing the boolean operators in the literature database search,9,0,9,0
-Report the use of automation tools in risk of bias assessment,9,0,9,0
-Report the use of automation tools in the certainty of evidence assessment,9,0,9,0
-Report the use of automation tools in the data extraction process,9,0,9,0
-Report the use of automation tools in the risk of bias assessment,9,0,9,0
-Report the use of automation tools were used in the literature screening process,9,0,9,0
-Report the use of crowdsourcing in the literature screening process,9,0,9,0
-Report the use of previously extracted databases in the data extraction process,9,0,9,0
-Report the use of previously screened databases in the literature screening process,9,0,9,0
-Report the version number of the software used to perform the statistical analysis,9,0,9,0
-Report the version of automation tool(s) used in the literature screening process,9,0,9,0
-Report the version of the internally classified automation tool(s) used in the data collection process,9,0,9,0
-Report the version of the internally classified automation tool(s) used in the literature screening process,9,0,9,0
-Report the weighting strategy for effect size estimates in the synthesis,9,0,9,0
-Report the year that studies which were used to conduct the citation search were published,9,0,9,0
-Report what triggered the current version of the living systematic review,9,0,9,0
-Report whether any of the planned statistical analysis could not be performed,9,0,9,0
-Report whether certainty of evidence was conducted independently,9,0,9,0
-Report whether individual patient or equivalent data was extracted,9,0,9,0
-Report whether risk of bias assessment was conducted independently,9,0,9,0
-Report whether the contacted authors provided the data in its entirity or only a proportion,9,0,9,0
-Report whether the data extraction variables were selected a priori,9,0,9,0
-Report whether the literature search strategy was systematic,9,0,9,0
-Report whether the prior was specified before data collection,9,0,9,0
-Report whether the review intends to be retired after the current version,9,0,9,0
-Report whether the risk of bias assessment was updated after the initial assessment,9,0,9,0
-Report which bibliographic fields were searched in each database,9,0,9,0
-Report which estimator was used to calculate the between-study variance,9,0,9,0
-Report which of the objectives are primary and which are secondary,9,0,9,0
-Section heading,9,0,9,0
+Report any limitations in the conducted evidence synthesis,8,28,36,77.77777777777779
+Report the results of the study selection process,8,28,36,77.77777777777779
+Report the characteristics extracted from each studies included in the evidence synthesis,14,21,35,60
+Report the method used to assess study eligibility for inclusion in the evidence synthesis,14,21,35,60
+Report the scientific literature databases used to conduct the literature search,14,21,35,60
+Report an interpretation of the results,18,15,33,45.45454545454545
+Report each of the data extraction variables extracted,18,15,33,45.45454545454545
+Report the eligibility criteria for the evidence synthesis,18,15,33,45.45454545454545
+Report the method used to assess the risk of bias,18,15,33,45.45454545454545
+Report the methodology used to conduct the evidence synthesis,18,15,33,45.45454545454545
+Report the objectives of the evidence synthesis,18,15,33,45.45454545454545
+Report the questions the authors sought to address in the evidence synthesis,18,15,33,45.45454545454545
+Report the rationale for selecting the methodology used to conduct the evidence synthesis,18,15,33,45.45454545454545
+Report the strategy used to collect data from the studies included in the evidence synthesis,18,15,33,45.45454545454545
+Report the strategy used to perform the meta-analysis,18,15,33,45.45454545454545
+Report any contact with study authors to retrieve additional information relevant to the literature search strategy,20,10,30,33.33333333333333
+Report any limitations applied to the search strategy,20,10,30,33.33333333333333
+Report each of the studies excluded during full-text screening,20,10,30,33.33333333333333
+Report the complete results from the meta-analysis,20,10,30,33.33333333333333
+Report the dates that the scientific literature database searches were conducted,20,10,30,33.33333333333333
+Report the implications of the evidence synthesis results,20,10,30,33.33333333333333
+Report the number of reviewers who conducted the selection process,20,10,30,33.33333333333333
+Report the rationale for conducting the evidence synthesis,20,10,30,33.33333333333333
+Report the relevant study designs in the eligibility criteria of the evidence synthesis,20,10,30,33.33333333333333
+Report the relevant timeframe in the eligibility criteria of the evidence synthesis,20,10,30,33.33333333333333
+Report the search terms used in each scientific literature database,20,10,30,33.33333333333333
+Report the sources of support received for conducting the evidence synthesis,20,10,30,33.33333333333333
+Report any deviations from the registered protocol,20,6,26,23.076923076923077
+Report the framework used to formulate the evidence synthesis question,20,6,26,23.076923076923077
+Report the institutional affiliation of each author,20,6,26,23.076923076923077
+Report the name of the effect size measure used,20,6,26,23.076923076923077
+Report the name of the registry holding the protocol,20,6,26,23.076923076923077
+Report the rationale for selecting each of the data extraction variables,20,6,26,23.076923076923077
+Report the registration number of the protocol,20,6,26,23.076923076923077
+Report the registries used to conduct the literature search,20,6,26,23.076923076923077
+Report the relevant populations in the eligibility criteria of the evidence synthesis,20,6,26,23.076923076923077
+Report the relevant publication status in the eligibility criteria of the evidence synthesis,20,6,26,23.076923076923077
+Report the results of the risk of bias assessment,20,6,26,23.076923076923077
+Report the strategy to retrieve grey literature,20,6,26,23.076923076923077
+Report the total number of records identified across all sources in the literature search strategy,20,6,26,23.076923076923077
+Report a visualisation of the characteristics from each of the studies included in the evidence synthesis,18,3,21,14.285714285714285
+Report any conflicts of interest that may influence the conduct or results of the evidence synthesis,18,3,21,14.285714285714285
+Report any data transformations applied to prepare extracted data for meta-analysis,18,3,21,14.285714285714285
+Report any limitations in the studies included in the evidence synthesis,18,3,21,14.285714285714285
+Report the dependency structure between effect size measures accounted for in the meta-analysis,18,3,21,14.285714285714285
+Report the full name of each author,18,3,21,14.285714285714285
+Report the implications of the evidence synthesis results for future research,18,3,21,14.285714285714285
+Report the implications of the evidence synthesis results for policy,18,3,21,14.285714285714285
+Report the implications of the evidence synthesis results for practice,18,3,21,14.285714285714285
+Report the method used in sensitivity analysis to test the robustness of the meta-analysis results,18,3,21,14.285714285714285
+Report the method used to assess risk of bias due to missing results,18,3,21,14.285714285714285
+Report the method used to explore potential sources of heterogeneity,18,3,21,14.285714285714285
+Report the outcomes for which data were extracted,18,3,21,14.285714285714285
+Report the rationale for selecting the scientific literature databases used to conduct the literature search,18,3,21,14.285714285714285
+Report the raw data extracted from each of the studies included in the evidence synthesis,18,3,21,14.285714285714285
+Report the reason for exclusion for each study rejected at full-text screening,18,3,21,14.285714285714285
+Report the relevant comparators in the eligibility criteria of the evidence synthesis,18,3,21,14.285714285714285
+Report the relevant geographical locations in the eligibility criteria of the evidence synthesis,18,3,21,14.285714285714285
+Report the relevant interventions in the eligibility criteria of the evidence synthesis,18,3,21,14.285714285714285
+Report the relevant languages in the eligibility criteria of the evidence synthesis,18,3,21,14.285714285714285
+Report the results from each of the sensitivity analysis,18,3,21,14.285714285714285
+Report the strategy to perfom the literature search,18,3,21,14.285714285714285
+Report the strategy used to perform the qualitative synthesis,18,3,21,14.285714285714285
+Report the strategy used to select literature in additional languages,18,3,21,14.285714285714285
+Report the total number of people which conducted the literature search,18,3,21,14.285714285714285
+Report whether the literature screening was conducted independently,18,3,21,14.285714285714285
+Report whether there is a publicly available protocol for the evidence synthesis,18,3,21,14.285714285714285
+Report a measure of precision around the pooled effect size point estimate,14,1,15,6.666666666666667
+Report a measure of statistical heterogeneity associated with the pooled effect size estimate,14,1,15,6.666666666666667
+Report any additional literature search strategies used in the evidence synthesis,14,1,15,6.666666666666667
+Report any contact with study authors to retrieve additional information relevant to the data collection process,14,1,15,6.666666666666667
+Report any ethics approval sought for the evidence synthesis,14,1,15,6.666666666666667
+Report background information on the topic of the evidence synthesis,14,1,15,6.666666666666667
+Report each study from which data were collected in the reference list,14,1,15,6.666666666666667
+Report quotations for each of the characteristics extracted from each of the studies included in the evidence synthesis,14,1,15,6.666666666666667
+Report the abstract in a structured format,14,1,15,6.666666666666667
+Report the agreement rate between the reviewers who conducted the data collection process,14,1,15,6.666666666666667
+Report the aspects of the studies examined for eligibility,14,1,15,6.666666666666667
+Report the consistency of study selection process outcomes between reviewers,14,1,15,6.666666666666667
+Report the contact details for each author,14,1,15,6.666666666666667
+Report the contribution of each author to the review,14,1,15,6.666666666666667
+Report the data characteristics of studies included in the meta-analysis,14,1,15,6.666666666666667
+Report the description for each of the data extraction variables,14,1,15,6.666666666666667
+Report the experience of each of the people which conducted the literature search,14,1,15,6.666666666666667
+Report the experience of the people who conducted the study selection process,14,1,15,6.666666666666667
+Report the experience of the reviewers who conducted the literature search,14,1,15,6.666666666666667
+Report the languages used to search the scientific literature databases,14,1,15,6.666666666666667
+Report the method used to assess consistency of data extraction between the reviewers who conducted screening,14,1,15,6.666666666666667
+Report the method used to handle missing data required for meta-analysis,14,1,15,6.666666666666667
+Report the method used to visualise the results of the meta-analysis,14,1,15,6.666666666666667
+Report the moderator variables included in the meta-regression,14,1,15,6.666666666666667
+Report the number of reviewers who conducted the data collection process,14,1,15,6.666666666666667
+Report the number of reviewers who conducted the risk of bias assessment,14,1,15,6.666666666666667
+Report the pooled effect size point estimate,14,1,15,6.666666666666667
+Report the rationale for selecting each moderator variable,14,1,15,6.666666666666667
+Report the rationale for selecting the strategy used to perform the meta-analysis,14,1,15,6.666666666666667
+Report the rationale for selecting the studies that were used to conduct the citation search,14,1,15,6.666666666666667
+Report the rationale for selecting the study design of each study included in the evidence synthesis,14,1,15,6.666666666666667
+Report the response rate of authors who were contacted for data collection,14,1,15,6.666666666666667
+Report the results from the certainty of the evidence assessment,14,1,15,6.666666666666667
+Report the results of any analyses used to explore sources of heterogeneity,14,1,15,6.666666666666667
+Report the results of the assessment of risk of bias due to missing results,14,1,15,6.666666666666667
+Report the results of the overall statistical syntheses,14,1,15,6.666666666666667
+Report the results of the qualitative syntheses,14,1,15,6.666666666666667
+Report the sample size from each of the studies included in the meta-analysis,14,1,15,6.666666666666667
+Report the search terms used in each registry,14,1,15,6.666666666666667
+Report the software used to manage screening decisions during the study selection process,14,1,15,6.666666666666667
+Report the strategy used to estimate the comprehensiveness of the literature search,14,1,15,6.666666666666667
+Report the studies which were used to conduct the citation search,14,1,15,6.666666666666667
+Report the summary effect size point estimates,14,1,15,6.666666666666667
+Report the total number of studies included in the evidence synthesis,14,1,15,6.666666666666667
+Report the use of controlled-vocabulary term explosion in the search strategy,14,1,15,6.666666666666667
+Report the version number of the evidence synthesis,14,1,15,6.666666666666667
+Report the version of the scientific literature databases used to conduct the literature search,14,1,15,6.666666666666667
+Report whether the data collection process was conducted independently,14,1,15,6.666666666666667
+Report a citation for each of the studies included in the evidence synthesis,8,0,8,0
+Report a discussion of the results,8,0,8,0
+Report a flow diagram summarising the outcomes of the study selection process,8,0,8,0
+Report a justification for any anticipated changes to the review in future versions,8,0,8,0
+Report a logic model used in each study included in the evidence synthesis,8,0,8,0
+Report a measure of precision around the effect size point estimate for each study included in the meta-analysis,8,0,8,0
+Report a measure of precision of the results of any analyses used to explore sources of heterogeneity,8,0,8,0
+Report a plain-language statement for the general public,8,0,8,0
+Report a summary of the evidence included in the evidence synthesis,8,0,8,0
+Report a table of the characteristics of each of the studies included in the evidence synthesis,8,0,8,0
+Report a visualisation of the heterogeneity assessment results,8,0,8,0
+Report a visualisation of the pooled effect size point estimate,8,0,8,0
+Report an evaluation of the interventions used in each study included in the evidence synthesis,8,0,8,0
+Report an explanation of how the interventions used in each study included in the evidence synthesis may work,8,0,8,0
+Report an interpretation of the certainty of evidence assessment results,8,0,8,0
+Report an interpretation of the effect size measure used,8,0,8,0
+Report an interpretation of the heterogeneity assessment results,8,0,8,0
+Report an interpretation of the publication bias assessment results,8,0,8,0
+Report an interpretation of the risk of bias assessment results,8,0,8,0
+Report an interpretation of the use of alternative priors,8,0,8,0
+Report any additional studies found when updating the literature search strategy,8,0,8,0
+Report any alternative effect measures used as part of a sensitivity analysis,8,0,8,0
+Report any anticipated changes to the review in future versions of the review,8,0,8,0
+Report any assumptions made about the interventions used in each study included in the evidence synthesis,8,0,8,0
+Report any assumptions made during the data collection process,8,0,8,0
+Report any changes made to the methodology since the previous version of the review,8,0,8,0
+Report any changes to the results during the update of the review,8,0,8,0
+Report any changes to the screening process results during the update of the review,8,0,8,0
+Report any contact with organisations to retrieve additional information relevant to the literature search strategy,8,0,8,0
+Report any corrections applied to the effect size measure used,8,0,8,0
+Report any identified issues with the individual patient data items extracted,8,0,8,0
+Report any issues identified in the individual patient data,8,0,8,0
+Report any limitations identified in the studies included in the review,8,0,8,0
+Report any limitations in the characteristics of the studies included in the evidence synthesis,8,0,8,0
+Report any peer-review process used to assess the comprehensiveness of the literature search,8,0,8,0
+Report any remaining gaps in understanding identified following the review,8,0,8,0
+Report any reporting guidelines used to prepare the evidence synthesis,8,0,8,0
+Report any restrictions on the literature search strategy,8,0,8,0
+Report any strengths in the conducted evidence synthesis,8,0,8,0
+Report any tool(s) used to translate the scientific literature database search strings into additional languages,8,0,8,0
+Report any update to the search strategy undertaken during the evidence synthesis,8,0,8,0
+Report each comparator from which data were extracted in the included studies,8,0,8,0
+Report each data extraction variable used for moderator analysis,8,0,8,0
+Report each intervention for which data were extracted from the included studies,8,0,8,0
+Report each population for which data were extracted from the included studies,8,0,8,0
+Report each study design for which data were extracted from the included studies,8,0,8,0
+Report how agreement between reviewers for the risk of bias assessment outcomes was calculated,8,0,8,0
+Report how any conflicts of interest were managed,8,0,8,0
+Report how articles authored by the screening team were handled during the selection process,8,0,8,0
+Report how crowdsourcing was incorporated into the literature selection process,8,0,8,0
+Report how dependent effect sizes were handled during the data collection process,8,0,8,0
+Report how dependent effect sizes were handled during the study selection process,8,0,8,0
+Report how disadvantage was defined in the rationale for the evidence synthesis,8,0,8,0
+Report how disagreements between reviewers in screening decisions were resolved,8,0,8,0
+Report how disagreements between reviewers in the certainty assessment were resolved,8,0,8,0
+Report how disagreements between reviewers in the data collection process were resolved,8,0,8,0
+Report how disagreements between reviewers in the risk of bias assessment were resolved,8,0,8,0
+Report how missing data in the synthesis was handled in the statistical analyses,8,0,8,0
+Report how the internally classified automation tool(s) for the data collection process were trained,8,0,8,0
+Report how the internally classified automation tool(s) for the data collection process were validated,8,0,8,0
+Report how the internally classified automation tool(s) used in the certainty assessment were trained,8,0,8,0
+Report how the internally classified automation tool(s) used in the certainty assessment were validated,8,0,8,0
+Report how the internally classified automation tool(s) used in the literature selection process was trained,8,0,8,0
+Report how the internally classified automation tool(s) used in the literature selection process was validated,8,0,8,0
+Report how the risk of bias assessment was incorporated into the meta-analysis,8,0,8,0
+Report how the risk of bias assessment was piloted,8,0,8,0
+Report method to visualise the results from the certainty of the evidence assessment,8,0,8,0
+Report quotations for each of the data extraction variables,8,0,8,0
+Report references to previous versions of the evidence synthesis,8,0,8,0
+Report references to previously published evidence syntheses on the topic,8,0,8,0
+Report the agreement rate between reviewers who conducted the study selection process,8,0,8,0
+Report the arguments specified for each function used in the software to perform the meta-analysis,8,0,8,0
+Report the automation tool(s) used in the literature selection process,8,0,8,0
+Report the bibliographic fields that were searched in each scientific literature database,8,0,8,0
+Report the characteristics extracted from each of the included studies,8,0,8,0
+Report the comparators used in each study included in the evidence synthesis,8,0,8,0
+Report the conceptual structure used to design the search terms in each scientific literature database,8,0,8,0
+Report the conditions under which the extracted data are available,8,0,8,0
+Report the contact details each corresponding author,8,0,8,0
+Report the counts of events and non-events in each study included in the meta-analysis,8,0,8,0
+Report the data extraction strategy used in the review,8,0,8,0
+Report the date the citation search was conducted,8,0,8,0
+Report the dependency structure accounted for in the meta-analysis,8,0,8,0
+Report the description associated with each data extraction variable,8,0,8,0
+Report the direction of the pooled effect size point estimate,8,0,8,0
+Report the effect size point estimates for each study included in the meta-analysis,8,0,8,0
+Report the eligibility criteria used to determine study inclusion in each meta-analysis,8,0,8,0
+Report the experience of the reviewers who conducted the data collection process,8,0,8,0
+Report the extracted description for each data extraction variable from each included study,8,0,8,0
+Report the formula used to calculate the effect size measure,8,0,8,0
+Report the formula used to calculate the sampling variance of the effect size measure,8,0,8,0
+Report the full code used to conduct the analysis of the evidence synthesis,8,0,8,0
+Report the functions used in the analysis software for the meta-analysis,8,0,8,0
+Report the generalisability of the results of the evidence synthesis,8,0,8,0
+Report the graphical output used to assess risk of bias due to missing results,8,0,8,0
+Report the hypothesis addressed by the evidence synthesis,8,0,8,0
+Report the implications of missing data for the results of the evidence synthesis,8,0,8,0
+Report the implications of the evidence synthesis results for educators,8,0,8,0
+Report the institutional subscriptions used to access the scientific literature databases,8,0,8,0
+Report the interventions used in each study included in the evidence synthesis,8,0,8,0
+Report the keywords used in the evidence synthesis,8,0,8,0
+Report the languages used to search the registries,8,0,8,0
+Report the magnitude of the pooled effect size point estimate,8,0,8,0
+Report the measures of model performance,8,0,8,0
+Report the measures used to assess model performance,8,0,8,0
+Report the method used to account for heteroscedasticity in effect size measures,8,0,8,0
+Report the method used to assess consistency between reviewers who conducted the study selection process,8,0,8,0
+Report the method used to assess for potential risk of bias due to missing studies,8,0,8,0
+Report the method used to assess the certainty of the evidence,8,0,8,0
+Report the method used to calculate the fragility index for the meta-analysis,8,0,8,0
+Report the method used to determine which eligible studies were included in each meta-analysis,8,0,8,0
+Report the method used to handle missing data in the meta-analysis,8,0,8,0
+Report the method used to identify outlying or influential studies,8,0,8,0
+Report the method used to obtain posterior inferences,8,0,8,0
+Report the methodology used to assess heterogeneity,8,0,8,0
+Report the methodology used to assess the certainty of evidence included in the review,8,0,8,0
+Report the methodology used to assess the certainty of the evidence included in the review,8,0,8,0
+Report the methodology used to conduct the evidence synthesis in the keywords,8,0,8,0
+Report the methodology used to explore sources of heterogeneity,8,0,8,0
+Report the methodology used to identify key knowledge gaps among the included data characteristics,8,0,8,0
+Report the methodology used to update the literature search strategy,8,0,8,0
+Report the number of individual patient data items extracted,8,0,8,0
+Report the number of records remaining after duplicate removal,8,0,8,0
+Report the number of reviewers who conducted the certainty assessment,8,0,8,0
+Report the number of studies for which data collection was cross-checked,8,0,8,0
+Report the number of studies included in the meta-analysis,8,0,8,0
+Report the number of studies included in the statistical syntheis,8,0,8,0
+Report the number of studies screened by more than one reviewer,8,0,8,0
+Report the outcomes used in each study included in the evidence synthesis,8,0,8,0
+Report the p-value associated with the pooled effect size point estimate,8,0,8,0
+Report the p-value associated with the statistical test for risk of bias due to missing results,8,0,8,0
+Report the parameters that define the living review mode,8,0,8,0
+Report the people who conducted the meta-analysis,8,0,8,0
+Report the performance of any automation tool(s) used in the assessment of risk of bias due to missing results,8,0,8,0
+Report the performance of the automation tool(s) used assess the certainty of evidence,8,0,8,0
+Report the planned retirement for the review,8,0,8,0
+Report the planned schedule for updating the review,8,0,8,0
+Report the planned timeline for the evidence synthesis as specified in the protocol,8,0,8,0
+Report the pooled effect size point estimate for any analyses used to explore sources of heterogeneity,8,0,8,0
+Report the populations used in each study included in the evidence synthesis,8,0,8,0
+Report the potential impact of the limitations in the evidence synthesis process,8,0,8,0
+Report the potential implications of the results of the evidence synthesis,8,0,8,0
+Report the primary results of the review,8,0,8,0
+Report the prior distribution(s) specified for a Bayesian meta-analysis,8,0,8,0
+Report the process used to select among candidate models,8,0,8,0
+Report the purpose of the literature search strategy,8,0,8,0
+Report the qualifications of each author,8,0,8,0
+Report the rationale for each risk of bias assessment judgement,8,0,8,0
+Report the rationale for including each study in relation to the objectives of the review,8,0,8,0
+Report the rationale for including the selected interventions in the studies included in the evidence synthesis,8,0,8,0
+Report the rationale for not conducting a meta-analysis,8,0,8,0
+Report the rationale for selecting study authors to contact for additional information,8,0,8,0
+Report the rationale for selecting the effect size measure used,8,0,8,0
+Report the rationale for selecting the method used to visualise the results of the meta-analysis,8,0,8,0
+Report the rationale for selecting the models used to perform the meta-analysis,8,0,8,0
+Report the rationale for selecting the moderator variables included in the evidence synthesis,8,0,8,0
+Report the rationale for selecting the tool(s) used to conduct the risk of bias assessment,8,0,8,0
+Report the rationale for the assumed dependency structure accounted for in the meta-analysis,8,0,8,0
+Report the rationale for the eligibility criteria in the evidence synthesis,8,0,8,0
+Report the rationale for the method used to handle missing data in the meta-analysis,8,0,8,0
+Report the rationale for the results of the certainty of evidence assessement used in the review,8,0,8,0
+Report the records rejected by the automation tool(s) during the literature screening process,8,0,8,0
+Report the records rejected by the automation tool(s) during the literature selection process,8,0,8,0
+Report the relationship between each of the study characteristics,8,0,8,0
+Report the relevant data formats in the eligibility criteria of the evidence synthesis,8,0,8,0
+Report the relevant outcomes in the eligibility criteria of the evidence synthesis,8,0,8,0
+Report the reliability of the collected items based on challenges during the data collection process,8,0,8,0
+Report the reliability of the conclusion in the evidence synthesis,8,0,8,0
+Report the results from the model selection process,8,0,8,0
+Report the results of any analysis conducted due to the living mode,8,0,8,0
+Report the reuse of literature search strategies from other evidence syntheses,8,0,8,0
+Report the role of stakeholders in formulating the objectives of the evidence synthesis,8,0,8,0
+Report the screening decisions made by each reviewer who conducted the study selection process,8,0,8,0
+Report the search strategy used to identify grey literature,8,0,8,0
+Report the software packages used to perform the meta-analysis,8,0,8,0
+Report the software used to conduct the data collection process,8,0,8,0
+Report the software used to deduplicate the search records during the literature search,8,0,8,0
+Report the software used to perform the meta-analysis,8,0,8,0
+Report the source of the data extracted,8,0,8,0
+Report the sources of information the literature search strategy sought,8,0,8,0
+Report the statistical power of the meta-analysis,8,0,8,0
+Report the statistical significance of the results of any analyses used to explore sources of heterogeneity,8,0,8,0
+Report the strategy for the data collection process,8,0,8,0
+Report the strategy to perform the individual patient data meta-analysis,8,0,8,0
+Report the strategy used to collect data from the studies in additional languages,8,0,8,0
+Report the strategy used to deduplicate the search records during the scientific database search,8,0,8,0
+Report the strategy used to develop the scientific literature database search string,8,0,8,0
+Report the strategy used to retrieve information from potentially relevant authors.,8,0,8,0
+Report the strategy used to search for literature in additional languages,8,0,8,0
+Report the structure of each model used in the meta-analysis,8,0,8,0
+Report the structure of each model used to perform the meta-analysis,8,0,8,0
+Report the studies included in the meta-analysis,8,0,8,0
+Report the study design of each study included in the evidence synthesis,8,0,8,0
+Report the timeframe in which data were extracted,8,0,8,0
+Report the tool used to conduct the risk of bias assessment,8,0,8,0
+Report the tool(s) used to conduct the certainity of evidence assessment,8,0,8,0
+Report the tool(s) used to conduct the risk of bias assessment,8,0,8,0
+Report the total number of authors contacted for information regarding the study selection process,8,0,8,0
+Report the total number of authors who were contacted for information regarding the data collection process,8,0,8,0
+Report the total number of organisational websites used to conduct the literature search,8,0,8,0
+Report the total number of registries used to conduct the literature search,8,0,8,0
+Report the total number of scientific literature databases used to conduct the literature search,8,0,8,0
+Report the total number of studies used in the heterogeneiety investigation,8,0,8,0
+Report the type of data extracted from each of the included studies,8,0,8,0
+Report the unit of replication,8,0,8,0
+Report the use of any internally classified automation tool(s) in the data collection process,8,0,8,0
+Report the use of any internally classified automation tool(s) in the literature selection process,8,0,8,0
+Report the use of automation tool(s) in designing the search string(s) in the literature database search,8,0,8,0
+Report the use of automation tool(s) in the certainty of evidence assessment,8,0,8,0
+Report the use of automation tool(s) in the data collection process,8,0,8,0
+Report the use of automation tool(s) in the literature selection process,8,0,8,0
+Report the use of automation tool(s) in the risk of bias assessment,8,0,8,0
+Report the use of automation tool(s) in the the assessment of risk of bias due to missing results,8,0,8,0
+Report the use of crowdsourcing in the literature selection process,8,0,8,0
+Report the use of previously screened databases in the literature screening process,8,0,8,0
+Report the version number of the software used to perform the meta-analysis,8,0,8,0
+Report the version of automation tool(s) used in the literature selection process,8,0,8,0
+Report the version of the internally classified automation tool(s) used in the data collection process,8,0,8,0
+Report the version of the internally classified automation tool(s) used in the literature selection process,8,0,8,0
+Report the weighting scheme used to assign weight to each effect size estimate,8,0,8,0
+Report the year that the studies used to conduct the citation search were published,8,0,8,0
+Report what triggered the current version of the living systematic review,8,0,8,0
+Report whether a previously extracted dataset was used in the data collection process,8,0,8,0
+Report whether any of the analysis were not pre-specified,8,0,8,0
+Report whether any of the planned analysis could not be performed,8,0,8,0
+Report whether any of the sensitivity analysis were not pre-specified,8,0,8,0
+Report whether certainty of evidence was conducted independently,8,0,8,0
+Report whether individual patient (or equivalent) data was extracted,8,0,8,0
+Report whether risk of bias assessment was conducted independently,8,0,8,0
+Report whether the contacted authors provided the data in its entirity or only a proportion,8,0,8,0
+Report whether the data extraction variables were selected a priori,8,0,8,0
+Report whether the literature search strategy was systematic,8,0,8,0
+Report whether the literature search was comprehensive,8,0,8,0
+Report whether the prior distribution(s) were specified before data collection,8,0,8,0
+Report which estimator was used to calculate the between-study variance,8,0,8,0

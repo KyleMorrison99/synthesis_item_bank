@@ -900,6 +900,14 @@ levitt_2018,levitt_2018,levitt_2018_item7,Abstract,,,Identify five keywords.,Abs
 levitt_2018,levitt_2018,levitt_2018_item8,Introduction,Description of research problem/question,,State the problem/question the meta-analysis addresses.,Introduction,english,km
 levitt_2018,levitt_2018,levitt_2018_item9,Introduction,Description of research problem/question,,"Describe what literature is to be included and synthesized and the relevant debates, theoretical frameworks, and issues contained therein.",Introduction,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item1,Title,Title,1,"Identify the report as a systematic review, meta-analysis or both",Title,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item2,Title,Title,2,Identify the report as a study of diagnostic accuracy using at least one measure of accuracy,Title,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item3,Title,Title,3,State whether the report is a comparative (one diagnostic test vs. another) or a non-comparative review,Title,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item4,Introduction,Introduction,4,"State the scientific and clinical background, including the intended use and clinical role of the index test (e.g., triage test, add-on test, or replacement test)",Introduction,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item5,Introduction,Introduction,5,"List review objective using PICO format (participant characteristics, intervention, comparison, outcome)",Introduction,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item6,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",6,"Indicate if a review protocol exists, where it can be accessed and, if available, registration number",Other Information,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item7,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",7,Report deviations from the original protocol,Other Information,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item8,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",8,Report which outcomes are considered primary and secondary,Introduction,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item9,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",9,Describe all information sources and the date of search,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item10,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",10,"Report restrictions to search strategy (language, publication status, dates)",Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item11,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",11,"Present full electronic search strategy for at least one database, including any limits used, such that it could be repeated",Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item12,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",12,Report whether hand searching of reference lists was done,Methodology,english,km
@@ -910,21 +918,9 @@ mcgrath_2017,mcgrath_2017,mcgrath_2017_item16,Methods: study selection and data 
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item17,Methods: study selection and data collection,Methods: study selection and data collection,17,"Provide an appendix with studies excluded, with reasons for exclusion, during full-text screening",Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item18,Methods: study selection and data collection,Methods: study selection and data collection,18,Describe method of data extraction from reports,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item19,Methods: study selection and data collection,Methods: study selection and data collection,19,Report which data items were extracted from included studies,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item2,Title,Title,2,Identify the report as a study of diagnostic accuracy using at least one measure of accuracy,Title,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item20,Methods: study selection and data collection,Methods: study selection and data collection,20,Report how studies for which only a subgroup of participants is relevant to the review will be handled,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item21,Methods: study selection and data collection,Methods: study selection and data collection,21,Report how indeterminate or missing results for either the index test or reference standard were dealt with in the analysis,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item22,Methods: study selection and data collection,Methods: study selection and data collection,22,"Report if and how any parameters beyond test accuracy will be evaluated (e.g., cost-effectiveness, mortality)",Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item23,Methods: primary study data items,Methods: primary study data items,23a,"Patient demographic information (age, gender)",Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item24,Methods: primary study data items,Methods: primary study data items,23b,Target condition definition,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item25,Methods: primary study data items,Methods: primary study data items,23c,Index test,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item26,Methods: primary study data items,Methods: primary study data items,23d,Reference standard,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item27,Methods: primary study data items,Methods: primary study data items,23e,Positivity thresholds,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item28,Methods: primary study data items,Methods: primary study data items,23f,Blinding information,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item29,Methods: primary study data items,Methods: primary study data items,23g,Clinical setting,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item3,Title,Title,3,State whether the report is a comparative (one diagnostic test vs. another) or a non-comparative review,Title,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item30,Methods: primary study data items,Methods: primary study data items,23h,Disease prevalence,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item31,Methods: primary study data items,Methods: primary study data items,23i,Cross-tabulation of index test with reference standard (2 × 2 table),Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item32,Methods: primary study data items,Methods: primary study data items,23j,Funding sources,Other Information,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item33,Methods: risk of bias and heterogeneity,Methods: risk of bias and heterogeneity,24,"Report how included individual studies will be assessed for methodological quality (e.g., QUADAS-2)",Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item34,Methods: risk of bias and heterogeneity,Methods: risk of bias and heterogeneity,25,Describe if and how piloting the risk of bias tool was done,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item35,Methods: risk of bias and heterogeneity,Methods: risk of bias and heterogeneity,26,List criteria used for risk of bias ratings applied during the review,Methodology,english,km
@@ -932,7 +928,6 @@ mcgrath_2017,mcgrath_2017,mcgrath_2017_item36,Methods: risk of bias and heteroge
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item37,Methods: risk of bias and heterogeneity,Methods: risk of bias and heterogeneity,28,"Provide measures of consistency (e.g., tau2) for each meta-analysis",Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item38,Methods: risk of bias and heterogeneity,Methods: risk of bias and heterogeneity,29,Describe test used to assess for publication bias,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item39,Methods: summary measures and statistics,Methods: summary measures and statistics,30,State the principal summary measures of diagnostic accuracy to be assessed,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item4,Introduction,Introduction,4,"State the scientific and clinical background, including the intended use and clinical role of the index test (e.g., triage test, add-on test, or replacement test)",Introduction,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item40,Methods: summary measures and statistics,Methods: summary measures and statistics,31,Report whether summary measures were calculated on a per-patient or per-lesion basis,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item41,Methods: summary measures and statistics,Methods: summary measures and statistics,32,Report pre-defined criteria for minimally acceptable test performance,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item42,Methods: summary measures and statistics,Methods: summary measures and statistics,33,State how multiple readers of an index test were accounted for,Methodology,english,km
@@ -943,7 +938,6 @@ mcgrath_2017,mcgrath_2017,mcgrath_2017_item46,Methods: summary measures and stat
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item47,Methods: summary measures and statistics,Methods: summary measures and statistics,38,"Describe methods of additional analyses (e.g., subgroup), indicating whether pre-specified",Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item48,Methods: summary measures and statistics,Methods: summary measures and statistics,39,Report how subgroup analyses were performed,Methodology,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item49,Methods: summary measures and statistics,Methods: summary measures and statistics,40,When performing meta-regression report the form of factors being explored (categorical vs. continuous) and the cut-off points used,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item5,Introduction,Introduction,5,"List review objective using PICO format (participant characteristics, intervention, comparison, outcome)",Introduction,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item50,Results,Results,41,"Report studies from screen to inclusion, ideally with a flow diagram",Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item51,Results,Results,42,"For each study, present characteristics for which data were extracted and provide the citations",Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item52,Results,Results,43,Present data on risk of bias of each study on a per-item or per-domain basis,Results,english,km
@@ -954,7 +948,6 @@ mcgrath_2017,mcgrath_2017,mcgrath_2017_item56,Results,Results,47,For each study 
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item57,Results,Results,48,"Report each meta-analysis including confidence intervals and measures of consistency (e.g., tau2)",Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item58,Results,Results,49,Graphically display results with an ROC curve or forest plots of sensitivity and specificity,Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item59,Results,Results,50,"Report additional analyses (e.g., meta-regression)",Results,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item6,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",6,"Indicate if a review protocol exists, where it can be accessed and, if available, registration number",Other Information,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item60,Results,Results,51,"Report risk of bias in the synthesis (e.g., analyses stratified by risk of bias)",Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item61,Results,Results,52,Report summary of findings table with main outcomes and issues re: applicability of results,Results,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item62,Results,Results,53,Report “frequency” tables of 2 × 2 data demonstrating potential findings in a patient population based on the prevalence,Results,english,km
@@ -965,13 +958,20 @@ mcgrath_2017,mcgrath_2017,mcgrath_2017_item66,Discussion,Discussion,57,Discuss t
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item67,Discussion,Discussion,58,Discuss applicability concerns to different populations/settings,Discussion,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item68,Discussion,Discussion,59,Discuss quality of included studies when forming conclusions,Discussion,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item69,Discussion,Discussion,60,Account for any statistical heterogeneity when interpreting the results,Methodology,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item7,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",7,Report deviations from the original protocol,Other Information,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item70,Discussion,Discussion,61,Discuss the potential impact of reporting biases,Discussion,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item71,Discussion,Discussion,62,"Discuss the five GRADE considerations (study limitations, consistency of effect, imprecision, indirectness, and publication bias)",Discussion,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item72,Disclosure,Disclosure,63,Describe sources of funding for the review and role of funders,Other Information,english,km
 mcgrath_2017,mcgrath_2017,mcgrath_2017_item73,Disclosure,Disclosure,64,Report potential relevant conflicts of interest for review investigators,Other Information,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item8,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",8,Report which outcomes are considered primary and secondary,Introduction,english,km
-mcgrath_2017,mcgrath_2017,mcgrath_2017_item9,"Methods: protocol eligibility, and search","Methods: protocol eligibility, and search",9,Describe all information sources and the date of search,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item23,Methods: primary study data items,Methods: primary study data items,23a,"Patient demographic information (age, gender)",Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item24,Methods: primary study data items,Methods: primary study data items,23b,Target condition definition,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item25,Methods: primary study data items,Methods: primary study data items,23c,Index test,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item26,Methods: primary study data items,Methods: primary study data items,23d,Reference standard,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item27,Methods: primary study data items,Methods: primary study data items,23e,Positivity thresholds,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item28,Methods: primary study data items,Methods: primary study data items,23f,Blinding information,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item29,Methods: primary study data items,Methods: primary study data items,23g,Clinical setting,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item30,Methods: primary study data items,Methods: primary study data items,23h,Disease prevalence,Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item31,Methods: primary study data items,Methods: primary study data items,23i,Cross-tabulation of index test with reference standard (2 × 2 table),Methodology,english,km
+mcgrath_2017,mcgrath_2017,mcgrath_2017_item32,Methods: primary study data items,Methods: primary study data items,23j,Funding sources,Other Information,english,km
 mcinnes_2018,mcinnes_2018_abstracts,mcinnes_2018_abstracts_item1,title and purpose,title,1,Identify the report as a systematic review (+/- meta-analysis) of diagnostic test accuracy (DTA) studies.,Abstract,english,km
 mcinnes_2018,mcinnes_2018_abstracts,mcinnes_2018_abstracts_item10,discussion,interpretation,10,Provide a general interpretation of the results and the important implications.,Abstract,english,km
 mcinnes_2018,mcinnes_2018_abstracts,mcinnes_2018_abstracts_item11,other,funding,11,Indicate the primary source of funding for the review.,Abstract,english,km
@@ -2184,7 +2184,7 @@ zorzela_2016,zorzela_2016,zorzela_2016_item8,Introduction,Rationale,3,Describe t
 zorzela_2016,zorzela_2016,zorzela_2016_item9,Introduction,Objectives,4,"Provide an explicit statement of the questions being addressed with reference, as applicable, to participants, interventions, comparisons, outcomes and study design (PICOS). Include any hypotheses that relate to particular types of participant-level subgroups.",Introduction,english,km
 zumsteg_2012,zumsteg_2012,zumsteg_2012_item1,"Document title, structured summary, and key words","Document title, structured summary, and key words",1,"Title identifies article as systematic review, meta-analysis or both.",Title,english,km
 zumsteg_2012,zumsteg_2012,zumsteg_2012_item10,Description of review protocol,Description of review protocol,4,Description of further analyses.,Methodology,english,km
-zumsteg_2012,zumsteg_2012,zumsteg_2012_item11,Findings and features of individual studies in the review,Findings and features of individual studies in the review,5,"Include major findings, methods and limitations.",Results,english,km
+zumsteg_2012,zumsteg_2012,zumsteg_2012_item11,Findings and features of individual studies in the review,Findings and features of individual studies in the review,5,"Include major findings, methods and limitations.",Discussion,english,km
 zumsteg_2012,zumsteg_2012,zumsteg_2012_item12,Findings and features of individual studies in the review,Findings and features of individual studies in the review,5,Present data graphically if possible.,Results,english,km
 zumsteg_2012,zumsteg_2012,zumsteg_2012_item13,Assessment of bias,Assessment of bias,6,Assessment of bias for individual studies included and across studies when summarized.,Methodology,english,km
 zumsteg_2012,zumsteg_2012,zumsteg_2012_item14,Assessment of bias,Assessment of bias,6,Statement of funding source for the review.,Other Information,english,km
