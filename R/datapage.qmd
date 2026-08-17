@@ -2,7 +2,7 @@
 title: "Reporting item bank datapage"
 subtitle: "Interactive exploration of reporting items and concepts across evidence synthesis guidelines"
 format:
-  pdf:
+  html:
     theme: cosmo
     toc: true
     toc-location: left
@@ -277,18 +277,6 @@ sd_items <- SharedData$new(
 )
 ```
 
-::: {.stat-card-row}
-```{r items-stats}
-#| results: asis
-tagList(
-  stat_card(nrow(items_display), "Total items"),
-  stat_card(n_distinct(items_display$guideline), "Guidelines"),
-  stat_card(n_distinct(items_display$discipline), "Disciplines"),
-  stat_card(n_distinct(items_display$methodology), "Methodologies")
-)
-```
-:::
-
 ::: {.filter-panel}
 ::: {.filter-panel-title}
 Filter the item bank
@@ -370,18 +358,6 @@ sd_concepts <- SharedData$new(
   group = "concepts"
 )
 ```
-
-::: {.stat-card-row}
-```{r concepts-stats}
-#| results: asis
-tagList(
-  stat_card(nrow(concept_display), "Total concept mappings"),
-  stat_card(n_distinct(concept_display$guideline), "Guidelines"),
-  stat_card(n_distinct(concept_display$standardised_section), "Standardised sections"),
-  stat_card(n_distinct(concept_display$standardised_subsection), "Standardised subsections")
-)
-```
-:::
 
 ::: {.filter-panel}
 ::: {.filter-panel-title}
