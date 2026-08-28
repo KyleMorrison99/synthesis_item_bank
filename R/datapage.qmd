@@ -1,7 +1,5 @@
 ---
----
-title: "Reporting item bank datapage"
-subtitle: "Interactive exploration of reporting items and concepts across evidence synthesis guidelines"
+title: "An item bank of reporting items and concepts in evidence synthesis reporting guidelines datapage"
 format:
   html:
     theme: cosmo
@@ -14,7 +12,6 @@ execute:
   echo: false
   message: false
   warning: false
----
 ---
 
 ```{r setup}
@@ -213,7 +210,7 @@ table.dataTable thead th {
 
 ## Background
 
-This datapage accompanies a systematic compilation of reporting items from evidence synthesis reporting guidelines. It provides a harmonized **item bank** and **concept-level dataset** that can be filtered by guideline, methodology, and discipline, and exported for reuse.
+This datapage accompanies a systematic compilation of reporting items from evidence synthesis reporting guidelines. It provides a harmonised **item bank** and **concept-level dataset** that can be filtered by guideline, methodology, and discipline, and exported for reuse.
 
 ::: callout-note
 ## How to use this page
