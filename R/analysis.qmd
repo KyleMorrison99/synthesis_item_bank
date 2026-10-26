@@ -2800,7 +2800,9 @@ saveWorkbook(wb, file.path("data", "concept_tables_by_section.xlsx"), overwrite 
 Which verb opens each reporting item ("*Describe* ...", "*Report* ...", "*Specify* ..."), how many
 distinct verbs each checklist uses, and how many verbs the same concept is requested with across
 guidelines. English items only (the Portuguese/Spanish checklists are not tagged with the English
-model). Decisions to note: the first verb is used for coordinated verbs ("Describe and justify");
+model); of the 63 English-language checklists, 7 contain no item opening with a directive verb
+(their items are noun phrases, statements or indirect questions) and are excluded from the
+checklist-level analysis, leaving 56. Decisions to note: the first verb is used for coordinated verbs ("Describe and justify");
 British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
 Outputs: item-level verbs, the 100-item manual-check sample, the verb lexicon and flagged edge
 cases in `data/`; summary tables and the supplementary figure in `figures/`; the cached udpipe
@@ -3238,17 +3240,33 @@ checklist_level <- verbs_en %>%
   arrange(desc(n_distinct_verbs), desc(n_items_with_verb))
 write_csv(checklist_level, here("figures", "directive_verbs_checklist_metrics.csv"), na = "")
 
+# checklists in the analysis: 68 in total, minus 5 non-English checklists (63),
+# minus the English checklists whose items never open with a directive verb
+# (written as noun phrases, statements or indirect questions)
 cl_any <- checklist_level %>% filter(n_items_with_verb >= 1)
 cl_10  <- checklist_level %>% filter(n_items_with_verb >= 10)
+n_checklists_all <- n_distinct(item_verbs$checklist)
+n_checklists_en  <- nrow(checklist_level)
+checklists_no_verb <- checklist_level %>%
+  filter(n_items_with_verb == 0) %>%
+  select(checklist, n_items) %>%
+  left_join(
+    verbs_en %>% filter(is.na(verb)) %>%
+      count(checklist, no_verb_reason) %>%
+      group_by(checklist) %>%
+      summarise(item_types = paste0(str_remove(no_verb_reason, " \\(.*"), " (", n, ")", collapse = "; "), .groups = "drop"),
+    by = "checklist"
+  )
+checklists_no_verb
 cor_sp <- suppressWarnings(cor.test(cl_any$n_items_with_verb, cl_any$n_distinct_verbs, method = "spearman"))
 
 checklist_verb_stats_fmt <- tibble(
-  metric = c("n checklists (>= 1 item with a directive verb)", "n items with a verb per checklist",
+  metric = c("n checklists: all / English / with >= 1 directive verb (analysed)", "n items with a verb per checklist",
              "n distinct verbs per checklist", "Shannon H", "Pielou J (NA when S = 1)",
              "proportion of items using the modal verb", "% checklists with >= 2 distinct verbs",
              "% checklists with >= 3 distinct verbs", "Spearman rho: n items vs n distinct verbs",
              paste0("rarefied distinct verbs per 10 items (n = ", nrow(cl_10), " checklists with >= 10 items)")),
-  value = c(nrow(cl_any), fmt_med_iqr(cl_any$n_items_with_verb, 0), fmt_med_iqr(cl_any$n_distinct_verbs, 0),
+  value = c(paste(n_checklists_all, n_checklists_en, nrow(cl_any), sep = " / "), fmt_med_iqr(cl_any$n_items_with_verb, 0), fmt_med_iqr(cl_any$n_distinct_verbs, 0),
             fmt_med_iqr(cl_any$shannon_H), fmt_med_iqr(cl_any$pielou_J), fmt_med_iqr(cl_any$prop_modal_verb),
             fmt_pct(cl_any$n_distinct_verbs >= 2), fmt_pct(cl_any$n_distinct_verbs >= 3),
             sprintf("rho = %.2f, p = %.2g", cor_sp$estimate, cor_sp$p.value),
@@ -3360,11 +3378,12 @@ dv_theme <- theme_minimal(base_size = 13) +
     axis.ticks = element_line(color = "black"),
     axis.ticks.x = element_blank(),
     plot.title = element_text(size = 12.5, face = "bold", color = "black", hjust = 0),
+    plot.subtitle = element_text(size = 10, color = "grey30", hjust = 0),
     plot.title.position = "plot",
     plot.margin = margin(10, 10, 10, 10)
   )
 
-dv_lollipop <- function(d, title, ylab, by) {
+dv_lollipop <- function(d, title, subtitle, ylab, by) {
   d <- d %>% count(n_distinct_verbs)
   ggplot(d, aes(x = n_distinct_verbs, y = n)) +
     geom_segment(
@@ -3375,13 +3394,24 @@ dv_lollipop <- function(d, title, ylab, by) {
     geom_text(aes(label = n), nudge_y = max(d$n) * 0.07, size = 3.3, fontface = "bold", colour = "black") +
     scale_x_continuous(breaks = seq(0, max(d$n_distinct_verbs), by)) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
-    labs(title = title, x = "Number of distinct directive verbs", y = ylab) +
+    labs(title = title, subtitle = subtitle, x = "Number of distinct directive verbs", y = ylab) +
     coord_cartesian(clip = "off") +
     dv_theme
 }
 
-fig_verbs <- dv_lollipop(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
-  dv_lollipop(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+fig_verbs <- dv_lollipop(
+  cl_any,
+  paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"),
+  paste0(nrow(cl_any), " of ", n_checklists_en, " English-language checklists; ", nrow(checklists_no_verb),
+         " with no item opening with a directive verb excluded"),
+  "Number of checklists", 2
+) +
+  dv_lollipop(
+    cp,
+    paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"),
+    "Concepts requested by at least two items with a directive verb",
+    "Number of concepts", 1
+  )
 
 fig_verbs
 
@@ -3410,7 +3440,8 @@ dv <- list(
   pct_items_with_verb = sprintf("%.1f%%", 100 * n_en_verb / n_en),
   n_distinct_verbs = nrow(verb_frequency),
   top_verbs = paste0(head(verb_frequency$verb, 5), " (", head(verb_frequency$pct_of_items_with_verb, 5), "%)", collapse = ", "),
-  n_checklists = nrow(cl_any),
+  n_checklists_all = n_checklists_all, n_checklists_en = n_checklists_en, n_checklists = nrow(cl_any),
+  checklists_no_verb = paste(checklists_no_verb$checklist, collapse = ", "),
   verbs_per_checklist = fmt_med_iqr(cl_any$n_distinct_verbs, 0),
   pct_checklists_2plus = fmt_pct(cl_any$n_distinct_verbs >= 2),
   n_concepts = nrow(cp),

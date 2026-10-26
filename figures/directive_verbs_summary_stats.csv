@@ -3,7 +3,7 @@ extraction,n English items,2177
 extraction,n items with a directive verb,1659
 extraction,% items with a directive verb,76.2%
 extraction,n distinct verbs,56
-analysis 1 (checklists),n checklists (>= 1 item with a directive verb),56
+analysis 1 (checklists),n checklists: all / English / with >= 1 directive verb (analysed),68 / 63 / 56
 analysis 1 (checklists),n items with a verb per checklist,26 (IQR 12-39)
 analysis 1 (checklists),n distinct verbs per checklist,10 (IQR 6-12)
 analysis 1 (checklists),Shannon H,1.95 (IQR 1.42-2.15)
