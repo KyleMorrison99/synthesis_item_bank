@@ -1,158 +1,158 @@
 word,class,n_items_opening_with_word,n_items_extracted_as_verb
-number,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",13,0
-search,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",10,1
-method,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",7,0
-study,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",6,0
-type,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",6,0
-data,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",4,0
-abstract,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-effect,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-process,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-purpose,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-reference,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,2
-summary,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-table,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-year,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",3,0
-research,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",2,0
-time,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",2,0
-date,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-group,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-level,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-mass,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-question,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-sample,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-target,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-title,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-total,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",1,0
-access,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-balance,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-change,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-code,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-contact,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-control,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-cross,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-design,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-estimate,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-flow,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-focus,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-form,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-frame,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-label,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-limit,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-link,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-match,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-measure,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-model,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-order,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-plan,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-point,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-range,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-result,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-review,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-risk,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-scale,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-score,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-signal,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-source,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-structure,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-support,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-test,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-value,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-weight,"ambiguous noun/verb (accepted only before a determiner, pronoun, number or wh-word)",0,0
-describe,strong directive verb (accepted when initial and in base form; not followed by 'of'),440,466
-provide,strong directive verb (accepted when initial and in base form; not followed by 'of'),190,207
-present,strong directive verb (accepted when initial and in base form; not followed by 'of'),133,171
-specify,strong directive verb (accepted when initial and in base form; not followed by 'of'),120,130
-report,strong directive verb (accepted when initial and in base form; not followed by 'of'),88,122
-state,strong directive verb (accepted when initial and in base form; not followed by 'of'),85,98
-list,strong directive verb (accepted when initial and in base form; not followed by 'of'),61,58
-discuss,strong directive verb (accepted when initial and in base form; not followed by 'of'),55,55
-indicate,strong directive verb (accepted when initial and in base form; not followed by 'of'),55,59
-identify,strong directive verb (accepted when initial and in base form; not followed by 'of'),44,53
-give,strong directive verb (accepted when initial and in base form; not followed by 'of'),32,35
-include,strong directive verb (accepted when initial and in base form; not followed by 'of'),20,28
-summarize,strong directive verb (accepted when initial and in base form; not followed by 'of'),20,20
-cite,strong directive verb (accepted when initial and in base form; not followed by 'of'),15,17
-summarise,strong directive verb (accepted when initial and in base form; not followed by 'of'),14,19
-explain,strong directive verb (accepted when initial and in base form; not followed by 'of'),12,13
-consider,strong directive verb (accepted when initial and in base form; not followed by 'of'),9,14
-declare,strong directive verb (accepted when initial and in base form; not followed by 'of'),8,8
-use,strong directive verb (accepted when initial and in base form; not followed by 'of'),7,5
-inform,strong directive verb (accepted when initial and in base form; not followed by 'of'),6,6
-justify,strong directive verb (accepted when initial and in base form; not followed by 'of'),6,6
-detail,strong directive verb (accepted when initial and in base form; not followed by 'of'),5,5
-document,strong directive verb (accepted when initial and in base form; not followed by 'of'),5,5
-see,strong directive verb (accepted when initial and in base form; not followed by 'of'),5,5
-select,strong directive verb (accepted when initial and in base form; not followed by 'of'),4,4
-share,strong directive verb (accepted when initial and in base form; not followed by 'of'),4,4
-define,strong directive verb (accepted when initial and in base form; not followed by 'of'),3,4
-disclose,strong directive verb (accepted when initial and in base form; not followed by 'of'),3,3
-acknowledge,strong directive verb (accepted when initial and in base form; not followed by 'of'),2,2
-break,strong directive verb (accepted when initial and in base form; not followed by 'of'),2,2
-make,strong directive verb (accepted when initial and in base form; not followed by 'of'),2,3
-mention,strong directive verb (accepted when initial and in base form; not followed by 'of'),2,2
-account,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-allow,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-articulate,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-assess,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-check,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-communicate,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-compare,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,4
-conduct,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-draw,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-explore,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-integrate,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-name,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,2
-perform,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-quote,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-reflect,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-register,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-synthesize,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-tabulate,strong directive verb (accepted when initial and in base form; not followed by 'of'),1,1
-add,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-address,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-append,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-apply,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-attach,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-avoid,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-calculate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-choose,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-clarify,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-comment,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-contrast,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-determine,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-display,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,1
-distinguish,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-elaborate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-ensure,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-enumerate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-evaluate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-examine,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-explicate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-follow,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-highlight,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-illustrate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-interpret,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-map,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-narrate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-note,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-offer,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-outline,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-pool,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-pre-register,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,1
-preregister,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-quantify,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-rank,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-rate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-record,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-refer,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-relate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-restate,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-show,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,1
-stratify,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-supply,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-synthesise,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-verify,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-visualise,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-visualize,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
-write,strong directive verb (accepted when initial and in base form; not followed by 'of'),0,0
+number,ambiguous noun/verb (needs object-like context),13,0
+search,ambiguous noun/verb (needs object-like context),10,1
+method,ambiguous noun/verb (needs object-like context),7,0
+study,ambiguous noun/verb (needs object-like context),6,0
+type,ambiguous noun/verb (needs object-like context),6,0
+data,ambiguous noun/verb (needs object-like context),4,0
+abstract,ambiguous noun/verb (needs object-like context),3,0
+effect,ambiguous noun/verb (needs object-like context),3,0
+process,ambiguous noun/verb (needs object-like context),3,0
+purpose,ambiguous noun/verb (needs object-like context),3,0
+reference,ambiguous noun/verb (needs object-like context),3,2
+summary,ambiguous noun/verb (needs object-like context),3,0
+table,ambiguous noun/verb (needs object-like context),3,0
+year,ambiguous noun/verb (needs object-like context),3,0
+research,ambiguous noun/verb (needs object-like context),2,0
+time,ambiguous noun/verb (needs object-like context),2,0
+date,ambiguous noun/verb (needs object-like context),1,0
+group,ambiguous noun/verb (needs object-like context),1,0
+level,ambiguous noun/verb (needs object-like context),1,0
+mass,ambiguous noun/verb (needs object-like context),1,0
+question,ambiguous noun/verb (needs object-like context),1,0
+sample,ambiguous noun/verb (needs object-like context),1,0
+target,ambiguous noun/verb (needs object-like context),1,0
+title,ambiguous noun/verb (needs object-like context),1,0
+total,ambiguous noun/verb (needs object-like context),1,0
+access,ambiguous noun/verb (needs object-like context),0,0
+balance,ambiguous noun/verb (needs object-like context),0,0
+change,ambiguous noun/verb (needs object-like context),0,0
+code,ambiguous noun/verb (needs object-like context),0,0
+contact,ambiguous noun/verb (needs object-like context),0,0
+control,ambiguous noun/verb (needs object-like context),0,0
+cross,ambiguous noun/verb (needs object-like context),0,0
+design,ambiguous noun/verb (needs object-like context),0,0
+estimate,ambiguous noun/verb (needs object-like context),0,0
+flow,ambiguous noun/verb (needs object-like context),0,0
+focus,ambiguous noun/verb (needs object-like context),0,0
+form,ambiguous noun/verb (needs object-like context),0,0
+frame,ambiguous noun/verb (needs object-like context),0,0
+label,ambiguous noun/verb (needs object-like context),0,0
+limit,ambiguous noun/verb (needs object-like context),0,0
+link,ambiguous noun/verb (needs object-like context),0,0
+match,ambiguous noun/verb (needs object-like context),0,0
+measure,ambiguous noun/verb (needs object-like context),0,0
+model,ambiguous noun/verb (needs object-like context),0,0
+order,ambiguous noun/verb (needs object-like context),0,0
+plan,ambiguous noun/verb (needs object-like context),0,0
+point,ambiguous noun/verb (needs object-like context),0,0
+range,ambiguous noun/verb (needs object-like context),0,0
+result,ambiguous noun/verb (needs object-like context),0,0
+review,ambiguous noun/verb (needs object-like context),0,0
+risk,ambiguous noun/verb (needs object-like context),0,0
+scale,ambiguous noun/verb (needs object-like context),0,0
+score,ambiguous noun/verb (needs object-like context),0,0
+signal,ambiguous noun/verb (needs object-like context),0,0
+source,ambiguous noun/verb (needs object-like context),0,0
+structure,ambiguous noun/verb (needs object-like context),0,0
+support,ambiguous noun/verb (needs object-like context),0,0
+test,ambiguous noun/verb (needs object-like context),0,0
+value,ambiguous noun/verb (needs object-like context),0,0
+weight,ambiguous noun/verb (needs object-like context),0,0
+describe,strong directive verb,440,466
+provide,strong directive verb,190,207
+present,strong directive verb,133,171
+specify,strong directive verb,120,130
+report,strong directive verb,88,122
+state,strong directive verb,85,98
+list,strong directive verb,61,58
+discuss,strong directive verb,55,55
+indicate,strong directive verb,55,59
+identify,strong directive verb,44,53
+give,strong directive verb,32,35
+include,strong directive verb,20,28
+summarize,strong directive verb,20,20
+cite,strong directive verb,15,17
+summarise,strong directive verb,14,19
+explain,strong directive verb,12,13
+consider,strong directive verb,9,14
+declare,strong directive verb,8,8
+use,strong directive verb,7,5
+inform,strong directive verb,6,6
+justify,strong directive verb,6,6
+detail,strong directive verb,5,5
+document,strong directive verb,5,5
+see,strong directive verb,5,5
+select,strong directive verb,4,4
+share,strong directive verb,4,4
+define,strong directive verb,3,4
+disclose,strong directive verb,3,3
+acknowledge,strong directive verb,2,2
+break,strong directive verb,2,2
+make,strong directive verb,2,3
+mention,strong directive verb,2,2
+account,strong directive verb,1,1
+allow,strong directive verb,1,1
+articulate,strong directive verb,1,1
+assess,strong directive verb,1,1
+check,strong directive verb,1,1
+communicate,strong directive verb,1,1
+compare,strong directive verb,1,4
+conduct,strong directive verb,1,1
+draw,strong directive verb,1,1
+explore,strong directive verb,1,1
+integrate,strong directive verb,1,1
+name,strong directive verb,1,2
+perform,strong directive verb,1,1
+quote,strong directive verb,1,1
+reflect,strong directive verb,1,1
+register,strong directive verb,1,1
+synthesize,strong directive verb,1,1
+tabulate,strong directive verb,1,1
+add,strong directive verb,0,0
+address,strong directive verb,0,0
+append,strong directive verb,0,0
+apply,strong directive verb,0,0
+attach,strong directive verb,0,0
+avoid,strong directive verb,0,0
+calculate,strong directive verb,0,0
+choose,strong directive verb,0,0
+clarify,strong directive verb,0,0
+comment,strong directive verb,0,0
+contrast,strong directive verb,0,0
+determine,strong directive verb,0,0
+display,strong directive verb,0,1
+distinguish,strong directive verb,0,0
+elaborate,strong directive verb,0,0
+ensure,strong directive verb,0,0
+enumerate,strong directive verb,0,0
+evaluate,strong directive verb,0,0
+examine,strong directive verb,0,0
+explicate,strong directive verb,0,0
+follow,strong directive verb,0,0
+highlight,strong directive verb,0,0
+illustrate,strong directive verb,0,0
+interpret,strong directive verb,0,0
+map,strong directive verb,0,0
+narrate,strong directive verb,0,0
+note,strong directive verb,0,0
+offer,strong directive verb,0,0
+outline,strong directive verb,0,0
+pool,strong directive verb,0,0
+pre-register,strong directive verb,0,1
+preregister,strong directive verb,0,0
+quantify,strong directive verb,0,0
+rank,strong directive verb,0,0
+rate,strong directive verb,0,0
+record,strong directive verb,0,0
+refer,strong directive verb,0,0
+relate,strong directive verb,0,0
+restate,strong directive verb,0,0
+show,strong directive verb,0,1
+stratify,strong directive verb,0,0
+supply,strong directive verb,0,0
+synthesise,strong directive verb,0,0
+verify,strong directive verb,0,0
+visualise,strong directive verb,0,0
+visualize,strong directive verb,0,0
+write,strong directive verb,0,0

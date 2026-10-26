@@ -1,48 +1,21 @@
-analysis,subset,metric,n,value,q1,q3,note
-extraction,all items,n items (all languages),,2312,,,
-extraction,English items,n items,,2177,,,
-extraction,English items,n items with a directive verb,,1659,,,
-extraction,English items,% items with a directive verb,,76.206,,,
-extraction,English items,n items with coordinated verbs (e.g. 'Describe and justify'),,60,,,
-extraction,English items,n distinct directive verbs overall,,56,,,
-analysis 1,all English-language checklists,n checklists,,63,,,
-analysis 1,checklists with >= 1 item with a directive verb,n checklists,,56,,,
-analysis 1,checklists with >= 5 items with a directive verb,n checklists,,51,,,
-analysis 1,checklists with >= 1 item with a directive verb,"n items per checklist (median, IQR)",56,28,19,45.5,
-analysis 1,checklists with >= 1 item with a directive verb,"n items with a directive verb per checklist (median, IQR)",56,25.5,12,39,
-analysis 1,checklists with >= 1 item with a directive verb,"proportion of items with a directive verb (median, IQR)",56,0.979,0.817,1,
-analysis 1,checklists with >= 1 item with a directive verb,"n distinct verbs per checklist (median, IQR)",56,10,5.75,12,
-analysis 1,checklists with >= 1 item with a directive verb,"Shannon diversity H (median, IQR)",56,1.954,1.416,2.15,
-analysis 1,checklists with >= 1 item with a directive verb,"Pielou evenness J = H/ln(S) (median, IQR)",53,0.848,0.8,0.9,undefined (NA) when S = 1
-analysis 1,checklists with >= 1 item with a directive verb,"proportion of items using the modal verb (median, IQR)",56,0.337,0.262,0.448,
-analysis 1,checklists with >= 1 item with a directive verb,% checklists with >= 2 distinct verbs,56,94.643,,,53 of 56
-analysis 1,checklists with >= 1 item with a directive verb,% checklists with >= 3 distinct verbs,56,89.286,,,50 of 56
-analysis 1,checklists with >= 5 items with a directive verb,"n distinct verbs per checklist (median, IQR)",51,11,7,12,
-analysis 1,checklists with >= 5 items with a directive verb,"proportion of items using the modal verb (median, IQR)",51,0.312,0.26,0.417,
-analysis 1,checklists with >= 5 items with a directive verb,% checklists with >= 2 distinct verbs,51,100,,,51 of 51
-analysis 1,checklists with >= 5 items with a directive verb,% checklists with >= 3 distinct verbs,51,98.039,,,50 of 51
-analysis 1,checklists with >= 1 item with a directive verb,Spearman rho: n items with verb vs n distinct verbs,56,0.855,,,p = 5.05e-17
-analysis 1,checklists with >= 1 item with a directive verb,Spearman rho: n items (all) vs n distinct verbs,56,0.615,,,p = 4.46e-07
-analysis 1,checklists with >= 1 item with a directive verb,Pearson r: n items with verb vs n distinct verbs,56,0.812,,,p = 2.91e-14
-analysis 1,checklists with >= 10 items with a directive verb,n checklists,,46,,,
-analysis 1,checklists with >= 10 items with a directive verb,"rarefied expected distinct verbs per 10 items (median, IQR)",46,5.957,5.111,6.365,
-analysis 1,checklists with >= 10 items with a directive verb,"observed distinct verbs (median, IQR)",46,11,8,12,
-analysis 2,all concepts,n concepts (non-missing labels),,351,,,
-analysis 2,all concepts,n item x concept pairs (English items),,3516,,,
-analysis 2,all concepts,n item x concept pairs with a directive verb,,2839,,,
-analysis 2,concepts requested by >= 2 items with a directive verb,n concepts,,188,,,
-analysis 2,concepts requested by >= 2 items with a directive verb,"n items per concept (median, IQR)",188,7.5,3,21,
-analysis 2,concepts requested by >= 2 items with a directive verb,"n checklists per concept (median, IQR)",188,6,3,19,
-analysis 2,concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR)",188,3,2,5,
-analysis 2,concepts requested by >= 2 items with a directive verb,% concepts requested with >= 2 distinct verbs,188,81.383,,,153 of 188
-analysis 2,concepts requested by >= 2 items with a directive verb,% concepts requested with >= 3 distinct verbs,188,54.255,,,102 of 188
-analysis 2,concepts requested by >= 5 items with a directive verb,"n distinct verbs per concept (median, IQR)",111,5,3,6,
-analysis 2,concepts requested by >= 5 items with a directive verb,% concepts requested with >= 2 distinct verbs,111,94.595,,,105 of 111
-analysis 2,concepts requested by >= 5 items with a directive verb,% concepts requested with >= 3 distinct verbs,111,83.784,,,93 of 111
-analysis 2 by section,Title: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",7,4,3,4,100% with >= 2 verbs; 85.7% with >= 3 verbs
-analysis 2 by section,Abstract: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",35,2,2,3,85.7% with >= 2 verbs; 40% with >= 3 verbs
-analysis 2 by section,Introduction: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",13,3,2,6,100% with >= 2 verbs; 69.2% with >= 3 verbs
-analysis 2 by section,Methodology: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",104,2,1,4,73.1% with >= 2 verbs; 43.3% with >= 3 verbs
-analysis 2 by section,Results: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",33,3,2,5,84.8% with >= 2 verbs; 69.7% with >= 3 verbs
-analysis 2 by section,Discussion: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",10,5.5,4.25,7.75,90% with >= 2 verbs; 80% with >= 3 verbs
-analysis 2 by section,Other information: concepts requested by >= 2 items with a directive verb,"n distinct verbs per concept (median, IQR); % with >= 2 verbs in note",17,3,2,5,94.1% with >= 2 verbs; 70.6% with >= 3 verbs
+analysis,metric,value
+extraction,n English items,2177
+extraction,n items with a directive verb,1659
+extraction,% items with a directive verb,76.2%
+extraction,n distinct verbs,56
+analysis 1 (checklists),n checklists (>= 1 item with a directive verb),56
+analysis 1 (checklists),n items with a verb per checklist,26 (IQR 12-39)
+analysis 1 (checklists),n distinct verbs per checklist,10 (IQR 6-12)
+analysis 1 (checklists),Shannon H,1.95 (IQR 1.42-2.15)
+analysis 1 (checklists),Pielou J (NA when S = 1),0.85 (IQR 0.80-0.90)
+analysis 1 (checklists),proportion of items using the modal verb,0.34 (IQR 0.26-0.45)
+analysis 1 (checklists),% checklists with >= 2 distinct verbs,94.6% (53/56)
+analysis 1 (checklists),% checklists with >= 3 distinct verbs,89.3% (50/56)
+analysis 1 (checklists),Spearman rho: n items vs n distinct verbs,"rho = 0.85, p = 5e-17"
+analysis 1 (checklists),rarefied distinct verbs per 10 items (n = 46 checklists with >= 10 items),5.96 (IQR 5.11-6.36)
+analysis 2 (concepts),n concepts (requested by >= 2 items with a directive verb),188
+analysis 2 (concepts),n items per concept,8 (IQR 3-21)
+analysis 2 (concepts),n checklists per concept,6 (IQR 3-19)
+analysis 2 (concepts),n distinct verbs per concept,3 (IQR 2-5)
+analysis 2 (concepts),% concepts requested with >= 2 distinct verbs,81.4% (153/188)
+analysis 2 (concepts),% concepts requested with >= 3 distinct verbs,54.3% (102/188)

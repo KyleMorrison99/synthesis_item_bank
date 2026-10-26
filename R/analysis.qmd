@@ -2794,3 +2794,604 @@ iwalk(seq_len(nrow(concepts_by_section)), function(i, ...) {
 saveWorkbook(wb, file.path("data", "concept_tables_by_section.xlsx"), overwrite = TRUE)
 ```
 
+
+# **Directive verbs in reporting items**
+
+Which verb opens each reporting item ("*Describe* ...", "*Report* ...", "*Specify* ..."), how many
+distinct verbs each checklist uses, and how many verbs the same concept is requested with across
+guidelines. English items only (the Portuguese/Spanish checklists are not tagged with the English
+model). Decisions to note: the first verb is used for coordinated verbs ("Describe and justify");
+British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
+Outputs are written to `output/directive_verbs/`.
+
+## *Set-up and text cleaning*
+```{r}
+MULTI_VERB_RULE    <- "first"   # "first" or "exclude" (drop "Describe and justify" items)
+HARMONISE_SPELLING <- TRUE
+DV_SEED            <- 2026      # 100-item manual-check sample
+
+dv_dir <- here("output", "directive_verbs")
+dir.create(dv_dir, recursive = TRUE, showWarnings = FALSE)
+
+# a few items contain Windows-1252 bytes that are not valid UTF-8
+fix_encoding <- function(x) {
+  bad <- !is.na(x) & !stri_enc_isutf8(x)
+  x[bad] <- stri_encode(x[bad], from = "windows-1252", to = "UTF-8")
+  x <- stri_enc_toutf8(x, validate = TRUE)
+  str_replace_all(x, " ", " ")
+}
+
+# list numbering / bullets / quotes and trailing extraction notes ("d-nb?", "paste.txt?")
+clean_text <- function(x) {
+  x <- str_squish(x)
+  x <- str_remove(x, "\\s*(d-nb\\?|paste\\.txt\\?)\\s*$")
+  x <- str_remove(x, "^[\"'“”\\-–—•\\*]+\\s*")
+  x <- str_remove(x, "^\\(?\\d{1,3}[a-z]?[.):]\\)?\\s+")
+  x <- str_remove(x, "^\\(?[a-z][.)]\\s+")
+  x <- str_remove(x, "^[Ii]tem\\s*\\d+[a-z]?[.:)]?\\s+")
+  str_squish(x)
+}
+
+dv_items <- data %>%
+  mutate(
+    encoding_repaired = !is.na(reporting_item) & !stri_enc_isutf8(reporting_item),
+    text_clean = clean_text(fix_encoding(reporting_item))
+  )
+
+dv_items_en <- dv_items %>% filter(language == "english")
+```
+
+## *udpipe annotation*
+```{r}
+dv_model <- udpipe_load_model(here("R.data", "english-ewt-ud-2.5-191206.udpipe"))
+
+dv_anno <- udpipe_annotate(dv_model, x = dv_items_en$text_clean,
+                           doc_id = dv_items_en$checklist_item_id) %>%
+  as.data.frame() %>%
+  as_tibble() %>%
+  mutate(
+    tl = str_to_lower(token),
+    ll = str_to_lower(lemma),
+    token_id = as.integer(token_id),
+    head_token_id = suppressWarnings(as.integer(head_token_id))
+  )
+```
+
+## *Extraction rules*
+udpipe tags most sentence-initial imperatives wrongly ("Describe" as AUX/ADJ/ADV, "Report" as
+NOUN, "Present" as ADJ), so the directive verb is found with a rule that combines the udpipe
+annotation with a curated lexicon: *strong* verbs are accepted whenever they open the item in base
+form (not followed by "of": "List of citations"); *ambiguous* words that also open noun phrases
+("search", "study", "reference", "number", ...) only before a determiner, pronoun, number or
+wh-word ("Search at least two databases" but not "Search terms used"); any other token tagged
+VERB/VB by udpipe under the same condition. Leading conditional phrases ("If applicable,",
+"For each study,"), labels before a colon ("Background: state ...") and adverbs ("Clearly") are
+skipped first.
+```{r}
+strong_verbs <- c(
+  "describe", "provide", "present", "specify", "report", "state", "list",
+  "discuss", "indicate", "identify", "give", "include", "summarize",
+  "summarise", "cite", "explain", "declare", "consider", "inform", "justify",
+  "document", "detail", "share", "select", "define", "disclose", "acknowledge",
+  "mention", "articulate", "tabulate", "synthesize", "synthesise", "perform",
+  "integrate", "reflect", "register", "preregister", "pre-register",
+  "communicate", "compare", "contrast", "assess", "draw", "quote", "make",
+  "break", "allow", "conduct", "see", "name", "outline", "address", "clarify",
+  "highlight", "ensure", "avoid", "follow", "calculate", "evaluate",
+  "interpret", "offer", "elaborate", "explore", "examine", "enumerate",
+  "supply", "append", "attach", "note", "comment", "show", "display",
+  "illustrate", "record", "refer", "check", "account", "use", "add", "apply",
+  "choose", "determine", "distinguish", "explicate", "map", "narrate", "pool",
+  "quantify", "rate", "rank", "relate", "restate", "stratify", "write",
+  "visualize", "visualise", "verify"
+)
+ambiguous_verbs <- setdiff(c(
+  "search", "study", "reference", "time", "effect", "research", "data",
+  "group", "target", "summary", "question", "date", "total", "year", "level",
+  "purpose", "process", "sample", "table", "test", "mass", "type", "number",
+  "title", "review", "form", "model", "plan", "design", "measure", "estimate",
+  "label", "link", "control", "focus", "support", "point", "access",
+  "abstract", "result", "method", "change", "order", "contact", "code",
+  "score", "value", "structure", "flow", "risk", "source", "weight",
+  "signal", "frame", "scale", "range", "limit", "match", "balance", "cross"
+), strong_verbs)
+lexicon <- c(strong_verbs, ambiguous_verbs)
+
+preamble_starters <- c(
+  "if", "when", "whenever", "where", "wherever", "while", "for", "in", "as",
+  "at", "on", "with", "after", "before", "during", "based", "according",
+  "depending", "regardless", "except", "once", "to", "by", "from", "under",
+  "within", "throughout", "although", "though", "unless", "following",
+  "e.g.", "i.e.", "ideally", "only", "also", "additionally", "alternatively",
+  "otherwise", "optionally", "particularly", "especially", "please"
+)
+skip_words <- c(
+  "please", "also", "clearly", "briefly", "explicitly", "fully", "always",
+  "ideally", "then", "specifically", "carefully", "adequately",
+  "appropriately", "concisely", "succinctly", "transparently", "down"
+)
+question_words <- c(
+  "how", "what", "which", "why", "who", "whom", "whether", "were", "was",
+  "did", "do", "does", "is", "are", "has", "have", "can", "could", "will", "would"
+)
+strict_next_words <- c(
+  "whether", "if", "how", "which", "what", "where", "when", "why", "who",
+  "that", "at", "about", "each", "all", "any", "both", "every", "such", ":"
+)
+modal_regex <- "\\b(should|must|may|might|ought|need(s)? to|has to|have to|is to|are to)\\b"
+protected_words <- c(lexicon, preamble_starters, question_words)
+
+skip_adverbs <- function(tk, i) {
+  n <- nrow(tk)
+  while (i <= n && !tk$tl[i] %in% protected_words &&
+         (tk$tl[i] %in% skip_words || (tk$upos[i] == "ADV" && tk$xpos[i] == "RB")))
+    i <- i + 1
+  i
+}
+is_base_form <- function(tk, i) {
+  tk$tl[i] %in% lexicon || tk$tl[i] == tk$ll[i] || tk$xpos[i] %in% c("VB", "VBP")
+}
+is_verb_word <- function(tk, i) {
+  i <= nrow(tk) && is_base_form(tk, i) &&
+    (tk$tl[i] %in% lexicon || tk$ll[i] %in% lexicon ||
+       (tk$upos[i] == "VERB" && tk$xpos[i] == "VB"))
+}
+plausible_token <- function(tk, i) str_detect(tk$token[i], "^[A-Z]?[a-z][a-z-]{2,}$")
+
+# "and define all ..." after an ambiguous word
+coord_ok <- function(tk, j) {
+  n <- nrow(tk)
+  if (j > n || !tk$tl[j] %in% c("and", "or", "/")) return(FALSE)
+  k <- skip_adverbs(tk, j + 1)
+  if (k > n || !is_verb_word(tk, k)) return(FALSE)
+  m <- skip_adverbs(tk, k + 1)
+  m <= n && (tk$upos[m] %in% c("DET", "PRON", "NUM") || tk$tl[m] %in% strict_next_words)
+}
+
+# is token i the directive verb? strict = TRUE also constrains strong verbs
+# (used inside a leading phrase: "For each study report ...")
+test_candidate <- function(tk, i, strict = FALSE) {
+  n <- nrow(tk)
+  if (i > n || !is_base_form(tk, i)) return(NULL)
+  w <- tk$tl[i]; lem <- tk$ll[i]
+  j <- skip_adverbs(tk, i + 1)
+  nxt <- if (j <= n) tk$tl[j] else ""
+  nxt_upos <- if (j <= n) tk$upos[j] else ""
+  if (nxt == "of") return(NULL)
+  strict_ok <- nxt_upos %in% c("DET", "PRON", "NUM") || nxt %in% strict_next_words || coord_ok(tk, j)
+  object_ok <- strict_ok || nxt_upos %in% c("NOUN", "PROPN", "ADJ", "ADV")
+  strong <- w %in% strong_verbs || lem %in% strong_verbs
+  ambig  <- w %in% ambiguous_verbs || lem %in% ambiguous_verbs
+  if (strong && (!strict || object_ok)) return(list(i = i, source = "lexicon (strong verb)"))
+  if (ambig && strict_ok) return(list(i = i, source = "lexicon (ambiguous word) + context"))
+  if (!strong && !ambig && tk$upos[i] == "VERB" && tk$xpos[i] == "VB" && strict_ok && plausible_token(tk, i))
+    return(list(i = i, source = "udpipe VERB/VB + context"))
+  NULL
+}
+
+# first "," ":" ";" after p0 that is not inside parentheses
+first_delimiter <- function(tk, p0, window = 30) {
+  n <- nrow(tk); depth <- 0
+  for (q in seq(p0 + 1, min(n, p0 + window))) {
+    if (q > n) break
+    if (tk$tl[q] %in% c("(", "[")) depth <- depth + 1
+    if (tk$tl[q] %in% c(")", "]")) depth <- max(0, depth - 1)
+    if (depth == 0 && tk$tl[q] %in% c(",", ":", ";")) return(q)
+  }
+  NA_integer_
+}
+
+# indices of verbs coordinated with the directive verb ("Describe and justify")
+collect_coordinated <- function(tk, i) {
+  n <- nrow(tk); idx <- integer(0)
+  j <- skip_adverbs(tk, i + 1)
+  while (j <= n && tk$tl[j] %in% c("and", "or", "/", ",")) {
+    k <- skip_adverbs(tk, j + 1)
+    if (k <= n && is_verb_word(tk, k) && tk$tl[k] != "of") {
+      idx <- c(idx, k); j <- skip_adverbs(tk, k + 1)
+    } else break
+  }
+  idx
+}
+
+dv_empty <- tibble(
+  verb_token = NA_character_, verb_lemma = NA_character_, verb_source = NA_character_,
+  verb_position = NA_integer_, coordinated_verbs = NA_character_,
+  leading_text_skipped = NA_character_, extraction_flags = NA_character_,
+  first_token_after_skip = NA_character_
+)
+
+extract_one <- function(tk) {
+  n <- nrow(tk)
+  if (n == 0) return(dv_empty)
+  flags <- character(0); skipped <- character(0); pos <- 1
+  while (pos <= n && (tk$upos[pos] == "PUNCT" ||
+                      str_detect(tk$tl[pos], "^\\(?\\d{1,3}[a-z]?[.):]?\\)?$")))
+    pos <- pos + 1
+  if (pos > n) return(dv_empty)
+  cand <- NULL
+  for (iter in 1:4) {
+    p0 <- skip_adverbs(tk, pos)
+    if (p0 > n) break
+    if (p0 > pos) flags <- c(flags, "adverb/particle before verb skipped")
+    cand <- test_candidate(tk, p0)
+    if (!is.null(cand)) { pos <- p0; break }
+    w <- tk$tl[p0]
+    # (i) leading conditional / scoping phrase
+    if ((w %in% preamble_starters || tk$upos[p0] %in% c("SCONJ", "ADP")) && !w %in% question_words) {
+      d <- first_delimiter(tk, p0)
+      hi <- min(n, p0 + 30, if (is.na(d)) n else d - 1)
+      hit <- NULL
+      if (hi > p0 + 1) {
+        for (q in seq(p0 + 2, hi)) {
+          c2 <- test_candidate(tk, q, strict = TRUE)
+          if (!is.null(c2) && !tk$tl[q - 1] %in% c("to", "of", "and", "or")) { hit <- c2; break }
+        }
+      }
+      if (!is.null(hit)) {
+        skipped <- c(skipped, paste(tk$token[pos:(hit$i - 1)], collapse = " "))
+        flags <- c(flags, "verb inside leading phrase (no comma)")
+        cand <- hit; pos <- hit$i
+        break
+      }
+      if (is.na(d)) break
+      skipped <- c(skipped, paste(tk$token[pos:d], collapse = " "))
+      flags <- c(flags, "leading phrase skipped")
+      pos <- d + 1
+      next
+    }
+    # (ii) label before a colon
+    cpos <- which(tk$tl == ":" & seq_len(n) > p0 & seq_len(n) <= p0 + 4)
+    if (length(cpos)) {
+      skipped <- c(skipped, paste(tk$token[pos:cpos[1]], collapse = " "))
+      flags <- c(flags, "label before colon skipped")
+      pos <- cpos[1] + 1
+      next
+    }
+    break
+  }
+  first_tok <- if (pos <= n) tk$tl[min(n, skip_adverbs(tk, pos))] else NA_character_
+  if (is.null(cand)) {
+    return(dv_empty %>%
+             mutate(leading_text_skipped = if (length(skipped)) paste(skipped, collapse = " | ") else NA_character_,
+                    extraction_flags = if (length(flags)) paste(unique(flags), collapse = "; ") else NA_character_,
+                    first_token_after_skip = first_tok))
+  }
+  i <- cand$i
+  lemma_of <- function(k) if (tk$tl[k] %in% lexicon) tk$tl[k] else tk$ll[k]
+  coord <- vapply(collect_coordinated(tk, i), lemma_of, character(1))
+  if (length(coord)) flags <- c(flags, "multiple coordinated verbs")
+  if (lemma_of(i) == "see") flags <- c(flags, "cross-reference item (See ...)")
+  tibble(
+    verb_token = tk$token[i], verb_lemma = lemma_of(i), verb_source = cand$source,
+    verb_position = i,
+    coordinated_verbs = if (length(coord)) paste(c(lemma_of(i), coord), collapse = "; ") else NA_character_,
+    leading_text_skipped = if (length(skipped)) paste(skipped, collapse = " | ") else NA_character_,
+    extraction_flags = if (length(flags)) paste(unique(flags), collapse = "; ") else NA_character_,
+    first_token_after_skip = first_tok
+  )
+}
+```
+
+## *Extract the verbs*
+```{r}
+dv_extracted <- dv_anno %>%
+  arrange(doc_id, paragraph_id, sentence_id, token_id) %>%
+  group_by(doc_id) %>%
+  group_modify(~ extract_one(.x)) %>%
+  ungroup() %>%
+  rename(checklist_item_id = doc_id)
+
+# parse information used to label items without a directive verb
+dv_sentence <- dv_anno %>%
+  filter(sentence_id == 1) %>%
+  group_by(doc_id) %>%
+  summarise(
+    first_sentence = first(sentence),
+    root_id = token_id[dep_rel == "root"][1],
+    root_has_subject = any(str_detect(dep_rel, "^nsubj") & head_token_id == root_id),
+    .groups = "drop"
+  ) %>%
+  rename(checklist_item_id = doc_id)
+
+spelling_map <- c(
+  summarise = "summarize", synthesise = "synthesize", analyse = "analyze",
+  characterise = "characterize", emphasise = "emphasize", visualise = "visualize",
+  categorise = "categorize", prioritise = "prioritize", organise = "organize",
+  "pre-register" = "preregister", recognise = "recognize", itemise = "itemize"
+)
+harmonise <- function(v) if (HARMONISE_SPELLING) ifelse(v %in% names(spelling_map), unname(spelling_map[v]), v) else v
+
+item_verbs <- dv_items %>%
+  left_join(dv_extracted, by = "checklist_item_id") %>%
+  left_join(dv_sentence, by = "checklist_item_id") %>%
+  mutate(
+    verb_raw = verb_lemma,
+    verb = harmonise(verb_lemma),
+    multi_verb = !is.na(coordinated_verbs),
+    no_verb_reason = case_when(
+      !is.na(verb) ~ NA_character_,
+      language != "english" ~ "non-English item (not tagged with english-ewt)",
+      str_detect(str_to_lower(text_clean), "^(not applicable|n/?a\\b)") ~ "placeholder (not applicable)",
+      first_token_after_skip %in% question_words ~ "question or indirect question (How ..., Whether ..., Were ...)",
+      str_detect(str_to_lower(first_sentence), modal_regex) | root_has_subject %in% TRUE ~
+        "declarative or modal statement (subject + finite verb, e.g. 'The title must ...', 'Authors should ...')",
+      TRUE ~ "noun phrase or fragment (no initial verb)"
+    )
+  )
+
+if (MULTI_VERB_RULE == "exclude") {
+  item_verbs <- item_verbs %>%
+    mutate(no_verb_reason = if_else(multi_verb %in% TRUE, "multi-verb item excluded (MULTI_VERB_RULE)", no_verb_reason),
+           verb = if_else(multi_verb %in% TRUE, NA_character_, verb))
+}
+
+item_level <- item_verbs %>%
+  select(checklist_item_id, study_id, checklist, reporting_item_number, language,
+         section, standardised_section, reporting_item, text_clean, verb, verb_raw,
+         verb_token, verb_source, verb_position, multi_verb, coordinated_verbs,
+         leading_text_skipped, extraction_flags, no_verb_reason, encoding_repaired)
+write_csv(item_level, file.path(dv_dir, "item_level_verbs.csv"), na = "")
+
+verbs_en <- item_verbs %>% filter(language == "english")
+n_en <- nrow(verbs_en)
+n_en_verb <- sum(!is.na(verbs_en$verb))
+
+# extraction summary
+verbs_en %>%
+  mutate(status = if_else(is.na(verb), no_verb_reason, "directive verb extracted")) %>%
+  count(status, name = "n_items") %>%
+  mutate(pct_items = round(100 * n_items / n_en, 1)) %>%
+  arrange(desc(n_items))
+
+# overall verb frequency
+verb_frequency <- verbs_en %>%
+  filter(!is.na(verb)) %>%
+  group_by(verb) %>%
+  summarise(n_items = n(), n_checklists = n_distinct(checklist),
+            n_guidelines = n_distinct(study_id), .groups = "drop") %>%
+  mutate(pct_of_items_with_verb = round(100 * n_items / n_en_verb, 1),
+         pct_of_all_english_items = round(100 * n_items / n_en, 1)) %>%
+  arrange(desc(n_items), verb)
+write_csv(verb_frequency, file.path(dv_dir, "verb_frequency.csv"))
+verb_frequency
+
+# 100-item sample for manual checking
+set.seed(DV_SEED)
+item_level %>%
+  filter(language == "english") %>%
+  slice_sample(n = 100) %>%
+  arrange(checklist_item_id) %>%
+  select(checklist_item_id, checklist, reporting_item, verb, coordinated_verbs,
+         leading_text_skipped, extraction_flags, no_verb_reason) %>%
+  mutate(manual_verb = "", manual_agree = "", comment = "") %>%
+  write_csv(file.path(dv_dir, "manual_check_sample_100.csv"), na = "")
+
+# lexicon, with how often each word opens an item and was extracted as the verb
+bind_rows(
+  tibble(word = strong_verbs, class = "strong directive verb"),
+  tibble(word = ambiguous_verbs, class = "ambiguous noun/verb (needs object-like context)")
+) %>%
+  left_join(verbs_en %>% mutate(w = str_remove(str_to_lower(word(text_clean, 1)), "[[:punct:]]+$")) %>%
+              count(w, name = "n_items_opening_with_word"), by = c("word" = "w")) %>%
+  left_join(verbs_en %>% filter(!is.na(verb)) %>% count(verb_raw, name = "n_items_extracted_as_verb"),
+            by = c("word" = "verb_raw")) %>%
+  mutate(across(starts_with("n_"), ~ replace_na(.x, 0L))) %>%
+  arrange(class, desc(n_items_opening_with_word), word) %>%
+  write_csv(file.path(dv_dir, "verb_lexicon.csv"))
+
+# flagged items for checking
+edge_cases <- bind_rows(
+  item_level %>% filter(language == "english", !is.na(extraction_flags)) %>%
+    transmute(checklist_item_id, checklist, edge_case = extraction_flags, detail = leading_text_skipped, reporting_item, verb),
+  item_level %>% filter(language == "english", verb_source %in% c("lexicon (ambiguous word) + context", "udpipe VERB/VB + context")) %>%
+    transmute(checklist_item_id, checklist, edge_case = "verb accepted by context rule", detail = verb_source, reporting_item, verb),
+  item_level %>% filter(language == "english", is.na(verb)) %>%
+    transmute(checklist_item_id, checklist, edge_case = "no directive verb", detail = no_verb_reason, reporting_item, verb),
+  item_level %>% filter(language == "english", !is.na(verb_raw), verb_raw != verb) %>%
+    transmute(checklist_item_id, checklist, edge_case = "spelling harmonised", detail = paste(verb_raw, "->", verb), reporting_item, verb),
+  item_level %>% filter(language == "english", encoding_repaired) %>%
+    transmute(checklist_item_id, checklist, edge_case = "invalid UTF-8 repaired before tagging", detail = NA_character_, reporting_item, verb)
+) %>% arrange(edge_case, checklist_item_id)
+write_csv(edge_cases, file.path(dv_dir, "edge_cases.csv"), na = "")
+edge_cases %>% count(edge_case, sort = TRUE)
+```
+
+## *Analysis 1: verb diversity within checklists*
+```{r}
+shannon <- function(counts) { p <- counts / sum(counts); -sum(p * log(p)) }
+pielou  <- function(counts) if (length(counts) < 2) NA_real_ else shannon(counts) / log(length(counts))
+# Hurlbert rarefaction: expected distinct verbs in a random sample of m items
+rarefy_s <- function(counts, m = 10) {
+  N <- sum(counts)
+  if (N < m) return(NA_real_)
+  sum(1 - exp(lchoose(N - counts, m) - lchoose(N, m)))
+}
+verb_string <- function(v) {
+  tb <- sort(table(v), decreasing = TRUE)
+  paste0(names(tb), " (", as.integer(tb), ")", collapse = "; ")
+}
+fmt_med_iqr <- function(x, digits = 2) {
+  q <- quantile(x, c(0.25, 0.5, 0.75), na.rm = TRUE, names = FALSE)
+  sprintf(paste0("%.", digits, "f (IQR %.", digits, "f-%.", digits, "f)"), q[2], q[1], q[3])
+}
+fmt_pct <- function(lgl) sprintf("%.1f%% (%d/%d)", 100 * mean(lgl), sum(lgl), length(lgl))
+
+checklist_level <- verbs_en %>%
+  group_by(study_id, checklist) %>%
+  summarise(
+    n_items = n(),
+    n_items_with_verb = sum(!is.na(verb)),
+    prop_items_with_verb = n_items_with_verb / n_items,
+    n_distinct_verbs = n_distinct(verb[!is.na(verb)]),
+    shannon_H = if (n_items_with_verb > 0) shannon(as.integer(table(verb))) else NA_real_,
+    pielou_J = if (n_items_with_verb > 0) pielou(as.integer(table(verb))) else NA_real_,
+    modal_verb = if (n_items_with_verb > 0) names(sort(table(verb), decreasing = TRUE))[1] else NA_character_,
+    n_modal_verb = if (n_items_with_verb > 0) max(table(verb)) else NA_integer_,
+    prop_modal_verb = n_modal_verb / n_items_with_verb,
+    rarefied_distinct_verbs_10 = if (n_items_with_verb > 0) rarefy_s(as.integer(table(verb))) else NA_real_,
+    verbs = if (n_items_with_verb > 0) verb_string(verb[!is.na(verb)]) else NA_character_,
+    .groups = "drop"
+  ) %>%
+  arrange(desc(n_distinct_verbs), desc(n_items_with_verb))
+write_csv(checklist_level, file.path(dv_dir, "checklist_level_metrics.csv"), na = "")
+
+cl_any <- checklist_level %>% filter(n_items_with_verb >= 1)
+cl_10  <- checklist_level %>% filter(n_items_with_verb >= 10)
+cor_sp <- suppressWarnings(cor.test(cl_any$n_items_with_verb, cl_any$n_distinct_verbs, method = "spearman"))
+
+checklist_verb_stats_fmt <- tibble(
+  metric = c("n checklists (>= 1 item with a directive verb)", "n items with a verb per checklist",
+             "n distinct verbs per checklist", "Shannon H", "Pielou J (NA when S = 1)",
+             "proportion of items using the modal verb", "% checklists with >= 2 distinct verbs",
+             "% checklists with >= 3 distinct verbs", "Spearman rho: n items vs n distinct verbs",
+             paste0("rarefied distinct verbs per 10 items (n = ", nrow(cl_10), " checklists with >= 10 items)")),
+  value = c(nrow(cl_any), fmt_med_iqr(cl_any$n_items_with_verb, 0), fmt_med_iqr(cl_any$n_distinct_verbs, 0),
+            fmt_med_iqr(cl_any$shannon_H), fmt_med_iqr(cl_any$pielou_J), fmt_med_iqr(cl_any$prop_modal_verb),
+            fmt_pct(cl_any$n_distinct_verbs >= 2), fmt_pct(cl_any$n_distinct_verbs >= 3),
+            sprintf("rho = %.2f, p = %.2g", cor_sp$estimate, cor_sp$p.value),
+            fmt_med_iqr(cl_10$rarefied_distinct_verbs_10))
+)
+checklist_verb_stats_fmt
+```
+
+## *Analysis 2: verbs per concept*
+```{r}
+# one row per item x concept (empty labels and duplicated pairs removed)
+concept_pairs <- concept %>%
+  select(-starts_with("...")) %>%
+  filter(!is.na(standardised_reporting_item_elements)) %>%
+  distinct(checklist_item_id, concept = standardised_reporting_item_elements,
+           concept_section = standardised_section)
+
+concept_items <- concept_pairs %>%
+  inner_join(verbs_en %>% select(checklist_item_id, study_id, checklist, verb), by = "checklist_item_id")
+
+summarise_concepts <- function(d, ...) {
+  d %>%
+    group_by(...) %>%
+    summarise(
+      n_items_mapped = n(),
+      n_items_with_verb = sum(!is.na(verb)),
+      n_checklists = n_distinct(checklist[!is.na(verb)]),
+      n_distinct_verbs = n_distinct(verb[!is.na(verb)]),
+      verbs = if (n_items_with_verb > 0) verb_string(verb[!is.na(verb)]) else NA_character_,
+      .groups = "drop"
+    )
+}
+
+concept_level <- concept_items %>%
+  group_by(concept) %>%
+  mutate(sections = paste(sort(unique(concept_section)), collapse = "; ")) %>%
+  ungroup() %>%
+  summarise_concepts(concept, sections) %>%
+  mutate(included_in_summary = n_items_with_verb >= 2) %>%
+  arrange(desc(n_items_with_verb), desc(n_distinct_verbs))
+write_csv(concept_level, file.path(dv_dir, "concept_level_metrics.csv"), na = "")
+
+concept_section_level <- concept_items %>%
+  summarise_concepts(concept_section, concept) %>%
+  mutate(included_in_summary = n_items_with_verb >= 2) %>%
+  arrange(concept_section, desc(n_items_with_verb))
+write_csv(concept_section_level, file.path(dv_dir, "concept_by_section_level_metrics.csv"), na = "")
+
+cp <- concept_level %>% filter(included_in_summary)
+
+concept_verb_stats_fmt <- tibble(
+  metric = c("n concepts (requested by >= 2 items with a directive verb)", "n items per concept",
+             "n checklists per concept", "n distinct verbs per concept",
+             "% concepts requested with >= 2 distinct verbs", "% concepts requested with >= 3 distinct verbs"),
+  value = c(nrow(cp), fmt_med_iqr(cp$n_items_with_verb, 0), fmt_med_iqr(cp$n_checklists, 0),
+            fmt_med_iqr(cp$n_distinct_verbs, 0), fmt_pct(cp$n_distinct_verbs >= 2), fmt_pct(cp$n_distinct_verbs >= 3))
+)
+concept_verb_stats_fmt
+
+# ten most frequently requested concepts and the verbs used for them
+top10_concepts <- cp %>%
+  slice_head(n = 10) %>%
+  select(concept, sections, n_items_with_verb, n_checklists, n_distinct_verbs, verbs)
+write_csv(top10_concepts, file.path(dv_dir, "top10_concepts_verbs.csv"))
+top10_concepts
+
+# by manuscript section (concept x section as the unit)
+section_order <- c("Title", "Abstract", "Introduction", "Methodology", "Results", "Discussion", "Other information")
+section_summary <- concept_section_level %>%
+  filter(included_in_summary) %>%
+  group_by(section = concept_section) %>%
+  summarise(
+    n_concepts = n(),
+    n_items_with_verb = sum(n_items_with_verb),
+    distinct_verbs_med_iqr = fmt_med_iqr(n_distinct_verbs, 0),
+    pct_concepts_2plus_verbs = round(100 * mean(n_distinct_verbs >= 2), 1),
+    pct_concepts_3plus_verbs = round(100 * mean(n_distinct_verbs >= 3), 1),
+    .groups = "drop"
+  ) %>%
+  arrange(factor(section, levels = section_order))
+write_csv(section_summary, file.path(dv_dir, "concept_by_section_summary.csv"))
+section_summary
+
+# all summary numbers in one table
+bind_rows(
+  tibble(analysis = "extraction", metric = c("n English items", "n items with a directive verb", "% items with a directive verb", "n distinct verbs"),
+         value = c(n_en, n_en_verb, sprintf("%.1f%%", 100 * n_en_verb / n_en), nrow(verb_frequency))),
+  checklist_verb_stats_fmt %>% mutate(analysis = "analysis 1 (checklists)"),
+  concept_verb_stats_fmt %>% mutate(analysis = "analysis 2 (concepts)")
+) %>%
+  select(analysis, metric, value) %>%
+  write_csv(file.path(dv_dir, "summary_statistics.csv"))
+```
+
+## *Figure: distinct verbs per checklist and per concept*
+```{r}
+#| fig-width: 9.5
+#| fig-height: 4.3
+dv_col <- "#54478c"
+dv_theme <- theme_minimal(base_size = 13) +
+  theme(
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "grey90", linewidth = 0.35),
+    axis.title = element_text(color = "black"),
+    axis.text = element_text(color = "black"),
+    axis.line = element_line(linewidth = 0.7, color = "black"),
+    axis.ticks = element_line(color = "black"),
+    plot.title = element_text(size = 12.5, face = "bold", color = "black", hjust = 0),
+    plot.title.position = "plot"
+  )
+
+dv_bar <- function(d, title, ylab, by) {
+  d %>%
+    count(n_distinct_verbs) %>%
+    ggplot(aes(x = n_distinct_verbs, y = n)) +
+    geom_col(fill = dv_col, width = 0.8) +
+    geom_text(aes(label = n), vjust = -0.4, size = 3.4, colour = "black") +
+    scale_x_continuous(breaks = seq(0, max(d$n_distinct_verbs), by)) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
+    labs(title = title, x = "Number of distinct directive verbs", y = ylab) +
+    dv_theme
+}
+
+fig_verbs <- dv_bar(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
+  dv_bar(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+fig_verbs
+
+ggsave(file.path(dv_dir, "figure_distinct_verbs.png"), fig_verbs,
+       width = 24, height = 11, units = "cm", dpi = 300, bg = "white")
+ggsave(file.path(dv_dir, "figure_distinct_verbs.pdf"), fig_verbs,
+       width = 24, height = 11, units = "cm", bg = "white")
+
+# numbers for inline text, e.g. `r dv$pct_items_with_verb`
+dv <- list(
+  n_items_en = n_en, n_items_with_verb = n_en_verb,
+  pct_items_with_verb = sprintf("%.1f%%", 100 * n_en_verb / n_en),
+  n_distinct_verbs = nrow(verb_frequency),
+  top_verbs = paste0(head(verb_frequency$verb, 5), " (", head(verb_frequency$pct_of_items_with_verb, 5), "%)", collapse = ", "),
+  n_checklists = nrow(cl_any),
+  verbs_per_checklist = fmt_med_iqr(cl_any$n_distinct_verbs, 0),
+  pct_checklists_2plus = fmt_pct(cl_any$n_distinct_verbs >= 2),
+  n_concepts = nrow(cp),
+  verbs_per_concept = fmt_med_iqr(cp$n_distinct_verbs, 0),
+  pct_concepts_2plus = fmt_pct(cp$n_distinct_verbs >= 2),
+  pct_concepts_3plus = fmt_pct(cp$n_distinct_verbs >= 3)
+)
+str(dv)
+```

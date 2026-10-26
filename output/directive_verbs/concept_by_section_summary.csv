@@ -1,8 +1,8 @@
-section,n_concepts,n_items_with_verb,median_distinct_verbs,q1_distinct_verbs,q3_distinct_verbs,pct_concepts_2plus_verbs,pct_concepts_3plus_verbs
-Title,7,75,4,3,4,100,85.71428571428571
-Abstract,35,286,2,2,3,85.71428571428571,40
-Introduction,13,173,3,2,6,100,69.23076923076923
-Methodology,104,1156,2,1,4,73.07692307692307,43.269230769230774
-Results,33,495,3,2,5,84.84848484848484,69.6969696969697
-Discussion,10,282,5.5,4.25,7.75,90,80
-Other information,17,234,3,2,5,94.11764705882352,70.58823529411765
+section,n_concepts,n_items_with_verb,distinct_verbs_med_iqr,pct_concepts_2plus_verbs,pct_concepts_3plus_verbs
+Title,7,75,4 (IQR 3-4),100,85.7
+Abstract,35,286,2 (IQR 2-3),85.7,40
+Introduction,13,173,3 (IQR 2-6),100,69.2
+Methodology,104,1156,2 (IQR 1-4),73.1,43.3
+Results,33,495,3 (IQR 2-5),84.8,69.7
+Discussion,10,282,6 (IQR 4-8),90,80
+Other information,17,234,3 (IQR 2-5),94.1,70.6
