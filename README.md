@@ -21,7 +21,7 @@ synthesis_item_bank/
 │   ├── tables_by_section.xlsx                       # Item tables organised by section
 │   └── concept_tables_by_section.xlsx               # Concept tables organised by section
 │
-├── figures/                      # Output figures (JPG, 300 dpi)
+├── figures/                      # Output figures (JPG/PNG, 300 dpi) and summary tables (CSV)
 ├── literature_search/            # Search strategy files
 ├── literature_screen/            # Screening decision records
 │
@@ -43,6 +43,8 @@ All datasets cover synthesis-relevant reporting guidelines and are the primary (
 | `item_bank_reporting_guideline_concepts.csv` | Concept per item | `study_id`, `checklist`, `checklist_item_id`, `reporting_item_number`, `standardised_reporting_item_elements`, `standardised_section`, `standardised_subsection` |
 | `tables_by_section.xlsx` | Item | Items tabulated by standardised section |
 | `concept_tables_by_section.xlsx` | Concept | Concepts tabulated by standardised section |
+| `item_bank_reporting_guideline_directive_verbs.csv` | Reporting item | Directive verb opening each item (`verb`), extraction flags and reason when no verb (derived in `analysis.qmd`) |
+| `directive_verbs_lexicon.csv`, `directive_verbs_edge_cases.csv`, `directive_verbs_manual_check_sample_100.csv` | Word / item | Verb lexicon used for extraction, flagged items, and a random sample of 100 items for manual checking |
 
 
 

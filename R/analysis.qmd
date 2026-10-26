@@ -2802,16 +2802,15 @@ distinct verbs each checklist uses, and how many verbs the same concept is reque
 guidelines. English items only (the Portuguese/Spanish checklists are not tagged with the English
 model). Decisions to note: the first verb is used for coordinated verbs ("Describe and justify");
 British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
-Outputs are written to `output/directive_verbs/`.
+Outputs: item-level verbs, the 100-item manual-check sample, the verb lexicon and flagged edge
+cases in `data/`; summary tables and the supplementary figure in `figures/`; the cached udpipe
+annotation in `R.data/`.
 
 ## *Set-up and text cleaning*
 ```{r}
 MULTI_VERB_RULE    <- "first"   # "first" or "exclude" (drop "Describe and justify" items)
 HARMONISE_SPELLING <- TRUE
 DV_SEED            <- 2026      # 100-item manual-check sample
-
-dv_dir <- here("output", "directive_verbs")
-dir.create(dv_dir, recursive = TRUE, showWarnings = FALSE)
 
 # a few items contain Windows-1252 bytes that are not valid UTF-8
 fix_encoding <- function(x) {
@@ -2855,6 +2854,7 @@ dv_anno <- udpipe_annotate(dv_model, x = dv_items_en$text_clean,
     token_id = as.integer(token_id),
     head_token_id = suppressWarnings(as.integer(head_token_id))
   )
+saveRDS(dv_anno, here("R.data", "directive_verbs_anno.rds"))
 ```
 
 ## *Extraction rules*
@@ -3126,12 +3126,14 @@ if (MULTI_VERB_RULE == "exclude") {
            verb = if_else(multi_verb %in% TRUE, NA_character_, verb))
 }
 
+saveRDS(item_verbs, here("R.data", "directive_verbs_items.rds"))
+
 item_level <- item_verbs %>%
   select(checklist_item_id, study_id, checklist, reporting_item_number, language,
          section, standardised_section, reporting_item, text_clean, verb, verb_raw,
          verb_token, verb_source, verb_position, multi_verb, coordinated_verbs,
          leading_text_skipped, extraction_flags, no_verb_reason, encoding_repaired)
-write_csv(item_level, file.path(dv_dir, "item_level_verbs.csv"), na = "")
+write_csv(item_level, here("data", "item_bank_reporting_guideline_directive_verbs.csv"), na = "")
 
 verbs_en <- item_verbs %>% filter(language == "english")
 n_en <- nrow(verbs_en)
@@ -3153,7 +3155,7 @@ verb_frequency <- verbs_en %>%
   mutate(pct_of_items_with_verb = round(100 * n_items / n_en_verb, 1),
          pct_of_all_english_items = round(100 * n_items / n_en, 1)) %>%
   arrange(desc(n_items), verb)
-write_csv(verb_frequency, file.path(dv_dir, "verb_frequency.csv"))
+write_csv(verb_frequency, here("figures", "directive_verbs_frequency.csv"))
 verb_frequency
 
 # 100-item sample for manual checking
@@ -3165,7 +3167,7 @@ item_level %>%
   select(checklist_item_id, checklist, reporting_item, verb, coordinated_verbs,
          leading_text_skipped, extraction_flags, no_verb_reason) %>%
   mutate(manual_verb = "", manual_agree = "", comment = "") %>%
-  write_csv(file.path(dv_dir, "manual_check_sample_100.csv"), na = "")
+  write_csv(here("data", "directive_verbs_manual_check_sample_100.csv"), na = "")
 
 # lexicon, with how often each word opens an item and was extracted as the verb
 bind_rows(
@@ -3178,7 +3180,7 @@ bind_rows(
             by = c("word" = "verb_raw")) %>%
   mutate(across(starts_with("n_"), ~ replace_na(.x, 0L))) %>%
   arrange(class, desc(n_items_opening_with_word), word) %>%
-  write_csv(file.path(dv_dir, "verb_lexicon.csv"))
+  write_csv(here("data", "directive_verbs_lexicon.csv"))
 
 # flagged items for checking
 edge_cases <- bind_rows(
@@ -3193,7 +3195,7 @@ edge_cases <- bind_rows(
   item_level %>% filter(language == "english", encoding_repaired) %>%
     transmute(checklist_item_id, checklist, edge_case = "invalid UTF-8 repaired before tagging", detail = NA_character_, reporting_item, verb)
 ) %>% arrange(edge_case, checklist_item_id)
-write_csv(edge_cases, file.path(dv_dir, "edge_cases.csv"), na = "")
+write_csv(edge_cases, here("data", "directive_verbs_edge_cases.csv"), na = "")
 edge_cases %>% count(edge_case, sort = TRUE)
 ```
 
@@ -3234,7 +3236,7 @@ checklist_level <- verbs_en %>%
     .groups = "drop"
   ) %>%
   arrange(desc(n_distinct_verbs), desc(n_items_with_verb))
-write_csv(checklist_level, file.path(dv_dir, "checklist_level_metrics.csv"), na = "")
+write_csv(checklist_level, here("figures", "directive_verbs_checklist_metrics.csv"), na = "")
 
 cl_any <- checklist_level %>% filter(n_items_with_verb >= 1)
 cl_10  <- checklist_level %>% filter(n_items_with_verb >= 10)
@@ -3287,13 +3289,13 @@ concept_level <- concept_items %>%
   summarise_concepts(concept, sections) %>%
   mutate(included_in_summary = n_items_with_verb >= 2) %>%
   arrange(desc(n_items_with_verb), desc(n_distinct_verbs))
-write_csv(concept_level, file.path(dv_dir, "concept_level_metrics.csv"), na = "")
+write_csv(concept_level, here("figures", "directive_verbs_concept_metrics.csv"), na = "")
 
 concept_section_level <- concept_items %>%
   summarise_concepts(concept_section, concept) %>%
   mutate(included_in_summary = n_items_with_verb >= 2) %>%
   arrange(concept_section, desc(n_items_with_verb))
-write_csv(concept_section_level, file.path(dv_dir, "concept_by_section_level_metrics.csv"), na = "")
+write_csv(concept_section_level, here("figures", "directive_verbs_concept_by_section_metrics.csv"), na = "")
 
 cp <- concept_level %>% filter(included_in_summary)
 
@@ -3310,7 +3312,7 @@ concept_verb_stats_fmt
 top10_concepts <- cp %>%
   slice_head(n = 10) %>%
   select(concept, sections, n_items_with_verb, n_checklists, n_distinct_verbs, verbs)
-write_csv(top10_concepts, file.path(dv_dir, "top10_concepts_verbs.csv"))
+write_csv(top10_concepts, here("figures", "directive_verbs_top10_concepts.csv"))
 top10_concepts
 
 # by manuscript section (concept x section as the unit)
@@ -3327,7 +3329,7 @@ section_summary <- concept_section_level %>%
     .groups = "drop"
   ) %>%
   arrange(factor(section, levels = section_order))
-write_csv(section_summary, file.path(dv_dir, "concept_by_section_summary.csv"))
+write_csv(section_summary, here("figures", "directive_verbs_concept_by_section_summary.csv"))
 section_summary
 
 # all summary numbers in one table
@@ -3338,14 +3340,16 @@ bind_rows(
   concept_verb_stats_fmt %>% mutate(analysis = "analysis 2 (concepts)")
 ) %>%
   select(analysis, metric, value) %>%
-  write_csv(file.path(dv_dir, "summary_statistics.csv"))
+  write_csv(here("figures", "directive_verbs_summary_stats.csv"))
 ```
 
 ## *Figure: distinct verbs per checklist and per concept*
 ```{r}
 #| fig-width: 9.5
 #| fig-height: 4.3
-dv_col <- "#54478c"
+# same styling as the other figures in the paper (lollipops; theme as fig_theme)
+dv_col_point <- "#54478c"
+dv_col_stem  <- "#cfc8e8"
 dv_theme <- theme_minimal(base_size = 13) +
   theme(
     panel.grid = element_blank(),
@@ -3354,30 +3358,51 @@ dv_theme <- theme_minimal(base_size = 13) +
     axis.text = element_text(color = "black"),
     axis.line = element_line(linewidth = 0.7, color = "black"),
     axis.ticks = element_line(color = "black"),
+    axis.ticks.x = element_blank(),
     plot.title = element_text(size = 12.5, face = "bold", color = "black", hjust = 0),
-    plot.title.position = "plot"
+    plot.title.position = "plot",
+    plot.margin = margin(10, 10, 10, 10)
   )
 
-dv_bar <- function(d, title, ylab, by) {
-  d %>%
-    count(n_distinct_verbs) %>%
-    ggplot(aes(x = n_distinct_verbs, y = n)) +
-    geom_col(fill = dv_col, width = 0.8) +
-    geom_text(aes(label = n), vjust = -0.4, size = 3.4, colour = "black") +
+dv_lollipop <- function(d, title, ylab, by) {
+  d <- d %>% count(n_distinct_verbs)
+  ggplot(d, aes(x = n_distinct_verbs, y = n)) +
+    geom_segment(
+      aes(x = n_distinct_verbs, xend = n_distinct_verbs, y = 0, yend = n),
+      linewidth = 2, colour = dv_col_stem, lineend = "round"
+    ) +
+    geom_point(size = 4.3, shape = 21, stroke = 0.9, fill = dv_col_point, colour = "black") +
+    geom_text(aes(label = n), nudge_y = max(d$n) * 0.07, size = 3.3, fontface = "bold", colour = "black") +
     scale_x_continuous(breaks = seq(0, max(d$n_distinct_verbs), by)) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
     labs(title = title, x = "Number of distinct directive verbs", y = ylab) +
+    coord_cartesian(clip = "off") +
     dv_theme
 }
 
-fig_verbs <- dv_bar(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
-  dv_bar(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+fig_verbs <- dv_lollipop(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
+  dv_lollipop(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+
 fig_verbs
 
-ggsave(file.path(dv_dir, "figure_distinct_verbs.png"), fig_verbs,
-       width = 24, height = 11, units = "cm", dpi = 300, bg = "white")
-ggsave(file.path(dv_dir, "figure_distinct_verbs.pdf"), fig_verbs,
-       width = 24, height = 11, units = "cm", bg = "white")
+ggsave(
+  filename = here("figures", "directive_verbs_ab_side.png"),
+  plot = fig_verbs,
+  width = 24,
+  height = 11,
+  units = "cm",
+  dpi = 300,
+  bg = "white"
+)
+
+ggsave(
+  filename = here("figures", "directive_verbs_ab_side.pdf"),
+  plot = fig_verbs,
+  width = 24,
+  height = 11,
+  units = "cm",
+  bg = "white"
+)
 
 # numbers for inline text, e.g. `r dv$pct_items_with_verb`
 dv <- list(
