@@ -3378,12 +3378,11 @@ dv_theme <- theme_minimal(base_size = 13) +
     axis.ticks = element_line(color = "black"),
     axis.ticks.x = element_blank(),
     plot.title = element_text(size = 12.5, face = "bold", color = "black", hjust = 0),
-    plot.subtitle = element_text(size = 10, color = "grey30", hjust = 0),
     plot.title.position = "plot",
     plot.margin = margin(10, 10, 10, 10)
   )
 
-dv_lollipop <- function(d, title, subtitle, ylab, by) {
+dv_lollipop <- function(d, title, ylab, by) {
   d <- d %>% count(n_distinct_verbs)
   ggplot(d, aes(x = n_distinct_verbs, y = n)) +
     geom_segment(
@@ -3394,24 +3393,13 @@ dv_lollipop <- function(d, title, subtitle, ylab, by) {
     geom_text(aes(label = n), nudge_y = max(d$n) * 0.07, size = 3.3, fontface = "bold", colour = "black") +
     scale_x_continuous(breaks = seq(0, max(d$n_distinct_verbs), by)) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.12))) +
-    labs(title = title, subtitle = subtitle, x = "Number of distinct directive verbs", y = ylab) +
+    labs(title = title, x = "Number of distinct directive verbs", y = ylab) +
     coord_cartesian(clip = "off") +
     dv_theme
 }
 
-fig_verbs <- dv_lollipop(
-  cl_any,
-  paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"),
-  paste0(nrow(cl_any), " of ", n_checklists_en, " English-language checklists; ", nrow(checklists_no_verb),
-         " with no item opening with a directive verb excluded"),
-  "Number of checklists", 2
-) +
-  dv_lollipop(
-    cp,
-    paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"),
-    "Concepts requested by at least two items with a directive verb",
-    "Number of concepts", 1
-  )
+fig_verbs <- dv_lollipop(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
+  dv_lollipop(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
 
 fig_verbs
 
