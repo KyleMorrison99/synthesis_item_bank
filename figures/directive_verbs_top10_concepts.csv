@@ -1,0 +1,11 @@
+concept,sections,n_items_with_verb,n_checklists,n_distinct_verbs,verbs
+Report the method used to assess the risk of bias,Abstract; Methodology,74,38,10,describe (30); specify (18); provide (13); state (4); report (3); indicate (2); conduct (1); identify (1); include (1); list (1)
+Report an interpretation of the results,Abstract; Discussion,70,35,13,provide (26); summarize (23); compare (4); describe (3); present (3); state (3); include (2); discuss (1); draw (1); explain (1); explore (1); list (1); report (1)
+Report the sources of support received for conducting the evidence synthesis,Abstract; Other information,58,36,9,describe (27); provide (16); indicate (5); specify (3); report (2); state (2); acknowledge (1); include (1); list (1)
+Report the results of the study selection process,Results,54,32,8,provide (18); give (13); describe (11); cite (6); report (3); assess (1); identify (1); use (1)
+Report the results of the risk of bias assessment,Results,54,28,5,present (41); provide (4); report (4); summarize (4); consider (1)
+Report the eligibility criteria for the evidence synthesis,Abstract; Methodology,50,29,9,specify (19); provide (13); describe (5); report (4); include (3); state (3); define (1); indicate (1); list (1)
+Report the implications of the evidence synthesis results,Abstract; Discussion,50,30,9,provide (21); summarize (10); discuss (8); describe (5); consider (2); indicate (1); make (1); present (1); state (1)
+Report the methodology used to conduct the evidence synthesis,Abstract; Introduction; Title,49,43,9,identify (38); select (4); consider (1); describe (1); include (1); indicate (1); make (1); specify (1); use (1)
+Report the scientific literature databases used to conduct the literature search,Abstract; Methodology,48,41,12,describe (19); specify (11); detail (4); present (3); state (3); list (2); document (1); give (1); include (1); name (1); provide (1); search (1)
+Report a measure of statistical heterogeneity associated with the pooled effect size estimate,Abstract; Results,47,20,7,present (25); give (13); provide (3); describe (2); report (2); include (1); summarize (1)
