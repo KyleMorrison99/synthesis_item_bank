@@ -2806,7 +2806,8 @@ checklist-level analysis, leaving 56. Decisions to note: the first verb is used 
 British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
 Outputs: item-level verbs, the 100-item manual-check sample, the verb lexicon and flagged edge
 cases in `data/`; summary tables and the supplementary figure in `figures/`; the cached udpipe
-annotation in `R.data/`.
+annotation in `R.data/`. Concepts are counted within sections (403), as in the rest of the paper;
+only concepts requested by at least two items with a directive verb can show variation in the verb.
 
 ## *Set-up and text cleaning*
 ```{r}
@@ -3315,21 +3316,35 @@ concept_section_level <- concept_items %>%
   arrange(concept_section, desc(n_items_with_verb))
 write_csv(concept_section_level, here("figures", "directive_verbs_concept_by_section_metrics.csv"), na = "")
 
-cp <- concept_level %>% filter(included_in_summary)
+# unit of analysis = concept within a section (the 403 concepts reported in the paper;
+# a label used in two sections counts twice). concept_level above pools across
+# sections (351 labels) and is kept as a secondary table only.
+# funnel: all concepts -> with >= 1 item that has a directive verb -> with >= 2
+# (only these can show variation in the verb used)
+concept_funnel <- tibble(
+  step = c("concepts (concept x section)", "with >= 1 item with a directive verb",
+           "with >= 2 items with a directive verb (analysed)"),
+  n = c(nrow(concept_section_level), sum(concept_section_level$n_items_with_verb >= 1),
+        sum(concept_section_level$n_items_with_verb >= 2))
+)
+concept_funnel
+
+cp <- concept_section_level %>% filter(included_in_summary)
 
 concept_verb_stats_fmt <- tibble(
-  metric = c("n concepts (requested by >= 2 items with a directive verb)", "n items per concept",
+  metric = c("n concepts: all / with >= 1 verb-bearing item / with >= 2 (analysed)", "n items per concept",
              "n checklists per concept", "n distinct verbs per concept",
              "% concepts requested with >= 2 distinct verbs", "% concepts requested with >= 3 distinct verbs"),
-  value = c(nrow(cp), fmt_med_iqr(cp$n_items_with_verb, 0), fmt_med_iqr(cp$n_checklists, 0),
+  value = c(paste(concept_funnel$n, collapse = " / "), fmt_med_iqr(cp$n_items_with_verb, 0), fmt_med_iqr(cp$n_checklists, 0),
             fmt_med_iqr(cp$n_distinct_verbs, 0), fmt_pct(cp$n_distinct_verbs >= 2), fmt_pct(cp$n_distinct_verbs >= 3))
 )
 concept_verb_stats_fmt
 
 # ten most frequently requested concepts and the verbs used for them
 top10_concepts <- cp %>%
+  arrange(desc(n_items_with_verb), desc(n_distinct_verbs)) %>%
   slice_head(n = 10) %>%
-  select(concept, sections, n_items_with_verb, n_checklists, n_distinct_verbs, verbs)
+  select(concept, section = concept_section, n_items_with_verb, n_checklists, n_distinct_verbs, verbs)
 write_csv(top10_concepts, here("figures", "directive_verbs_top10_concepts.csv"))
 top10_concepts
 
@@ -3470,7 +3485,7 @@ dv <- list(
   checklists_no_verb = paste(checklists_no_verb$checklist, collapse = ", "),
   verbs_per_checklist = fmt_med_iqr(cl_any$n_distinct_verbs, 0),
   pct_checklists_2plus = fmt_pct(cl_any$n_distinct_verbs >= 2),
-  n_concepts = nrow(cp),
+  n_concepts_all = nrow(concept_section_level), n_concepts = nrow(cp),
   verbs_per_concept = fmt_med_iqr(cp$n_distinct_verbs, 0),
   pct_concepts_2plus = fmt_pct(cp$n_distinct_verbs >= 2),
   pct_concepts_3plus = fmt_pct(cp$n_distinct_verbs >= 3)
