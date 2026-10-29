@@ -3361,10 +3361,10 @@ bind_rows(
   write_csv(here("figures", "directive_verbs_summary_stats.csv"))
 ```
 
-## *Figure: distinct verbs per checklist and per concept*
+## *Figure: most common verbs, distinct verbs per checklist and per concept*
 ```{r}
-#| fig-width: 9.5
-#| fig-height: 4.3
+#| fig-width: 10.6
+#| fig-height: 5.9
 # same styling as the other figures in the paper (lollipops; theme as fig_theme)
 dv_col_point <- "#54478c"
 dv_col_stem  <- "#cfc8e8"
@@ -3398,26 +3398,63 @@ dv_lollipop <- function(d, title, ylab, by) {
     dv_theme
 }
 
-fig_verbs <- dv_lollipop(cl_any, paste0("a) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2) +
-  dv_lollipop(cp, paste0("b) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+# a) most common opening verbs (top 15 of the 56 verbs; horizontal lollipop as p_items)
+dv_top_n <- 15
+dv_top_verbs <- verb_frequency %>%
+  slice_head(n = dv_top_n) %>%
+  mutate(verb = fct_reorder(verb, n_items))
+
+p_verbs_a <- ggplot(dv_top_verbs, aes(x = n_items, y = verb)) +
+  geom_segment(
+    aes(x = 0, xend = n_items, y = verb, yend = verb),
+    linewidth = 2, colour = dv_col_stem, lineend = "round"
+  ) +
+  geom_point(size = 4.3, shape = 21, stroke = 0.9, fill = dv_col_point, colour = "black") +
+  geom_text(
+    aes(label = paste0(n_items, " (", round(pct_of_items_with_verb), "%)")),
+    nudge_x = max(dv_top_verbs$n_items) * 0.05, hjust = 0, size = 3.3, fontface = "bold", colour = "black"
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.3))) +
+  labs(
+    title = paste0("a) Most common directive verbs (top ", dv_top_n, " of ", nrow(verb_frequency), ")"),
+    x = paste0("Number of items (% of ", n_en_verb, " items with a verb)"), y = NULL
+  ) +
+  coord_cartesian(clip = "off") +
+  dv_theme +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey90", linewidth = 0.35),
+    axis.ticks.x = element_line(color = "black"),
+    axis.ticks.y = element_blank()
+  )
+
+p_verbs_b <- dv_lollipop(cl_any, paste0("b) Distinct directive verbs per checklist (n = ", nrow(cl_any), ")"), "Number of checklists", 2)
+p_verbs_c <- dv_lollipop(cp, paste0("c) Distinct directive verbs per concept (n = ", nrow(cp), ")"), "Number of concepts", 1)
+
+dv_layout <- "
+AB
+AC
+"
+fig_verbs <- p_verbs_a + p_verbs_b + p_verbs_c +
+  plot_layout(design = dv_layout, widths = c(1, 1.3))
 
 fig_verbs
 
 ggsave(
-  filename = here("figures", "directive_verbs_ab_side.png"),
+  filename = here("figures", "directive_verbs_abc_side.png"),
   plot = fig_verbs,
-  width = 24,
-  height = 11,
+  width = 27,
+  height = 15,
   units = "cm",
   dpi = 300,
   bg = "white"
 )
 
 ggsave(
-  filename = here("figures", "directive_verbs_ab_side.pdf"),
+  filename = here("figures", "directive_verbs_abc_side.pdf"),
   plot = fig_verbs,
-  width = 24,
-  height = 11,
+  width = 27,
+  height = 15,
   units = "cm",
   bg = "white"
 )
