@@ -1002,8 +1002,9 @@ squeeze01 <- function(y, n = length(y)) {
 # 2) build item-level dataset with year + study_id
 # =========================================================
 
-items <- data  %>% # total is 2,191 as we remove languages other than english
+items <- data  %>% # english-language items only (non-english items cannot be tagged with the english udpipe model)
   filter(!is.na(reporting_item), !is.na(study_id)) %>%
+  filter(str_to_lower(str_squish(language)) == "english") %>%
   mutate(reporting_item = str_squish(as.character(reporting_item))) %>%
   filter(reporting_item != "") %>%
   left_join(
@@ -1170,7 +1171,7 @@ fit_mattr <- brm(
   warmup = 2000,
   seed = 1234,
   control = list(adapt_delta = 0.995, max_treedepth = 15),
-  file = "fit_mattr_brms_gam_studyid"
+  file = here::here("R.data", "fit_mattr_brms_gam_studyid")
 )
 
 fit_lexdens <- brm(
@@ -1184,7 +1185,7 @@ fit_lexdens <- brm(
   warmup = 2000,
   seed = 1234,
   control = list(adapt_delta = 0.995, max_treedepth = 15),
-  file = "fit_lexdens_brms_gam_studyid"
+  file = here::here("R.data", "fit_lexdens_brms_gam_studyid")
 )
 
 
@@ -2609,7 +2610,7 @@ heatmap_data <- all_pairs %>%
 # 5) Heatmap plot — panel b
 # =========================================================
 
-plot_b_overlap <- ggplot(, aes(x = g1, y = g2, fill = jaccard)) +
+plot_b_overlap <- ggplot(heatmap_data, aes(x = g1, y = g2, fill = jaccard)) +
   geom_tile(color = "white", linewidth = 0.4) +
   scale_fill_gradient(
     low = "#f4f7f5",
