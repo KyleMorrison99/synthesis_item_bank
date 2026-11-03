@@ -680,10 +680,28 @@ grid::grid.draw(final_figure)
 ### Total items
 ```{r}
 
-length(data$reporting_item)  # Number of items
+# english-language guidelines only: non-english guidelines (portuguese and spanish
+# translations) are excluded from all item-level analyses. rows without a standardised
+# section are the "not applicable" placeholder rows and are not items.
+data_en <- data %>%
+  filter(str_to_lower(str_squish(language)) == "english", !is.na(standardised_section))
 
-# Number of items per study/guideline
-items_per_checklist <- data %>%
+excluded_non_english <- data %>%
+  filter(str_to_lower(str_squish(language)) != "english") %>%
+  summarise(
+    n_guidelines = number_unique_guide - n_distinct(data_en$study_id),
+    n_checklists = n_distinct(checklist),
+    n_items = n(),
+    languages = paste(sort(unique(language)), collapse = ", ")
+  )
+excluded_non_english
+
+length(data_en$reporting_item)  # Number of english-language items
+n_distinct(data_en$study_id)    # english-language guidelines
+n_distinct(data_en$checklist)   # english-language checklists
+
+# Number of items per checklist
+items_per_checklist <- data_en %>%
   group_by(checklist) %>%
   summarise(n_items = n(), .groups = "drop")
 
@@ -714,7 +732,7 @@ section_order <- c(
   "Title"
 )
 
-item_per_section <- data %>%
+item_per_section <- data_en %>%
   group_by(standardised_section) %>%
   summarise(n = n(), .groups = "drop")
 
@@ -811,12 +829,17 @@ count_items_section
 study_unique <- study %>%
   distinct(study_id, .keep_all = TRUE)
 
-items_by_methodology <- data %>%
+items_by_methodology <- data_en %>%
   left_join(study_unique, by = "study_id") %>%
+  mutate(methodology_category = case_when(
+    checklist == "haddaway_2018_systematic.review"          ~ "systematic reviews and meta-analyses",
+    checklist == "haddaway_2018_systematic.review.protocol" ~ "systematic reviews and meta-analyses",
+    TRUE ~ methodology_category
+  )) %>%
   count(methodology_category, name = "n_items", sort = TRUE)
   
   
-items_by_discipline <- data %>%
+items_by_discipline <- data_en %>%
   left_join(study_unique, by = "study_id") %>%
   count(discipline, name = "n_items", sort = TRUE)
 
