@@ -1171,7 +1171,7 @@ fit_mattr <- brm(
   warmup = 2000,
   seed = 1234,
   control = list(adapt_delta = 0.995, max_treedepth = 15),
-  file = "fit_mattr_brms_gam_studyid"
+  file = here::here("R.data", "fit_mattr_brms_gam_studyid")
 )
 
 fit_lexdens <- brm(
@@ -1185,7 +1185,7 @@ fit_lexdens <- brm(
   warmup = 2000,
   seed = 1234,
   control = list(adapt_delta = 0.995, max_treedepth = 15),
-  file = "fit_lexdens_brms_gam_studyid"
+  file = here::here("R.data", "fit_lexdens_brms_gam_studyid")
 )
 
 
