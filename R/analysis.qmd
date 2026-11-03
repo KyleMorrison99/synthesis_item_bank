@@ -1002,8 +1002,9 @@ squeeze01 <- function(y, n = length(y)) {
 # 2) build item-level dataset with year + study_id
 # =========================================================
 
-items <- data  %>% # total is 2,191 as we remove languages other than english
+items <- data  %>% # english-language items only (non-english items cannot be tagged with the english udpipe model)
   filter(!is.na(reporting_item), !is.na(study_id)) %>%
+  filter(str_to_lower(str_squish(language)) == "english") %>%
   mutate(reporting_item = str_squish(as.character(reporting_item))) %>%
   filter(reporting_item != "") %>%
   left_join(
