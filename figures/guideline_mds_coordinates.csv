@@ -1,62 +1,57 @@
 MDS1,MDS2,guideline,study_id,discipline,methodology,guideline_type
--0.09590276107508096,0.10547840173132755,APA_2018,APA_2018,psychology,systematic reviews and meta-analyses,Original
--0.16987600883917342,0.18117308807939106,akl_2024,akl_2024,medicine,systematic reviews and meta-analyses,Extension
--0.24120860489000592,0.16874943778498383,ardern_2021,ardern_2021,sports science,systematic reviews and meta-analyses,Extension
-0.19374096265955706,-0.002277556227445217,atkinson_2014,atkinson_2014,interdisciplinary,search strategies,Original
-0.18968353497613644,-0.15203944994839674,beller_2013,beller_2013,medicine,systematic reviews and meta-analyses,Original
-0.14425054264237075,0.21023171066272833,bonetti_2022,bonetti_2022,pharmacy,systematic reviews and meta-analyses,Original
--0.042202824929786574,-0.10295406602750186,bougioukas_2018,bougioukas_2018,medicine,systematic reviews and meta-analyses,Extension
-0.08464366439518733,0.14234343417579143,brooke_2021,brooke_2021,medicine,systematic reviews and meta-analyses,Original
-0.2291947462255273,-0.12611312521479445,campbell_2020,campbell_2020,medicine,systematic reviews and meta-analyses,Extension
-0.178356339648748,-0.2218457401649372,cohen_2018,cohen_2018,medicine,systematic reviews and meta-analyses,Extension
-0.012227810137282821,-0.1349820987730883,eden_2011,eden_2011,medicine,systematic reviews and meta-analyses,Original
--0.17610561455998683,0.06958370311975696,elsman_2024,elsman_2024,medicine,systematic reviews and meta-analyses,Extension
-0.15392711213100405,-0.17149322709309334,france_2019,france_2019,medicine,meta-ethnography,Original
--0.21307808005360107,0.021825197188531893,gates_2022,gates_2022,medicine,systematic reviews and meta-analyses,Extension
-0.03152510673879511,-0.25539169298006953,gordon_2014,gordon_2014,education,systematic reviews and meta-analyses,Original
--0.3117683821696224,0.09465542771338453,guise_2017,guise_2017,medicine,systematic reviews and meta-analyses,Extension
--0.0749556786643674,0.004079833517293419,haddaway_2018,haddaway_2018,environmental science,systematic reviews and meta-analyses; scoping reviews,Original
-0.10708978184304639,0.0903633372701236,harvranek_2020,harvranek_2020,economics,systematic reviews and meta-analyses,Update
--0.32459931406293924,0.052061021454269774,hutton_2015,hutton_2015,medicine,systematic reviews and meta-analyses,Extension
-0.18156155041462943,-0.1869273926901299,kable_2012,kable_2012,medicine,search strategies,Original
-0.24614725951194638,0.18638333950280406,lakens_2016,lakens_2016,psychology,systematic reviews and meta-analyses,Original
-0.022337179201529337,-0.1951942869510933,levitt_2018,levitt_2018,psychology,systematic reviews and meta-analyses,Original
--0.19312269827900425,0.08749246316327845,mcgrath_2017,mcgrath_2017,medicine,systematic reviews and meta-analyses,Extension
--0.2756438782039521,0.051774141313678204,mcinnes_2018,mcinnes_2018,medicine,systematic reviews and meta-analyses,Extension
--0.09050749372660807,-0.08807847649162166,moher_1999,moher_1999,medicine,systematic reviews and meta-analyses,Original
--0.3516216174741413,0.02391431627077413,moher_2009,moher_2009,medicine,systematic reviews and meta-analyses,Update
--0.09610956982317141,-0.027176311341973392,moher_2015,moher_2015,medicine,systematic reviews and meta-analyses,Extension
-0.07730732500169993,-0.22919285431798345,montazeri_2023,montazeri_2023,medicine,bibliometrics,Original
-0.19334151454794574,0.08065243560469802,muller_2018,muller_2018,medicine,systematic reviews and meta-analyses,Original
--0.23542562801958264,-0.043122271361047626,murad_2017,murad_2017,medicine,meta-epidemiology,Original
-0.14320360961182949,-0.20105621747942173,obrien_2014,obrien_2014,medicine,qualitative review,Original
--0.08992679433951493,0.10881429210382589,odea_2020,odea_2020,environmental science,systematic reviews and meta-analyses,Extension
-0.1910537060943894,-0.008278568631575046,ohlssen_2013,ohlssen_2013,pharmacy,systematic reviews and meta-analyses,Original
--0.11178011436440943,0.20394953123586546,page_2021,page_2021,medicine,systematic reviews and meta-analyses,Update
-0.4221388424391913,0.16648124415120968,page_2021_abstract,NA,NA,NA,NA
-0.34966974274420604,0.12523991942101614,page_2021_extended_item111,NA,NA,NA,NA
--0.03551696879809782,0.046203023754054724,peters_2006,peters_2006,environmental science,systematic reviews and meta-analyses,Original
--0.035418582078257474,-0.00999289430960427,peters_2022,peters_2022,medicine,scoping reviews,Original
-0.27105024606693906,-0.022113594268737883,rethlefsen_2021,rethlefsen_2021,medicine,systematic reviews and meta-analyses,Extension
-0.24407710571620309,0.13666515121016104,riley_2010,riley_2010,medicine,systematic reviews and meta-analyses,Original
--0.053354710793711714,0.03564495428735518,sanchezmeca_2021,sanchezmeca_2021,psychology,systematic reviews and meta-analyses,Original
--0.18957113533162318,0.10774768689890533,snell_2023,snell_2023,medicine,systematic reviews and meta-analyses,Original
-0.4206915660364007,0.169399728677797,snell_2023_abstract,NA,NA,NA,NA
-0.15115410991254383,-0.0202721710968793,stanley_2013,stanley_2013,economics,systematic reviews and meta-analyses,Original
-0.32165736598353606,0.02088927983989468,stevens_2025,stevens_2025,medicine,rapid review,Extension
--0.18369066399585923,0.16692718439761658,stewart_2015,stewart_2015,medicine,systematic reviews and meta-analyses,Extension
-0.4191353892421898,0.269738058648379,stewart_2015_item3,NA,NA,NA,NA
-0.04971884464347376,0.14974153989553524,stroup_2000,stroup_2000,medicine,systematic reviews and meta-analyses,Original
-0.03243859337773338,-0.13602771800569408,tong_2012,tong_2012,medicine,systematic reviews and meta-analyses,Original
--0.10605687957898773,-0.26105487978783665,tricco_2018,tricco_2018,medicine,scoping reviews,Extension
--0.334871876348562,0.019527276061030104,wang_2019,wang_2019,medicine,systematic reviews and meta-analyses,Extension
--0.3266665635534209,0.012263688288839144,welch_2012,welch_2012,medicine,systematic reviews and meta-analyses,Extension
--0.0531297884918875,-0.366804888911356,wong_2013,wong_2013,medicine,qualitative review,Original
--0.041253777552950385,-0.35383746434581875,wong_2013a,wong_2013a,medicine,qualitative review,Original
-0.08772303226506742,-0.2713744058016184,wong_2016,wong_2016,medicine,qualitative review,Extension
--0.3243246439561685,0.07985489577400924,zhang_2020,zhang_2020,medicine,systematic reviews and meta-analyses,Extension
--0.3310904839136359,0.090153941337722407,zhang_2020a,zhang_2020a,medicine,systematic reviews and meta-analyses,Extension
--0.3150433389045156,0.04003983913063273,zhao_2022,zhao_2022,medicine,systematic reviews and meta-analyses,Extension
--0.2651135349389455,0.06958577257967964,zorzela_2016,zorzela_2016,medicine,systematic reviews and meta-analyses,Extension
-0.41913538924218974,0.26973805864837885,zorzela_2016_item3,NA,NA,NA,NA
-0.12075603826027138,-0.27176500267299464,zumsteg_2012,zumsteg_2012,medicine,systematic reviews and meta-analyses,Original
+-0.06081817252253275,0.05826328547434482,APA_2018,APA_2018,psychology,systematic reviews and meta-analyses,Original
+-0.2016769345893969,0.07541160561430196,akl_2024,akl_2024,medicine,systematic reviews and meta-analyses,Extension
+-0.23927624580291726,0.060963606386435026,ardern_2021,ardern_2021,sports science,systematic reviews and meta-analyses,Extension
+0.24173344335675134,0.15742536510140118,atkinson_2014,atkinson_2014,interdisciplinary,search strategies,Original
+0.1944826145542315,-0.019801874201301285,beller_2013,beller_2013,medicine,systematic reviews and meta-analyses,Original
+0.2204493182598362,0.30919392467691237,bonetti_2022,bonetti_2022,pharmacy,systematic reviews and meta-analyses,Original
+-0.09274544301630068,0.02120179159785838,bougioukas_2018,bougioukas_2018,medicine,systematic reviews and meta-analyses,Extension
+0.061412256260252956,0.13846840930064017,brooke_2021,brooke_2021,medicine,systematic reviews and meta-analyses,Original
+0.26695047316740916,0.190424588536295,campbell_2020,campbell_2020,medicine,systematic reviews and meta-analyses,Extension
+0.17772668664075789,-0.03237620446378112,cohen_2018,cohen_2018,medicine,systematic reviews and meta-analyses,Extension
+0.14715181159391805,-0.14893784474365288,eden_2011,eden_2011,medicine,systematic reviews and meta-analyses,Original
+-0.14549601220659317,-0.008736819242911005,elsman_2024,elsman_2024,medicine,systematic reviews and meta-analyses,Extension
+0.32946185358981456,-0.3031477278650601,france_2019,france_2019,medicine,meta-ethnography,Original
+-0.15237189458403103,-0.03696055908144462,gates_2022,gates_2022,medicine,systematic reviews and meta-analyses,Extension
+0.17225822688210576,-0.3012484459401608,gordon_2014,gordon_2014,education,systematic reviews and meta-analyses,Original
+-0.3162486656657795,-0.030066079134251814,guise_2017,guise_2017,medicine,systematic reviews and meta-analyses,Extension
+-0.06853594809301289,-0.05108086588946366,haddaway_2018,haddaway_2018,environmental science,systematic reviews and meta-analyses; scoping reviews,Original
+0.11423057624490478,0.24969100124709004,harvranek_2020,harvranek_2020,economics,systematic reviews and meta-analyses,Update
+-0.29191286513761355,-0.039546524822771975,hutton_2015,hutton_2015,medicine,systematic reviews and meta-analyses,Extension
+0.32415048170713634,0.005730557133207365,kable_2012,kable_2012,medicine,search strategies,Original
+0.27913947878748047,0.3640680306029452,lakens_2016,lakens_2016,psychology,systematic reviews and meta-analyses,Original
+0.17127145037778727,-0.2875512734904339,levitt_2018,levitt_2018,psychology,systematic reviews and meta-analyses,Original
+-0.16038854057363536,0.037809726455060096,mcgrath_2017,mcgrath_2017,medicine,systematic reviews and meta-analyses,Extension
+-0.2532766226626757,-0.015191753187884093,mcinnes_2018,mcinnes_2018,medicine,systematic reviews and meta-analyses,Extension
+-0.08427051052728914,0.023060761344747282,moher_1999,moher_1999,medicine,systematic reviews and meta-analyses,Original
+-0.30891510989933185,-0.05345845035768254,moher_2009,moher_2009,medicine,systematic reviews and meta-analyses,Update
+-0.09004285900635228,0.05011910362274547,moher_2015,moher_2015,medicine,systematic reviews and meta-analyses,Extension
+0.15876319871633998,-0.19273866521915675,montazeri_2023,montazeri_2023,medicine,bibliometrics,Original
+0.2677258706230876,0.2214766276582387,muller_2018,muller_2018,medicine,systematic reviews and meta-analyses,Original
+-0.19570457381017606,-0.04160049050594903,murad_2017,murad_2017,medicine,meta-epidemiology,Original
+0.2791763065513918,-0.24177437342784397,obrien_2014,obrien_2014,medicine,qualitative review,Original
+-0.06549032797073034,0.10387646242996268,odea_2020,odea_2020,environmental science,systematic reviews and meta-analyses,Extension
+0.2195656649873346,0.10827110315668242,ohlssen_2013,ohlssen_2013,pharmacy,systematic reviews and meta-analyses,Original
+-0.16377859866481762,0.14461941619026278,page_2021,page_2021,medicine,systematic reviews and meta-analyses,Update
+-0.1198211731522745,0.028645663578129473,peters_2006,peters_2006,environmental science,systematic reviews and meta-analyses,Original
+-0.09474847234263015,0.060956909127570784,peters_2022,peters_2022,medicine,scoping reviews,Original
+0.29108282782527034,0.18128543516011736,rethlefsen_2021,rethlefsen_2021,medicine,systematic reviews and meta-analyses,Extension
+0.23315854512993356,0.26477464016160496,riley_2010,riley_2010,medicine,systematic reviews and meta-analyses,Original
+-0.08214965548755242,0.09753311545453285,sanchezmeca_2021,sanchezmeca_2021,psychology,systematic reviews and meta-analyses,Original
+-0.19805809147747988,0.02284984273177275,snell_2023,snell_2023,medicine,systematic reviews and meta-analyses,Original
+0.12871356021101552,0.24190621443819801,stanley_2013,stanley_2013,economics,systematic reviews and meta-analyses,Original
+0.34291455838693363,0.11583203648654737,stevens_2025,stevens_2025,medicine,rapid review,Extension
+-0.28693484366972016,0.026654701269789062,stewart_2015,stewart_2015,medicine,systematic reviews and meta-analyses,Extension
+0.04971015102705812,0.14489021471232913,stroup_2000,stroup_2000,medicine,systematic reviews and meta-analyses,Original
+0.11659928560228901,-0.02204888108551163,tong_2012,tong_2012,medicine,systematic reviews and meta-analyses,Original
+-0.06714244895698475,-0.21192534053595802,tricco_2018,tricco_2018,medicine,scoping reviews,Extension
+-0.31195614204400596,-0.03244233975745491,wang_2019,wang_2019,medicine,systematic reviews and meta-analyses,Extension
+-0.29177092875129246,-0.053937233225113436,welch_2012,welch_2012,medicine,systematic reviews and meta-analyses,Extension
+0.15715974164314508,-0.38240810377187034,wong_2013,wong_2013,medicine,qualitative review,Original
+0.182913618349325,-0.37148132914255044,wong_2013a,wong_2013a,medicine,qualitative review,Original
+0.2218284209707548,-0.31820990053126474,wong_2016,wong_2016,medicine,qualitative review,Extension
+-0.31851999024865946,-0.029538905310021523,zhang_2020,zhang_2020,medicine,systematic reviews and meta-analyses,Extension
+-0.323274976985557,-0.03176126488976454,zhang_2020a,zhang_2020a,medicine,systematic reviews and meta-analyses,Extension
+-0.32253302802234673,-0.02941291834207271,zhao_2022,zhao_2022,medicine,systematic reviews and meta-analyses,Extension
+-0.2769164641542127,0.022664485914559683,zorzela_2016,zorzela_2016,medicine,systematic reviews and meta-analyses,Extension
+0.235045118579634,-0.24068445739894934,zumsteg_2012,zumsteg_2012,medicine,systematic reviews and meta-analyses,Original
