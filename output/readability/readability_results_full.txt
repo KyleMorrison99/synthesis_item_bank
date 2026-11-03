@@ -1,0 +1,328 @@
+rows in data: 2312 
+# A tibble: 1 x 5
+  n_checklists mean_items sd_items min_items max_items
+         <int>      <dbl>    <dbl>     <int>     <int>
+1           68         34     27.0         6       196
+items per section (figure panel a): 
+# A tibble: 7 x 2
+  standardised_section     n
+  <fct>                <int>
+1 Abstract               187
+2 Discussion             188
+3 Introduction           162
+4 Methodology           1099
+5 Other Information      164
+6 Results                441
+7 Title                   66
+items after distinct(study_id, year, reporting_item): 2191 
+# A tibble: 3 x 2
+  language       n
+  <chr>      <int>
+1 english     2068
+2 portuguese    81
+3 spanish       42
+Words per item: 
+# A tibble: 1 x 6
+  n_items mean_tokens sd_tokens median_tokens min_tokens max_tokens
+    <int>       <dbl>     <dbl>         <int>      <int>      <int>
+1    2191        19.9      14.5            17          1        259
+model_dat rows: 2191  studies: 59  years: 1999 - 2025 
+k_year: 10 
+Fitting MATTR GAMM ... 2026-11-03 20:46:59 
+Fitting lexical density GAMM ... 2026-11-03 20:55:47 
+done fitting GAMMs 2026-11-03 21:05:38 
+
+==== MATTR model summary ==== 
+ Family: beta 
+  Links: mu = logit; phi = identity 
+Formula: mattr_beta ~ s(year_c, k = k_year) + (1 | study_id) 
+   Data: model_dat (Number of observations: 2191) 
+  Draws: 4 chains, each with iter = 4000; warmup = 2000; thin = 1;
+         total post-warmup draws = 8000
+
+Smooth Terms: 
+               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sds(syear_c_1)     0.39      0.40     0.01     1.44 1.00     2473     3700
+
+Group-Level Effects: 
+~study_id (Number of levels: 59) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.36      0.04     0.28     0.45 1.01     2364     3805
+
+Population-Level Effects: 
+          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept     3.15      0.06     3.03     3.27 1.00     1766     2654
+syear_c_1    -0.80      1.23    -3.01     1.90 1.00     3253     2657
+
+Family Specific Parameters: 
+    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+phi     9.74      0.39     8.99    10.52 1.00     9019     6172
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).
+
+==== Lexical density model summary ==== 
+ Family: beta 
+  Links: mu = logit; phi = identity 
+Formula: lexical_density_beta ~ s(year_c, k = k_year) + (1 | study_id) 
+   Data: model_dat (Number of observations: 2191) 
+  Draws: 4 chains, each with iter = 4000; warmup = 2000; thin = 1;
+         total post-warmup draws = 8000
+
+Smooth Terms: 
+               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sds(syear_c_1)     0.42      0.42     0.01     1.49 1.00     1828     3581
+
+Group-Level Effects: 
+~study_id (Number of levels: 59) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.40      0.04     0.33     0.49 1.00     1254     2451
+
+Population-Level Effects: 
+          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept     0.12      0.05     0.01     0.22 1.00      871     1679
+syear_c_1    -1.02      1.19    -3.52     1.53 1.00     2065     2467
+
+Family Specific Parameters: 
+    Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+phi    10.11      0.29     9.56    10.69 1.00     8100     5912
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).
+
+Observed annual mean MATTR (raw mattr_10), with n checklists: 
+   year  mean_obs n_checklists n_studies n_items
+1  1999 0.9648202            1         1      18
+2  2000 0.9662772            1         1      34
+3  2006 0.9714653            1         1      20
+4  2009 0.9614938            1         1      27
+5  2010 0.9525918            1         1      18
+6  2011 0.9911111            1         1      30
+7  2012 0.9658593            4         4      99
+8  2013 0.9514484            5         5      88
+9  2014 0.9789060            3         3     100
+10 2015 0.9569264            4         4     132
+11 2016 0.9477772            3         3      74
+12 2017 0.9679812            3         3     131
+13 2018 0.9609747            9         6     308
+14 2019 0.9528006            2         2      51
+15 2020 0.9641296            5         5     222
+16 2021 0.9565074           13         9     477
+17 2022 0.9473584            6         5     209
+18 2023 0.9395181            1         1      20
+19 2024 0.9478853            2         2     127
+20 2025 0.9530806            1         1       6
+Observed annual mean lexical density (raw), with n checklists: 
+   year  mean_obs n_checklists n_studies n_items
+1  1999 0.5081765            1         1      18
+2  2000 0.6200138            1         1      34
+3  2006 0.5656226            1         1      20
+4  2009 0.4756532            1         1      27
+5  2010 0.5401765            1         1      18
+6  2011 0.5926948            1         1      30
+7  2012 0.5470100            4         4      99
+8  2013 0.5054955            5         5      88
+9  2014 0.6511544            3         3     100
+10 2015 0.4870945            4         4     132
+11 2016 0.5209141            3         3      74
+12 2017 0.5840373            3         3     131
+13 2018 0.5428367            9         6     308
+14 2019 0.4973603            2         2      51
+15 2020 0.5049698            5         5     222
+16 2021 0.5159114           13         9     477
+17 2022 0.4699264            6         5     209
+18 2023 0.4992924            1         1      20
+19 2024 0.4985213            2         2     127
+20 2025 0.4508772            1         1       6
+
+Model-estimated MATTR by year: 
+   year  Estimate      Q2.5     Q97.5 n_checklists n_studies n_items
+1  1999 0.9703190 0.9542431 0.9819038            1         1      18
+2  2000 0.9699352 0.9552758 0.9807485            1         1      34
+3  2001 0.9695071 0.9559299 0.9797903           NA        NA      NA
+4  2002 0.9690447 0.9564007 0.9788328           NA        NA      NA
+5  2003 0.9685536 0.9568823 0.9780497           NA        NA      NA
+6  2004 0.9680377 0.9569572 0.9771235           NA        NA      NA
+7  2005 0.9675017 0.9570494 0.9762958           NA        NA      NA
+8  2006 0.9669513 0.9569283 0.9754193            1         1      20
+9  2007 0.9663902 0.9569509 0.9743792           NA        NA      NA
+10 2008 0.9658183 0.9571187 0.9732135           NA        NA      NA
+11 2009 0.9652386 0.9571612 0.9722381            1         1      27
+12 2010 0.9646525 0.9572489 0.9713121            1         1      18
+13 2011 0.9640390 0.9572207 0.9702750            1         1      30
+14 2012 0.9633703 0.9569935 0.9691942            4         4      99
+15 2013 0.9626367 0.9566199 0.9681347            5         5      88
+16 2014 0.9618543 0.9561383 0.9670561            3         3     100
+17 2015 0.9610549 0.9554152 0.9661098            4         4     132
+18 2016 0.9602622 0.9547107 0.9651918            3         3      74
+19 2017 0.9594755 0.9539606 0.9643329            3         3     131
+20 2018 0.9586784 0.9532233 0.9635697            9         6     308
+21 2019 0.9578580 0.9522685 0.9628945            2         2      51
+22 2020 0.9570196 0.9511092 0.9624677            5         5     222
+23 2021 0.9561845 0.9496445 0.9621709           13         9     477
+24 2022 0.9553703 0.9479265 0.9620518            6         5     209
+25 2023 0.9545770 0.9457564 0.9625466            1         1      20
+26 2024 0.9537833 0.9431926 0.9633430            2         2     127
+27 2025 0.9529569 0.9397013 0.9646361            1         1       6
+Model-estimated lexical density by year: 
+   year  Estimate      Q2.5     Q97.5 n_checklists n_studies n_items
+1  1999 0.6109980 0.4877596 0.7185516            1         1      18
+2  2000 0.6077897 0.4952709 0.7071594            1         1      34
+3  2001 0.6043809 0.4984769 0.6979326           NA        NA      NA
+4  2002 0.6007940 0.5019990 0.6881453           NA        NA      NA
+5  2003 0.5970771 0.5047905 0.6793208           NA        NA      NA
+6  2004 0.5932770 0.5070171 0.6710361           NA        NA      NA
+7  2005 0.5894429 0.5073702 0.6625147           NA        NA      NA
+8  2006 0.5856248 0.5082440 0.6542766            1         1      20
+9  2007 0.5818637 0.5110432 0.6445944           NA        NA      NA
+10 2008 0.5781715 0.5132895 0.6362123           NA        NA      NA
+11 2009 0.5745581 0.5165064 0.6275091            1         1      27
+12 2010 0.5710081 0.5185143 0.6192575            1         1      18
+13 2011 0.5673779 0.5207196 0.6115878            1         1      30
+14 2012 0.5634731 0.5218122 0.6043561            4         4      99
+15 2013 0.5591645 0.5210214 0.5977952            5         5      88
+16 2014 0.5544278 0.5186922 0.5909986            3         3     100
+17 2015 0.5492962 0.5155838 0.5848357            4         4     132
+18 2016 0.5437835 0.5116560 0.5788976            3         3      74
+19 2017 0.5378553 0.5069876 0.5719151            3         3     131
+20 2018 0.5314742 0.5013786 0.5639632            9         6     308
+21 2019 0.5246676 0.4942906 0.5565039            2         2      51
+22 2020 0.5175531 0.4856880 0.5494124            5         5     222
+23 2021 0.5102953 0.4751372 0.5450693           13         9     477
+24 2022 0.5030309 0.4618446 0.5431267            6         5     209
+25 2023 0.4958226 0.4467523 0.5435884            1         1      20
+26 2024 0.4886729 0.4275969 0.5453915            2         2     127
+27 2025 0.4815720 0.4067720 0.5500128            1         1       6
+
+Intercept-based expected mean MATTR (plogis(Intercept)): 
+     mean    median      2.5%     97.5% 
+0.9588230 0.9589202 0.9539827 0.9633798 
+Intercept-based expected mean lexical density (plogis(Intercept)): 
+     mean    median      2.5%     97.5% 
+0.5289424 0.5289294 0.5023562 0.5557352 
+Raw mean MATTR across items: 0.9588021  SD: 0.05084048 
+Raw mean lexical density across items: 0.5248575  SD: 0.1222342 
+
+Bayes R2 MATTR: 
+     Estimate   Est.Error       Q2.5      Q97.5
+R2 0.07211667 0.009141822 0.05522629 0.09114592
+Bayes R2 lexical density: 
+    Estimate  Est.Error      Q2.5     Q97.5
+R2 0.4295577 0.01045638 0.4081689 0.4488687
+
+--- MATTR slope / endpoints --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1           -0.000668 -0.00141 0.000146
+# A tibble: 1 x 6
+  total_change total_lower_95 total_upper_95 per_year_change per_year_lower_95
+         <dbl>          <dbl>          <dbl>           <dbl>             <dbl>
+1      -0.0174        -0.0366        0.00381       -0.000668          -0.00141
+# i 1 more variable: per_year_upper_95 <dbl>
+--- Lexdens slope / endpoints --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1            -0.00498  -0.0103 0.000721
+# A tibble: 1 x 6
+  total_change total_lower_95 total_upper_95 per_year_change per_year_lower_95
+         <dbl>          <dbl>          <dbl>           <dbl>             <dbl>
+1       -0.129         -0.268         0.0187        -0.00498           -0.0103
+# i 1 more variable: per_year_upper_95 <dbl>
+--- Lexdens pre-2020 --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1            -0.00445  -0.0100  0.00179
+--- Lexdens post-2020 --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1            -0.00720  -0.0214  0.00449
+--- MATTR pre-2020 --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1           -0.000633 -0.00128 0.000198
+--- MATTR post-2020 --- 
+# A tibble: 1 x 3
+  mean_slope_per_year lower_95 upper_95
+                <dbl>    <dbl>    <dbl>
+1           -0.000813 -0.00296  0.00132
+figure saved 2026-11-03 21:05:47 
+
+concepts per item: 
+# A tibble: 1 x 6
+  n_items  mean    sd median   min   max
+    <int> <dbl> <dbl>  <int> <int> <int>
+1    2157  2.13  1.81      2     1    19
+negbin model rows: 2027 
+Fitting negbin MATTR ... 2026-11-03 21:05:47 
+Fitting negbin lexdens ... 2026-11-03 21:07:45 
+
+==== negbin MATTR summary ==== 
+ Family: negbinomial 
+  Links: mu = log; shape = identity 
+Formula: n_concepts ~ mattr_z + log_tokens_z + (1 | study_id) 
+   Data: model_data (Number of observations: 2027) 
+  Draws: 4 chains, each with iter = 4000; warmup = 1000; thin = 1;
+         total post-warmup draws = 12000
+
+Group-Level Effects: 
+~study_id (Number of levels: 55) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.17      0.03     0.12     0.23 1.00     4338     7138
+
+Population-Level Effects: 
+             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept        0.68      0.03     0.62     0.74 1.00     4113     6517
+mattr_z          0.05      0.02     0.02     0.09 1.00    16176     8992
+log_tokens_z     0.40      0.02     0.37     0.44 1.00    10713     8452
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+shape    55.77     33.04    24.24   146.68 1.00    13507     6879
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).
+
+==== negbin lexdens summary ==== 
+ Family: negbinomial 
+  Links: mu = log; shape = identity 
+Formula: n_concepts ~ lexdens_z + log_tokens_z + (1 | study_id) 
+   Data: model_data (Number of observations: 2027) 
+  Draws: 4 chains, each with iter = 4000; warmup = 1000; thin = 1;
+         total post-warmup draws = 12000
+
+Group-Level Effects: 
+~study_id (Number of levels: 55) 
+              Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+sd(Intercept)     0.18      0.03     0.13     0.25 1.00     4262     6552
+
+Population-Level Effects: 
+             Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+Intercept        0.67      0.03     0.61     0.74 1.00     3757     6148
+lexdens_z        0.16      0.02     0.12     0.20 1.00    13559     9847
+log_tokens_z     0.45      0.02     0.41     0.49 1.00     9827     8994
+
+Family Specific Parameters: 
+      Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+shape    78.21     50.64    30.37   214.78 1.00    13916     7999
+
+Draws were sampled using sampling(NUTS). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).
+
+IRRs: 
+# A tibble: 4 x 7
+  term           irr_median irr_mean  q2.5 q97.5   q10   q90
+  <chr>               <dbl>    <dbl> <dbl> <dbl> <dbl> <dbl>
+1 b_mattr_z            1.06     1.06  1.02  1.09  1.03  1.08
+2 b_log_tokens_z       1.50     1.50  1.44  1.56  1.46  1.53
+3 b_lexdens_z          1.17     1.17  1.13  1.23  1.14  1.21
+4 b_log_tokens_z       1.57     1.57  1.51  1.63  1.53  1.61
+ALL DONE 2026-11-03 21:09:36 
