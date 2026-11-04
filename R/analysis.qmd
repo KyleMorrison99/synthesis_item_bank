@@ -2440,12 +2440,6 @@ concept_section_summary <- concept %>%
 
 max_x <- max(concept_section_summary$total_concepts, na.rm = TRUE)
 label_pad <- max_x * 0.04
-label_fit_threshold <- label_pad * 1.6
-
-concept_section_summary <- concept_section_summary %>%
-  mutate(
-    unique_label = ifelse(unique_concepts >= label_fit_threshold, comma(unique_concepts), NA_character_)
-  )
 
 cleveland_concepts <- ggplot(concept_section_summary, aes(y = standardised_section)) +
   geom_segment(
@@ -2461,12 +2455,6 @@ cleveland_concepts <- ggplot(concept_section_summary, aes(y = standardised_secti
   geom_point(
     aes(x = total_concepts, fill = "Total concepts"),
     shape = 21, size = 4.8, stroke = 1, colour = "black"
-  ) +
-  geom_text(
-    aes(x = unique_concepts, label = unique_label),
-    nudge_x = -label_pad, hjust = 1,
-    size = 3.4, fontface = "bold", colour = col_unique,
-    na.rm = TRUE
   ) +
   geom_text(
     aes(x = total_concepts, label = comma(total_concepts)),
