@@ -62,7 +62,7 @@ readability metrics rely on an English language model; the object `data_en` hold
 `pacman::p_load()` installs any package that is missing and then loads it. `udpipe` provides the
 part-of-speech tagger, `tidytext` the tokeniser, `brms` and `rstan` the Bayesian models, `openxlsx` the
 Excel export, `stringi` the text-encoding repair, and `patchwork`, `grid` and `gridExtra` the figure
-assembly. The final modelling section also uses `tidybayes`, which is loaded there.
+assembly, and `tidybayes` the posterior summaries of the concept-count models.
 
 ```{r}
 rm(list = ls())  # start from an empty workspace so nothing from a previous session leaks in
@@ -82,8 +82,8 @@ pacman::p_load(
   gridExtra,
   openxlsx,
   stringi,
-  writexlsx,
-  rstan
+  rstan,
+  tidybayes
 )
 
 sessionInfo()
@@ -3642,10 +3642,6 @@ as incidence rate ratios (IRR = exp(coefficient)) per standard deviation of the 
 minutes per model; these models are not cached.
 
 ```{r}
-library(tidyverse)
-library(brms)
-library(tidybayes)  # spread_draws() and median_qi() for the IRR summaries; not in the p_load list above
-
 ## ---- 1. Join: concept counts onto the readability metrics by item id ----
 model_data <- concepts_per_item %>%
   inner_join(item_metrics, by = "checklist_item_id") %>%
