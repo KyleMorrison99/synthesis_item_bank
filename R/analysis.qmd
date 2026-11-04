@@ -19,11 +19,53 @@ editor:
   default-output: console
 ---
 
-# **Packages & Data**
-## *Packages*
+# About this document
+
+This file reproduces every number and figure in the paper from the three CSV files in `data/`.
+It is organised in the order the results appear in the manuscript:
+
+| Section | What it produces | Objects created that later sections need |
+|---|---|---|
+| Packages & Data | loads the three input files | `data`, `study`, `concept` |
+| Guideline-level summary | Figure 1 (cumulative guidelines by type, discipline, methodology) | none |
+| Item-level summary | item counts, Figure 2a, Supplementary File 2 | `data_en`, `item_per_section_plot`, `section_order`, colour settings |
+| Readability | MATTR and lexical density per item, the two Beta GAMMs, Figure 2 | `item_metrics`, `model_dat`, `fit_mattr`, `fit_lexdens` |
+| Reporting concepts and overlap | concepts per section, Jaccard overlap, Table 1, Figure 3 | `concepts_per_item`, `guideline_set_list` |
+| Directive verbs | Figure S1 and the verb tables | `verbs_en`, `cl_any`, `cp` |
+| Concepts per item models | negative binomial models of concepts per item | none |
+| Supplementary File 3 | concept tables by section | none |
+
+**How to run.** Open the project (`synthesis_item_bank.Rproj`) so that `here()` resolves paths, then run the
+chunks top to bottom. Every section after *Packages & Data* depends on objects created above it, so run
+the chunks in order. Rendering the whole document from scratch takes roughly an hour: the two Beta GAMMs
+take about 10 minutes each on four cores and the two negative binomial models about 2 minutes each.
+The GAMMs are cached in `R.data/` (see the Readability section), so a re-run with unchanged data loads
+them instantly.
+
+**Inputs.** `data/item_bank_reporting_guideline_compiled.csv` (one row per reporting item, all checklists,
+all languages), `data/item_bank_reporting_guideline.csv` (one row per included publication; a guideline with
+several publications has several rows that share a `study_id`) and
+`data/item_bank_reporting_guideline_concepts.csv` (one row per concept extracted from an item). The udpipe
+English model (`english-ewt-ud-2.5-191206.udpipe`) is kept both in the project root and in `R.data/`.
+
+**Outputs.** Figures go to `figures/`, Excel workbooks for the supplementary files to `data/`, saved model
+objects and intermediate data to `R.data/`, and the directive-verb tables to `figures/` and `data/`.
+
+**Conventions.** `study_id` identifies a guideline (`firstauthor_year`); `checklist` identifies a checklist
+within a guideline (ROSES, for example, has four); `checklist_item_id` identifies an item. Guideline-level
+counts use all 59 guidelines. Item-level analyses use the 56 English-language guidelines only, because the
+readability metrics rely on an English language model; the object `data_en` holds those items.
+
+# Packages & Data
+## Packages
+
+`pacman::p_load()` installs any package that is missing and then loads it. `udpipe` provides the
+part-of-speech tagger, `tidytext` the tokeniser, `brms` and `rstan` the Bayesian models, `openxlsx` the
+Excel export, `stringi` the text-encoding repair, and `patchwork`, `grid` and `gridExtra` the figure
+assembly. The final modelling section also uses `tidybayes`, which is loaded there.
 
 ```{r}
-rm(list = ls())
+rm(list = ls())  # start from an empty workspace so nothing from a previous session leaks in
 
 pacman::p_load(
   tidyverse,
@@ -48,27 +90,39 @@ sessionInfo()
                                                                                                               
 ```
 
-## *Data*
+## Data
+
+Three tables, one per level of the item bank. Column names are used as they appear in the CSV headers
+(note the trailing space in `guideline_extension ` is handled by readr).
+
 ```{r}
 # Read the CSV files
-data <- read_csv(here("data", "item_bank_reporting_guideline_compiled.csv"))
-study <- read_csv(here("data", "item_bank_reporting_guideline.csv"))
-concept <- read_csv(here("data", "item_bank_reporting_guideline_concepts.csv"))
+data <- read_csv(here("data", "item_bank_reporting_guideline_compiled.csv"))    # item level: one row per reporting item
+study <- read_csv(here("data", "item_bank_reporting_guideline.csv"))            # guideline level: one row per publication
+concept <- read_csv(here("data", "item_bank_reporting_guideline_concepts.csv")) # concept level: one row per concept per item
 ```
 
-# *Basic summary of guideline level details* 
+# Guideline-level summary (Figure 1)
+
+Counts of guidelines, checklists and publications per year, and the three stacked cumulative-area panels
+of Figure 1. These use all 59 guidelines (any language). Each panel chunk is self-contained: it recodes
+the grouping variable, builds the cumulative counts, smooths them for drawing, and adds the lollipop
+labels showing the overall running total at selected years.
+
+## Counts of guidelines and checklists
+
 ```{r}
-# Unique Guidelines 
+# Unique guidelines: a guideline published in several papers (e.g. PRISMA 2020) has one study_id
 number_unique_guide <- study %>% 
   distinct(study_id) %>% 
   nrow() ##  
 
-# Unique Checklist
+# Unique checklists: a guideline can carry several checklists (e.g. the four ROSES checklists)
 number_unique_checklist <- data %>% 
 distinct(checklist) %>% 
   nrow() ##
 
-# overall cumulative counts
+# overall cumulative counts of guidelines by publication year (years with no guideline filled with 0)
 guide_per_year <- study %>%
   filter(!is.na(year)) %>%
   distinct(year, study_id) %>%
@@ -80,9 +134,14 @@ guide_per_year <- study %>%
   
 ```
 
+## Figure 1a: cumulative guidelines by guideline type
+
+Original, extension, update or translation, as recorded in `guideline_extension`. The spline
+(`monoH.FC`) only smooths the step-shaped cumulative curve for drawing; it does not change the counts.
+
 ```{r}
 # settings
-lollipop_years <- c(2000, 2005, 2010, 2015, 2020, 2025)
+lollipop_years <- c(2000, 2005, 2010, 2015, 2020, 2025)  # years that get a lollipop label with the running total
 
 pal <- c(
   "Original" = "#54478c",
@@ -254,6 +313,11 @@ count_cum_type
   # bg       = "white"
 #)
 ```
+
+## Figure 1b: cumulative guidelines by discipline
+
+Medicine, psychology and environmental science are shown on their own; every other discipline
+(economics, education, pharmacy, sports science, interdisciplinary) is pooled as "Other".
 
 ```{r}
 # settings
@@ -438,6 +502,14 @@ count_cum_discipline
  # bg       = "white"
 # )
 ```
+
+## Figure 1c: cumulative guidelines by evidence synthesis methodology
+
+`methodology_category` is free text, so it is grouped with pattern matching: systematic reviews (incl.
+meta-analyses, overviews, rapid and living reviews), qualitative reviews (incl. meta-ethnography,
+meta-epidemiology, mixed-methods, realist and meta-narrative reviews), scoping reviews (incl. systematic
+maps), literature search guidance, and bibliometrics. A guideline listing two methodologies takes the
+first pattern that matches, in the order written in the `case_when()`.
 
 ```{r}
 # settings
@@ -627,6 +699,10 @@ count_cum_methodology
 # )
 ```
 
+## Figure 1: combine the three panels and save
+
+Stacks the three panels, adds shared axis titles with `grid`, and writes `figures/figure_all_three.jpg`.
+
 ```{r}
 figure_all <- (
   count_cum_type /
@@ -673,11 +749,16 @@ grid::grid.draw(final_figure)
  )
 ```
 
-# *Basic summary of item level details*
+# Item-level summary (Figure 2a)
 
-## Total items, total concepts and unique concepts
+## Total items
 
-### Total items
+Builds `data_en`, the English-language item set used by every item-level analysis, and summarises it:
+number of items, guidelines and checklists; items per checklist; items per manuscript section (the
+lollipop that becomes Figure 2a); and items by methodology and discipline. Also reports what the English
+filter removed. The objects `section_order`, `col_point`, `col_stem`, `col_text` and
+`item_per_section_plot` created here are reused by the Figure 2 chunk in the Readability section.
+
 ```{r}
 
 # english-language guidelines only: non-english guidelines (portuguese and spanish
@@ -694,7 +775,7 @@ excluded_non_english <- data %>%
     n_items = n(),
     languages = paste(sort(unique(language)), collapse = ", ")
   )
-excluded_non_english
+excluded_non_english  # what the language filter removed (guidelines, checklists, items, languages)
 
 length(data_en$reporting_item)  # Number of english-language items
 n_distinct(data_en$study_id)    # english-language guidelines
@@ -718,10 +799,13 @@ items_per_checklist %>%
     sd_items    = sd(n_items)
   )
 
+# colours shared by the lollipop plots (Figure 2a and the standalone version below)
 col_point <- "#54478c"
 col_stem  <- "#cfc8e8"
 col_text  <- "black"
 
+# order of sections on the y axis (bottom to top). spelling must match the item file
+# ("Other Information"); the concept file uses "Other information" and gets its own section_order later
 section_order <- c(
   "Other Information",
   "Discussion",
@@ -826,9 +910,12 @@ count_items_section
 #  bg       = "white"
 #)
 
+# guideline-level attributes (one row per guideline, first publication kept) for joining onto items
 study_unique <- study %>%
   distinct(study_id, .keep_all = TRUE)
 
+# items by methodology. the two ROSES systematic-review checklists are counted as systematic reviews
+# even though the ROSES guideline as a whole is recorded as "systematic reviews; systematic maps"
 items_by_methodology <- data_en %>%
   left_join(study_unique, by = "study_id") %>%
   mutate(methodology_category = case_when(
@@ -846,8 +933,16 @@ items_by_discipline <- data_en %>%
 
 ```
 
-### Reporting items for each section
+## Supplementary File 2: reporting items by section (Excel)
+
+Writes `data/tables_by_section.xlsx` with one sheet per manuscript section listing every reporting item
+(all languages) with its guideline, year and DOI(s). Identical wording within the same guideline and
+section is listed once, which is why the sheet totals are lower than the item counts above (the ROSES
+and PRISMA 2020 guidelines repeat items across their checklists). Guidelines with several publications
+have their DOIs joined with "; ".
+
 ```{r}
+# year and DOI per guideline; a guideline can have several DOIs (one per publication)
 study_lookup <- study %>%
   distinct(study_id, year, DOI) %>%
   mutate(across(where(is.character), ~ stri_enc_toutf8(.x, validate = TRUE)))
@@ -893,8 +988,15 @@ saveWorkbook(wb, file.path("data", "tables_by_section.xlsx"), overwrite = TRUE)
 
 ```
 
+## Legacy export of the same workbook (not run)
+
+An earlier version of the export above. It is kept for reference but switched off (`eval: false`)
+because it wrote to the same file with an older section scheme ("Methods"/"Other"), which put every
+"Methodology" and "Other Information" item into a sheet called "Other" and overwrote the workbook
+produced by the chunk above. Delete this chunk once you are happy with the version above.
 
 ```{r}
+#| eval: false
 # Helper to clean and convert to valid UTF-8
 clean_column <- function(x) {
   if (is.character(x)) {
@@ -996,18 +1098,38 @@ saveWorkbook(wb, file = file.path("data", "tables_by_section.xlsx"), overwrite =
 ```
 
 
-## Readability 
+# Readability of reporting items (Figure 2b and 2c)
+
+Two item-level metrics: lexical diversity (MATTR-10, the mean type-token ratio over all 10-word
+windows of an item; 1 = no word repeated) and lexical density (share of nouns, proper nouns, verbs,
+adjectives and adverbs among all tagged tokens). Each is modelled against publication year with a
+Bayesian Beta GAMM (`brms`) that has a smooth of year and a random intercept per guideline.
+
+Items are English only and deduplicated on wording within a guideline, so n is 2,068 rather than 2,172.
+Both metrics are squeezed away from exactly 0 and 1 (`squeeze01`) because the Beta likelihood needs
+open-interval values.
+
+**Runtime and caching.** Each `brm()` call takes about 10 minutes on four cores. Both calls use
+`file = here::here("R.data", ...)`, so if the `.rds` file exists brms loads it instead of refitting.
+To refit after changing the data or the model, delete `R.data/fit_mattr_brms_gam_studyid.rds` and
+`R.data/fit_lexdens_brms_gam_studyid.rds` first; brms does not check whether the data changed.
+
+## Compute the metrics and fit the two GAMMs
+
 ```{r}
 # =========================================================
 # 1) helper functions
 # =========================================================
 
+# type-token ratio: unique words / all words in a vector of tokens
 calc_ttr <- function(x) {
   x <- x[!is.na(x) & x != ""]
   if (length(x) == 0) return(NA_real_)
   dplyr::n_distinct(x) / length(x)
 }
 
+# moving-average TTR: mean TTR over every window of `window` consecutive tokens;
+# items shorter than the window fall back to the plain TTR
 calc_mattr <- function(x, window = 10) {
   x <- x[!is.na(x) & x != ""]
   n <- length(x)
@@ -1017,6 +1139,8 @@ calc_mattr <- function(x, window = 10) {
   mean(purrr::map_dbl(starts, ~ calc_ttr(x[.x:(.x + window - 1)])))
 }
 
+# shrink values on [0, 1] into (0, 1) for the Beta likelihood (Smithson & Verkuilen 2006);
+# with n ~ 2,000 the shift is well under 0.001
 squeeze01 <- function(y, n = length(y)) {
   ((y * (n - 1)) + 0.5) / n
 }
@@ -1040,14 +1164,15 @@ items <- data  %>% # english-language items only (non-english items cannot be ta
     multiple = "all"
   ) %>%
   filter(!is.na(year)) %>%
-  distinct(study_id, year, reporting_item, .keep_all = TRUE) %>%
+  distinct(study_id, year, reporting_item, .keep_all = TRUE) %>%  # identical wording within a guideline counted once
   arrange(year, study_id, reporting_item) %>%
-  mutate(item_id = row_number())
+  mutate(item_id = row_number())  # item_id is the doc_id used by udpipe below
 
 # =========================================================
 # 3) tokenization for MATTR
 # =========================================================
 
+# unnest_tokens lowercases and strips punctuation, so token_count is the word count reported in the paper
 item_tokens <- items %>%
   tidytext::unnest_tokens(word, reporting_item)
 
@@ -1086,6 +1211,7 @@ token_count_stats_fmt
 # 4) POS tagging for lexical density
 # =========================================================
 
+# the English EWT model ships with the repository; download it only if it is missing
 if (!file.exists("english-ewt-ud-2.5-191206.udpipe")) {
   model_info <- udpipe_download_model(language = "english")
   file_model <- model_info$file_model
@@ -1110,6 +1236,8 @@ anno_df <- as.data.frame(anno) %>%
   ) %>%
   filter(!is.na(token), token != "", !is.na(upos))
 
+# content words = these universal POS tags; everything else (determiners, prepositions, pronouns,
+# conjunctions, punctuation, ...) counts as a function word or non-word token
 content_upos <- c("NOUN", "PROPN", "VERB", "ADJ", "ADV")
 
 lexical_density_stats <- anno_df %>%
@@ -1166,6 +1294,7 @@ model_dat <- item_metrics %>%
 # 6) basis size
 # =========================================================
 
+# number of basis functions for the year smooth: at most 10, and fewer than the number of distinct years
 n_years <- dplyr::n_distinct(model_dat$year_c)
 k_year <- if (n_years >= 5) min(10, n_years - 1) else max(3, n_years - 1)
 
@@ -1173,6 +1302,8 @@ k_year <- if (n_years >= 5) min(10, n_years - 1) else max(3, n_years - 1)
 # 7) priors
 # =========================================================
 
+# weakly informative: intercept on the logit scale, exponential(1) on the guideline SD and on the
+# smooth's wiggliness SD
 priors_beta_gam <- c(
   prior(normal(0, 1.5), class = "Intercept"),
   prior(exponential(1), class = "sd"),
@@ -1180,7 +1311,7 @@ priors_beta_gam <- c(
 )
 
 # =========================================================
-# 8) fit models
+# 8) fit models (about 10 min each; loaded from R.data if the file exists)
 # =========================================================
 
 fit_mattr <- brm(
@@ -1214,7 +1345,7 @@ fit_lexdens <- brm(
 
 
 # =========================================================
-# 10) save objects
+# 9) save objects (inputs and fits, so later chunks can be run without refitting)
 # =========================================================
 
 dir.create(here::here("R.data"), recursive = TRUE, showWarnings = FALSE)
@@ -1228,10 +1359,18 @@ saveRDS(fit_lexdens, file = here::here("R.data", "fit_lexdens_brms_gam_studyid.r
 
 ```
 
+## Average change per year and endpoint change
+
+Summaries of the fitted smooths used in the text: the average marginal slope over the whole period, the
+change between the first and last year, and the lexical density slope before and after 2020. Each is
+computed from the posterior (`posterior_epred`, population level only), so the credible intervals
+reflect uncertainty in the smooth.
 
 ```{r}
 year_mean <- mean(model_dat$year)  # must match the centering used when fitting
 
+# average marginal slope: mean of the finite-difference slope across a fine grid of years,
+# computed per posterior draw and then summarised
 
 avg_slope <- function(fit, year_min, year_max, step = 0.1) {
   grid <- seq(year_min, year_max, by = step)
@@ -1318,6 +1457,12 @@ if (yr_min < 2020 && yr_max > 2020) {
 
 ```
 
+## Figure 2: items by section, lexical diversity and lexical density over time
+
+Panel a reuses `item_per_section_plot` from the Item-level summary. Panels b and c show the yearly mean
+of the observed values (points), the fitted population-level smooth (line) and its 95% credible
+interval (ribbon). Saves `figures/items_mattr_lexdens_abc_side.png`.
+
 ```{r}
 
  # shared settings
@@ -1343,7 +1488,8 @@ obs_lexdens <- model_dat %>%
   group_by(year) %>%
   summarise(mean_obs = mean(lexical_density_beta, na.rm = TRUE), .groups = "drop")
 
-# prediction grid
+# prediction grid: one row per year, centred the same way as in the model; study_id = NA with
+# re_formula = NA gives the population-level smooth (no guideline random effect)
 year_grid <- tibble(year = seq(min(model_dat$year), max(model_dat$year), by = 1)) %>%
   mutate(
     year_c = year - mean(model_dat$year, na.rm = TRUE),
@@ -1486,13 +1632,27 @@ ggsave(
 ```
 
 
-# Total Concepts and unique concepts
+# Reporting concepts and overlap between guidelines (Figure 3, Table 1)
+
+A concept is one discrete reporting requirement extracted from an item
+(`standardised_reporting_item_elements`). Throughout, a *concept instance* is one occurrence of a concept
+in an item, and a *unique concept* is a distinct concept label within a manuscript section (the same
+label used in two sections counts twice, which is the unit reported in the paper and in Figure 3a).
+Overlap between guidelines is measured with the Jaccard index on the set of concept labels each
+guideline requests. Only guidelines with extracted concepts (the 56 English-language guidelines) enter
+the overlap analyses.
+
+## Concepts per section: standalone Cleveland plot
+
+Total versus unique concepts per section. The same plot is rebuilt as panel a of Figure 3 further down;
+this standalone version is kept for a single-panel figure.
+
 ```{r}
 # =========================================================
 # Cleveland dot plot: total vs unique concepts by section
 # =========================================================
 
-length(concept$standardised_reporting_item_elements)
+length(concept$standardised_reporting_item_elements)  # rows in the concept file (includes rows with no concept)
 
 section_order <- c(
   "Other information",
@@ -1645,10 +1805,17 @@ cleveland_concepts
 
 ```
 
-#### Tables of concepts per item
+## Pairwise Jaccard overlap between guidelines, disciplines, methodologies and guideline types
+
+Builds one set of concept labels per group (guideline, discipline, methodology or guideline type), then
+computes the Jaccard index for every pair of groups, summary statistics (median and IQR are the ones
+reported), a histogram and a heatmap per grouping, and finally the mean and SD of concepts per item.
+Helper functions are defined first (steps 3 to 11) and applied to each grouping in steps 12 to 15.
+Outputs: `figures/all_overlap_stats*.csv` and the distribution and heatmap figures in `figures/`.
+
 ```{r}
 # =========================================================
-# 1) One row per study_id
+# 1) One row per study_id (guideline-level attributes used for the group comparisons)
 # =========================================================
 study_lookup <- study %>%
   transmute(
@@ -1673,7 +1840,7 @@ study_lookup <- study %>%
   distinct(study_id, .keep_all = TRUE)
 
 # =========================================================
-# 2) Concept-level base data
+# 2) Concept-level base data: one row per guideline x concept label (duplicates within a guideline dropped)
 # =========================================================
 
 concept_sets_base <- concept %>%
@@ -1699,6 +1866,7 @@ concept_sets_base <- concept %>%
 
 # =========================================================
 # 3) Helper: build set list for a grouping variable
+#    (one row per group with the sorted vector of concept labels it contains)
 # =========================================================
 
 make_set_list <- function(data, group_var) {
@@ -1716,7 +1884,7 @@ make_set_list <- function(data, group_var) {
 }
 
 # =========================================================
-# 4) Helper: pairwise Jaccard overlap
+# 4) Helper: pairwise Jaccard overlap = |A intersect B| / |A union B| for every pair of groups
 # =========================================================
 
 calc_pairwise_overlap <- function(set_list) {
@@ -2229,6 +2397,7 @@ all_overlap_stats_fmt
 
 # =========================================================
 # Concepts per item: counts + mean/SD summary
+# (distinct concept labels per checklist_item_id; used again by the negative binomial models below)
 # =========================================================
 
 concepts_per_item <- concept %>%
@@ -2269,10 +2438,19 @@ concepts_per_item_stats_fmt <- concepts_per_item_stats %>%
 concepts_per_item_stats_fmt
 ```
 
+## Concept prevalence (Table 1), concept contributions to overlap, and MDS ordination
+
+Three follow-up analyses on the same set lists. (A) Prevalence: the share of groups whose concept set
+contains each concept; at the guideline level this is Table 1 (concepts present in at least 50% of the 56
+guidelines) and the "core / common / peripheral" tiers. (B) Contribution: for every pair of groups, which
+concepts fall in the shared part and which in the unique parts. (C) A classical MDS ordination of
+guidelines on 1 - Jaccard distance, coloured by methodology. Outputs are CSVs in `figures/`.
+
 ```{r}
 # =========================================================
 # A) Concept prevalence: how many groups contain each concept
 #    (core vs peripheral concepts) — run per grouping level
+#    pct_groups_present is the percentage reported in Table 1 (denominator = number of groups)
 # =========================================================
 
 concept_prevalence <- function(set_list) {
@@ -2422,8 +2600,16 @@ save_plot_both(mds_plot, "guideline_mds_by_methodology", 8.5, 6.5)
 
 ```
 
+## Figure 3: concepts per section and top-20 overlap heatmap
+
+Panel a is the Cleveland plot of total and unique concepts per section (labels for the unique count are
+dropped when they would not fit left of the point). Panel b recomputes the guideline-to-guideline
+Jaccard matrix in long form, keeps the 20 guidelines with the highest mean overlap, and draws them as a
+heatmap. Saves `figures/concepts_overlap_ab_side.png` and `.pdf`. The `section_order` here uses the
+concept file's spelling ("Other information").
 
 ```{r}
+# =========================================================
 # 1) Cleveland plot — panel a
 # =========================================================
 
@@ -2464,7 +2650,7 @@ concept_section_summary <- concept %>%
 
 max_x <- max(concept_section_summary$total_concepts, na.rm = TRUE)
 label_pad <- max_x * 0.04
-label_fit_threshold <- label_pad * 1.6
+label_fit_threshold <- label_pad * 1.6  # unique-count labels narrower than this are not drawn (they would overlap the axis)
 
 concept_section_summary <- concept_section_summary %>%
   mutate(
@@ -2537,7 +2723,7 @@ cleveland_concepts <- ggplot(concept_section_summary, aes(y = standardised_secti
   )
 
 # =========================================================
-# 2) Build concept sets for overlap
+# 2) Build concept sets for overlap (same construction as guideline_set_list above, in long form)
 # =========================================================
 
 study_lookup <- study %>%
@@ -2609,6 +2795,7 @@ mean_overlap <- all_pairs %>%
   arrange(desc(mean_jaccard))
 
 
+# mean and SD of each guideline's mean overlap with all other guidelines
 mean_overlap %>%
   summarise(
     mean_val = mean(mean_jaccard, na.rm = TRUE),
@@ -2712,7 +2899,7 @@ ggsave(
 ```
 
 
-# **Directive verbs in reporting items**
+# Directive verbs in reporting items (Figure S1)
 
 Which verb opens each reporting item ("*Describe* ...", "*Report* ...", "*Specify* ..."), how many
 distinct verbs each checklist uses, and how many verbs the same concept is requested with across
@@ -2723,10 +2910,19 @@ checklist-level analysis, leaving 56. Decisions to note: the first verb is used 
 British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
 Outputs: item-level verbs, the 100-item manual-check sample, the verb lexicon and flagged edge
 cases in `data/`; summary tables and the supplementary figure in `figures/`; the cached udpipe
-annotation in `R.data/`. Concepts are counted within sections (403), as in the rest of the paper;
+annotation in `R.data/`. Concepts are counted within sections, as in the rest of the paper;
 only concepts requested by at least two items with a directive verb can show variation in the verb.
 
-## *Set-up and text cleaning*
+Run the four chunks in order: set-up, udpipe annotation (about a minute), extraction rules (function
+definitions only) and extraction. The two analysis chunks and the figure chunk then use `verbs_en`.
+
+## Set-up and text cleaning
+
+The three switches at the top control the analysis. `MULTI_VERB_RULE = "first"` keeps the first verb of
+"Describe and justify"; `"exclude"` drops such items instead. `HARMONISE_SPELLING` maps British to
+American spellings so "summarise" and "summarize" are one verb. `DV_SEED` fixes the 100-item manual
+check sample.
+
 ```{r}
 MULTI_VERB_RULE    <- "first"   # "first" or "exclude" (drop "Describe and justify" items)
 HARMONISE_SPELLING <- TRUE
@@ -2757,10 +2953,14 @@ dv_items <- data %>%
     text_clean = clean_text(fix_encoding(reporting_item))
   )
 
-dv_items_en <- dv_items %>% filter(language == "english")
+dv_items_en <- dv_items %>% filter(language == "english")  # the English model cannot tag the Portuguese/Spanish items
 ```
 
-## *udpipe annotation*
+## udpipe annotation
+
+Tokenises, lemmatises, POS-tags and parses every English item. The result is cached as
+`R.data/directive_verbs_anno.rds`; the chunk re-annotates each time it runs (about a minute).
+
 ```{r}
 dv_model <- udpipe_load_model(here("R.data", "english-ewt-ud-2.5-191206.udpipe"))
 
@@ -2777,8 +2977,9 @@ dv_anno <- udpipe_annotate(dv_model, x = dv_items_en$text_clean,
 saveRDS(dv_anno, here("R.data", "directive_verbs_anno.rds"))
 ```
 
-## *Extraction rules*
-udpipe tags most sentence-initial imperatives wrongly ("Describe" as AUX/ADJ/ADV, "Report" as
+## Extraction rules
+
+Function definitions only; nothing is computed until the next chunk. udpipe tags most sentence-initial imperatives wrongly ("Describe" as AUX/ADJ/ADV, "Report" as
 NOUN, "Present" as ADJ), so the directive verb is found with a rule that combines the udpipe
 annotation with a curated lexicon: *strong* verbs are accepted whenever they open the item in base
 form (not followed by "of": "List of citations"); *ambiguous* words that also open noun phrases
@@ -2993,8 +3194,14 @@ extract_one <- function(tk) {
 }
 ```
 
-## *Extract the verbs*
+## Extract the verbs
+
+Applies `extract_one()` to every item, labels items without a directive verb by why they have none
+(question, declarative statement, noun phrase, placeholder), harmonises spelling, and writes the
+item-level table, verb frequencies, the manual-check sample, the lexicon and the edge-case list.
+
 ```{r}
+# one row per item with the extracted verb and the reasons/flags recorded during extraction
 dv_extracted <- dv_anno %>%
   arrange(doc_id, paragraph_id, sentence_id, token_id) %>%
   group_by(doc_id) %>%
@@ -3119,7 +3326,12 @@ write_csv(edge_cases, here("data", "directive_verbs_edge_cases.csv"), na = "")
 edge_cases %>% count(edge_case, sort = TRUE)
 ```
 
-## *Analysis 1: verb diversity within checklists*
+## Analysis 1: verb diversity within checklists
+
+How many distinct verbs each checklist uses, with evenness (Shannon H, Pielou J), the share of items
+using the most common verb, and a rarefied count per 10 items so that long and short checklists can be
+compared. Checklists with no verb-bearing item are listed and excluded.
+
 ```{r}
 shannon <- function(counts) { p <- counts / sum(counts); -sum(p * log(p)) }
 pielou  <- function(counts) if (length(counts) < 2) NA_real_ else shannon(counts) / log(length(counts))
@@ -3193,7 +3405,13 @@ checklist_verb_stats_fmt <- tibble(
 checklist_verb_stats_fmt
 ```
 
-## *Analysis 2: verbs per concept*
+## Analysis 2: verbs per concept
+
+For each concept (within a section), how many different verbs are used to request it across guidelines.
+Only concepts requested by at least two verb-bearing items are analysed, because a concept requested
+once cannot show variation. Produces the concept funnel, the summary statistics, the top-10 table and
+the per-section summary, and writes everything to `figures/directive_verbs_*.csv`.
+
 ```{r}
 # one row per item x concept (empty labels and duplicated pairs removed)
 concept_pairs <- concept %>%
@@ -3233,9 +3451,9 @@ concept_section_level <- concept_items %>%
   arrange(concept_section, desc(n_items_with_verb))
 write_csv(concept_section_level, here("figures", "directive_verbs_concept_by_section_metrics.csv"), na = "")
 
-# unit of analysis = concept within a section (the 403 concepts reported in the paper;
-# a label used in two sections counts twice). concept_level above pools across
-# sections (351 labels) and is kept as a secondary table only.
+# unit of analysis = concept within a section (the unique-concept count reported in the paper;
+# a label used in two sections counts twice). concept_level above pools identical labels across
+# sections and is kept as a secondary table only.
 # funnel: all concepts -> with >= 1 item that has a directive verb -> with >= 2
 # (only these can show variation in the verb used)
 concept_funnel <- tibble(
@@ -3293,7 +3511,11 @@ bind_rows(
   write_csv(here("figures", "directive_verbs_summary_stats.csv"))
 ```
 
-## *Figure: most common verbs, distinct verbs per checklist and per concept*
+## Figure S1: most common verbs, distinct verbs per checklist and per concept
+
+Three lollipop panels in the house style of Figure 2. Saves `figures/directive_verbs_abc_side.png` and
+`.pdf`, and ends with `dv`, a list of the headline numbers for use in inline text.
+
 ```{r}
 #| fig-width: 10.6
 #| fig-height: 5.9
@@ -3410,19 +3632,26 @@ dv <- list(
 str(dv)
 ```
 
+# Do readability metrics predict the number of concepts per item?
 
+Two Bayesian negative binomial mixed models with a random intercept per guideline: concepts per item as
+a function of standardised MATTR (model 1) or standardised lexical density (model 2), each adjusted for
+log item length. Needs `concepts_per_item` (concepts section) and `item_metrics` (readability section).
+Items without any extracted concept are not in `concepts_per_item`, so n is 2,027. Effects are reported
+as incidence rate ratios (IRR = exp(coefficient)) per standard deviation of the predictor. About 2
+minutes per model; these models are not cached.
 
 ```{r}
 library(tidyverse)
 library(brms)
-library(tidybayes)
+library(tidybayes)  # spread_draws() and median_qi() for the IRR summaries; not in the p_load list above
 
-## ---- 1. Join (same as before) ----
+## ---- 1. Join: concept counts onto the readability metrics by item id ----
 model_data <- concepts_per_item %>%
   inner_join(item_metrics, by = "checklist_item_id") %>%
   select(checklist_item_id, study_id, n_concepts, mattr_10, lexical_density, token_count)
 
-## ---- 2. Standardize predictors ----
+## ---- 2. Standardize predictors (so coefficients are per 1 SD and the two models are comparable) ----
 model_data <- model_data %>%
   mutate(
     mattr_z = as.numeric(scale(mattr_10)),
@@ -3467,7 +3696,7 @@ summary(nb_brm_lexdens)
 pp_check(nb_brm_mattr, ndraws = 100)
 pp_check(nb_brm_lexdens, ndraws = 100)
 
-## ---- 6. IRRs for both ----
+## ---- 6. IRRs for both (80% and 95% intervals; the 95% interval is reported) ----
 mattr_irr <- nb_brm_mattr %>%
   spread_draws(b_mattr_z) %>%
   mutate(irr = exp(b_mattr_z)) %>%
@@ -3486,6 +3715,12 @@ bind_rows(mattr_irr, lexdens_irr)
 conditional_effects(nb_brm_mattr, effects = "mattr_z")
 conditional_effects(nb_brm_lexdens, effects = "lexdens_z")
 ```
+
+# Supplementary File 3: concept tables by section (Excel)
+
+Writes `data/concept_tables_by_section.xlsx`: one sheet per manuscript section listing every concept with
+the number of items it was extracted from (`total_count`). Uses the `section_order` defined in the
+directive-verb section ("Other information").
 
 ```{r}
 concepts_by_section <- concept %>%
