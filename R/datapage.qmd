@@ -190,16 +190,27 @@ table.dataTable td.wrap-cell { white-space: normal; min-width: 22rem; line-heigh
 .download-row a { text-decoration: none; font-size: 0.84rem; font-weight: 600; color: var(--purple); border: 1px solid var(--purple); border-radius: 2rem; padding: 0.3rem 0.9rem; }
 .download-row a:hover { background: var(--teal); border-color: var(--teal); color: #fff; }
 
-.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
-.summary-grid table { width: 100%; font-size: 0.9rem; border-collapse: collapse; }
-.summary-grid th { text-align: left; background: var(--panel); padding: 0.45rem 0.6rem; border-bottom: 2px solid var(--line); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); }
-.summary-grid td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--line); }
-.summary-grid td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.summary-card { background: #fff; border: 1px solid var(--line); border-radius: 0.8rem; padding: 1rem 1.1rem; }
-.summary-card h3 { margin: 0 0 0.6rem; font-size: 1rem; }
-.bar { display: inline-block; height: 0.55rem; background: var(--purple); border-radius: 0.2rem; vertical-align: middle; margin-right: 0.4rem; }
-.bar.teal { background: var(--teal); }
-.bar.orange { background: var(--orange); }
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+@media (max-width: 760px) { .summary-grid { grid-template-columns: 1fr; } }
+.summary-card { background: #fff; border: 1px solid var(--line); border-radius: 0.8rem; padding: 1.1rem 1.3rem 0.9rem; }
+.summary-card.wide { grid-column: 1 / -1; }
+.summary-card h3 { margin: 0 0 0.2rem; font-size: 1rem; font-weight: 700; }
+.summary-card .sub { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.9rem; }
+.bar-row { display: grid; grid-template-columns: minmax(7rem, 1.1fr) 3fr auto; align-items: center; gap: 0.7rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f1f6; font-size: 0.9rem; }
+.bar-row:last-child { border-bottom: none; }
+.bar-row.wide-label { grid-template-columns: minmax(16rem, 2.2fr) 2fr auto; }
+.bar-label { color: var(--ink); line-height: 1.3; }
+.bar-track { position: relative; height: 0.7rem; background: #f0f1f6; border-radius: 0.35rem; overflow: hidden; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--purple); border-radius: 0.35rem; }
+.bar-fill.teal { background: var(--teal); }
+.bar-fill.orange { background: var(--orange); }
+.bar-track.stacked { background: transparent; height: auto; display: grid; gap: 0.2rem; }
+.bar-track.stacked .lane { position: relative; height: 0.55rem; background: #f0f1f6; border-radius: 0.3rem; overflow: hidden; }
+.bar-val { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; color: var(--ink); font-weight: 600; }
+.bar-val small { color: var(--muted); font-weight: 400; margin-left: 0.3rem; }
+.legend { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.2rem 0 0.7rem; }
+.legend span::before { content: ""; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 0.2rem; margin-right: 0.35rem; vertical-align: -0.05rem; background: var(--purple); }
+.legend span.teal::before { background: var(--teal); }
 
 footer.page-footer { margin: 3rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.86rem; }
 </style>
@@ -444,44 +455,47 @@ top_concepts <- guideline_sets |>
   mutate(pct = 100 * n_guidelines / n_sets) |>
   slice_head(n = 15)
 
-bar_cell <- function(v, vmax, cls = "", max_px = 120) {
-  HTML(sprintf('<span class="bar %s" style="width:%.0fpx"></span>%s', cls, max_px * v / vmax, format(v, big.mark = ",")))
+bar_row <- function(label, value, vmax, cls = "", wide = FALSE, suffix = NULL) {
+  div(class = paste("bar-row", if (wide) "wide-label"),
+      span(class = "bar-label", label),
+      span(class = "bar-track", span(class = paste("bar-fill", cls), style = sprintf("width:%.1f%%", 100 * value / vmax))),
+      span(class = "bar-val", format(value, big.mark = ","), if (!is.null(suffix)) tags$small(suffix)))
 }
 
-html_table <- function(df, headers, cells) {
-  tags$table(
-    tags$thead(tags$tr(lapply(headers, tags$th))),
-    tags$tbody(lapply(seq_len(nrow(df)), function(i) tags$tr(cells(df[i, ]))))
-  )
+bar_row_stacked <- function(label, v1, v2, vmax) {
+  div(class = "bar-row",
+      span(class = "bar-label", label),
+      span(class = "bar-track stacked",
+           span(class = "lane", span(class = "bar-fill", style = sprintf("width:%.1f%%", 100 * v1 / vmax))),
+           span(class = "lane", span(class = "bar-fill teal", style = sprintf("width:%.1f%%", 100 * v2 / vmax)))),
+      span(class = "bar-val", format(v1, big.mark = ","), tags$small(paste0("/ ", v2))))
 }
 
 div(
   class = "summary-grid",
   div(
     class = "summary-card",
-    h3(sprintf("Reporting items by manuscript section (%s English-language items)", format(sum(items_by_section$items), big.mark = ","))),
-    html_table(items_by_section, c("Section", "Items"), function(r) list(
-      tags$td(as.character(r$section)),
-      tags$td(class = "num", bar_cell(r$items, max(items_by_section$items)))
-    ))
+    h3("Reporting items by manuscript section"),
+    p(class = "sub", sprintf("%s English-language items across %d guidelines", format(sum(items_by_section$items), big.mark = ","), n_sets)),
+    lapply(seq_len(nrow(items_by_section)), function(i)
+      bar_row(as.character(items_by_section$section[i]), items_by_section$items[i], max(items_by_section$items)))
   ),
   div(
     class = "summary-card",
     h3("Concepts by manuscript section"),
-    html_table(concepts_by_section, c("Section", "Instances", "Unique"), function(r) list(
-      tags$td(as.character(r$section)),
-      tags$td(class = "num", bar_cell(r$instances, max(concepts_by_section$instances))),
-      tags$td(class = "num", bar_cell(r$unique, max(concepts_by_section$unique), "teal"))
-    ))
+    p(class = "sub", sprintf("%s concept instances, %d unique concepts within sections", format(sum(concepts_by_section$instances), big.mark = ","), sum(concepts_by_section$unique))),
+    div(class = "legend", span("Concept instances"), span(class = "teal", "Unique concepts")),
+    lapply(seq_len(nrow(concepts_by_section)), function(i)
+      bar_row_stacked(as.character(concepts_by_section$section[i]), concepts_by_section$instances[i],
+                      concepts_by_section$unique[i], max(concepts_by_section$instances)))
   ),
   div(
-    class = "summary-card",
-    h3(sprintf("Most widely requested concepts (%% of %d guidelines with extracted concepts)", n_sets)),
-    html_table(top_concepts, c("Concept", "Guidelines", "%"), function(r) list(
-      tags$td(r$e),
-      tags$td(class = "num", bar_cell(r$n_guidelines, max(top_concepts$n_guidelines), "orange", max_px = 60)),
-      tags$td(class = "num", sprintf("%.0f%%", r$pct))
-    ))
+    class = "summary-card wide",
+    h3("Most widely requested concepts"),
+    p(class = "sub", sprintf("Share of the %d guidelines with extracted concepts that request each concept (top 15 of %s)", n_sets, format(n_distinct(guideline_sets$e), big.mark = ","))),
+    lapply(seq_len(nrow(top_concepts)), function(i)
+      bar_row(top_concepts$e[i], top_concepts$n_guidelines[i], n_sets, cls = "orange", wide = TRUE,
+              suffix = sprintf("of %d (%.0f%%)", n_sets, top_concepts$pct[i])))
   )
 )
 ```
