@@ -2691,18 +2691,6 @@ ggsave(
 
 # **Directive verbs in reporting items**
 
-Which verb opens each reporting item ("*Describe* ...", "*Report* ...", "*Specify* ..."), how many
-distinct verbs each checklist uses, and how many verbs the same concept is requested with across
-guidelines. English items only (the Portuguese/Spanish checklists are not tagged with the English
-model); of the 63 English-language checklists, 7 contain no item opening with a directive verb
-(their items are noun phrases, statements or indirect questions) and are excluded from the
-checklist-level analysis, leaving 56. Decisions to note: the first verb is used for coordinated verbs ("Describe and justify");
-British/American spellings are harmonised (summarise -> summarize); synonyms are not merged.
-Outputs: item-level verbs, the 100-item manual-check sample, the verb lexicon and flagged edge
-cases in `data/`; summary tables and the supplementary figure in `figures/`; the cached udpipe
-annotation in `R.data/`. Concepts are counted within sections (403), as in the rest of the paper;
-only concepts requested by at least two items with a directive verb can show variation in the verb.
-
 ## *Set-up and text cleaning*
 ```{r}
 MULTI_VERB_RULE    <- "first"   # "first" or "exclude" (drop "Describe and justify" items)
