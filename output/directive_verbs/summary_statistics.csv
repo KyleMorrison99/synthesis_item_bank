@@ -1,0 +1,21 @@
+analysis,metric,value
+extraction,n English items,2177
+extraction,n items with a directive verb,1659
+extraction,% items with a directive verb,76.2%
+extraction,n distinct verbs,56
+analysis 1 (checklists),n checklists (>= 1 item with a directive verb),56
+analysis 1 (checklists),n items with a verb per checklist,26 (IQR 12-39)
+analysis 1 (checklists),n distinct verbs per checklist,10 (IQR 6-12)
+analysis 1 (checklists),Shannon H,1.95 (IQR 1.42-2.15)
+analysis 1 (checklists),Pielou J (NA when S = 1),0.85 (IQR 0.80-0.90)
+analysis 1 (checklists),proportion of items using the modal verb,0.34 (IQR 0.26-0.45)
+analysis 1 (checklists),% checklists with >= 2 distinct verbs,94.6% (53/56)
+analysis 1 (checklists),% checklists with >= 3 distinct verbs,89.3% (50/56)
+analysis 1 (checklists),Spearman rho: n items vs n distinct verbs,"rho = 0.85, p = 5e-17"
+analysis 1 (checklists),rarefied distinct verbs per 10 items (n = 46 checklists with >= 10 items),5.96 (IQR 5.11-6.36)
+analysis 2 (concepts),n concepts (requested by >= 2 items with a directive verb),188
+analysis 2 (concepts),n items per concept,8 (IQR 3-21)
+analysis 2 (concepts),n checklists per concept,6 (IQR 3-19)
+analysis 2 (concepts),n distinct verbs per concept,3 (IQR 2-5)
+analysis 2 (concepts),% concepts requested with >= 2 distinct verbs,81.4% (153/188)
+analysis 2 (concepts),% concepts requested with >= 3 distinct verbs,54.3% (102/188)

@@ -1,13 +1,16 @@
 ---
-title: "An item bank of reporting items and concepts in evidence synthesis reporting guidelines datapage"
+title: "Evidence synthesis reporting item bank"
+subtitle: "Reporting items and concepts from 59 evidence synthesis reporting guidelines, searchable and downloadable"
 format:
   html:
     theme: cosmo
-    toc: true
-    toc-location: left
+    toc: false
     page-layout: full
-    css: styles.css
     output-file: index
+    include-in-header:
+      text: |
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 execute:
   echo: false
   message: false
@@ -16,387 +19,498 @@ execute:
 
 ```{r setup}
 #| include: false
-
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 
 suppressPackageStartupMessages({
   library(here)
   library(readr)
   library(dplyr)
+  library(stringr)
+  library(tidyr)
   library(DT)
   library(crosstalk)
   library(htmltools)
 })
 
+# ---- helpers ---------------------------------------------------------------
 clean_utf8 <- function(df) {
-  df |>
-    mutate(across(where(is.character), ~ iconv(.x, from = "", to = "UTF-8", sub = "byte")))
+  df |> mutate(across(where(is.character), ~ iconv(.x, from = "", to = "UTF-8", sub = "")))
 }
 
-stat_card <- function(value, label) {
-  div(
-    class = "stat-card",
-    span(class = "stat-value", format(value, big.mark = ",")),
-    span(class = "stat-label", label)
-  )
-}
+title_case_label <- function(x) str_to_sentence(str_squish(x))
 
 dt_buttons <- function(filename_stub) {
   list(
     list(
       extend = "collection",
-      text = "⬇ Download filtered",
+      text = "Download filtered",
       buttons = list(
-        list(
-          extend = "csv",
-          text = "CSV",
-          filename = filename_stub,
-          exportOptions = list(
-            columns = ":visible",
-            modifier = list(search = "applied")
-          )
-        ),
-        list(
-          extend = "excel",
-          text = "Excel",
-          filename = filename_stub,
-          exportOptions = list(
-            columns = ":visible",
-            modifier = list(search = "applied")
-          )
-        ),
-        list(
-          extend = "copy",
-          text = "Copy",
-          exportOptions = list(
-            columns = ":visible",
-            modifier = list(search = "applied")
-          )
-        )
+        list(extend = "csv",   text = "CSV",   filename = filename_stub,
+             exportOptions = list(columns = ":visible", modifier = list(search = "applied"))),
+        list(extend = "excel", text = "Excel", filename = filename_stub,
+             exportOptions = list(columns = ":visible", modifier = list(search = "applied"))),
+        list(extend = "copy",  text = "Copy",
+             exportOptions = list(columns = ":visible", modifier = list(search = "applied")))
       )
     ),
-    list(extend = "colvis", text = "Columns ▾")
+    list(extend = "colvis", text = "Columns")
   )
 }
 
-dt_options <- function(filename_stub) {
+dt_options <- function(filename_stub, wide_cols = integer(0), page_length = 10) {
   list(
     dom = "Bfrtip",
     buttons = dt_buttons(filename_stub),
-    pageLength = 10,
+    pageLength = page_length,
     lengthMenu = list(c(10, 25, 50, 100, -1), c("10", "25", "50", "100", "All")),
-    autoWidth = TRUE,
+    autoWidth = FALSE,
     scrollX = TRUE,
     deferRender = TRUE,
-    searchDelay = 350,
-    language = list(search = "Search all columns:")
+    searchDelay = 300,
+    language = list(search = "Search all columns:", searchPlaceholder = "type to search"),
+    columnDefs = list(list(targets = wide_cols, className = "wrap-cell"))
   )
 }
+
+github_raw <- "https://github.com/KyleMorrison99/synthesis_item_bank/raw/main/data/"
+```
+
+```{r load}
+#| include: false
+data <- read_csv(here("data", "item_bank_reporting_guideline_compiled.csv"),
+                 locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
+  clean_utf8()
+
+study <- read_csv(here("data", "item_bank_reporting_guideline.csv"),
+                  locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
+  rename_with(str_squish) |>
+  clean_utf8()
+
+concept <- read_csv(here("data", "item_bank_reporting_guideline_concepts.csv"),
+                    locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
+  clean_utf8()
+
+# one row per guideline (first publication kept) for joining attributes onto items and concepts
+guideline_attrs <- study |>
+  transmute(
+    study_id,
+    guideline_type = title_case_label(recode(str_to_lower(str_squish(guideline_extension)),
+                                             origional = "original")),
+    methodology = title_case_label(methodology_category),
+    discipline = title_case_label(discipline),
+    year = as.integer(year)
+  ) |>
+  distinct(study_id, .keep_all = TRUE)
+
+# ---- headline numbers ------------------------------------------------------
+n_guidelines   <- n_distinct(study$study_id)
+n_publications <- nrow(study)
+n_checklists   <- n_distinct(data$checklist)
+items_real     <- data |> filter(!is.na(standardised_section))          # drops "not applicable" placeholder rows
+n_items        <- nrow(items_real)
+n_items_en     <- sum(str_to_lower(str_squish(items_real$language)) == "english")
+n_languages    <- n_distinct(str_to_lower(str_squish(data$language)))
+concept_real   <- concept |> filter(!is.na(standardised_reporting_item_elements))
+n_concept_inst <- nrow(concept_real)
+n_concept_uniq <- concept_real |>
+  mutate(s = str_to_sentence(str_squish(standardised_section)),
+         e = str_squish(standardised_reporting_item_elements)) |>
+  distinct(s, e) |> nrow()
+year_min <- min(study$year, na.rm = TRUE)
+year_max <- max(study$year, na.rm = TRUE)
+last_updated <- format(Sys.Date(), "%d %B %Y")
 ```
 
 ```{=html}
 <style>
-body { font-size: 15px; }
-h2 { border-bottom: 2px solid #e9ecef; padding-bottom: 0.3rem; margin-top: 2.5rem; }
+:root {
+  --ink: #1f2335;
+  --muted: #5f6577;
+  --line: #e6e8ef;
+  --panel: #f6f7fb;
+  --purple: #54478c;
+  --purple-soft: #cfc8e8;
+  --teal: #048ba8;
+  --green: #16db93;
+  --orange: #f29e4c;
+  --yellow: #efea5a;
+}
+body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; color: var(--ink); }
+#quarto-content > main { max-width: 1320px; margin: 0 auto; }
+#title-block-header { display: none; }
 
-.stat-card-row {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin: 1rem 0 1.25rem;
-}
-.stat-card {
-  flex: 1 1 180px;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 0.6rem;
-  padding: 0.9rem 1.1rem;
-}
-.stat-value {
-  font-size: 1.55rem;
-  font-weight: 700;
-  color: #2c3e50;
-  display: block;
-  line-height: 1.1;
-}
-.stat-label {
-  font-size: 0.8rem;
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.filter-panel {
-  background: #ffffff;
-  border: 1px solid #dee2e6;
-  border-radius: 0.7rem;
-  padding: 1rem 1.15rem 0.85rem;
-  margin-bottom: 1.1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-}
-.filter-panel-title {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #495057;
-  margin-bottom: 0.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem 1.25rem;
-}
-.filter-grid label {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #495057;
-}
-
-.reset-btn {
-  font-size: 0.78rem;
-  padding: 0.15rem 0.6rem;
-  border-radius: 1rem;
-}
-
-.result-count {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0.25rem 0 1rem;
-}
-.result-count strong { color: #2c3e50; }
-
-.crosstalk-input.crosstalk-input-select .selectize-control.single .selectize-input {
-  position: relative;
-  padding-right: 2rem;
-}
-.crosstalk-input.crosstalk-input-select .selectize-control.single .selectize-input::after {
-  content: "▾";
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #555;
-  font-size: 0.85em;
-}
-
-.download-buttons {
-  margin: 1rem 0 1.75rem;
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.download-buttons .btn {
-  border-radius: 0.45rem;
-  font-size: 0.86rem;
-}
-
-.dataTables_wrapper .dt-buttons { margin-bottom: 0.5rem; }
-table.dataTable thead th {
-  background-color: #2c3e50;
+.hero {
+  background: linear-gradient(120deg, var(--purple) 0%, var(--teal) 100%);
   color: #fff;
+  border-radius: 1rem;
+  padding: 2.2rem 2.4rem 2rem;
+  margin: 0.5rem 0 1.5rem;
 }
-.table-note {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin-top: 0.35rem;
+.hero h1 { color: #fff; font-weight: 700; font-size: 2rem; margin: 0 0 0.4rem; letter-spacing: -0.01em; }
+.hero p { color: rgba(255,255,255,0.9); max-width: 60rem; margin: 0 0 1.1rem; font-size: 1.02rem; }
+.hero-links { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.hero-links a {
+  color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 2rem; padding: 0.35rem 0.95rem; font-size: 0.86rem; font-weight: 600;
+  background: rgba(255,255,255,0.08);
 }
+.hero-links a:hover { background: var(--orange); border-color: var(--orange); }
+
+
+h2 { font-weight: 700; font-size: 1.35rem; margin-top: 2.2rem; padding-bottom: 0.35rem; border-bottom: 2px solid var(--line); }
+h3 { font-weight: 600; font-size: 1.1rem; margin-top: 1.4rem; }
+.callout { border-radius: 0.7rem; }
+a { color: var(--teal); }
+
+.panel-tabset .nav-tabs { border-bottom: 2px solid var(--line); margin-bottom: 1rem; }
+.panel-tabset .nav-link { font-weight: 600; color: var(--muted); border: none; padding: 0.6rem 1.1rem; }
+.panel-tabset .nav-link.active { color: var(--purple); border-bottom: 3px solid var(--purple); background: transparent; }
+
+.filter-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 0.8rem; padding: 1rem 1.15rem 0.6rem; margin-bottom: 1rem; }
+.filter-panel-title { font-weight: 700; font-size: 0.92rem; color: var(--ink); margin-bottom: 0.7rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.6rem 1.1rem; }
+.filter-grid label, .filter-grid .control-label { font-weight: 600; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.2rem; }
+.reset-btn { font-size: 0.76rem; padding: 0.15rem 0.7rem; border-radius: 1rem; border-color: var(--purple); color: var(--purple); }
+.reset-btn:hover { background: var(--orange); border-color: var(--orange); color: #fff; }
+.table-note { font-size: 0.86rem; color: var(--muted); margin: 0.4rem 0 1.2rem; }
+
+.selectize-input { border-radius: 0.5rem; border-color: #d4d7e2; font-size: 0.88rem; }
+.crosstalk-input.crosstalk-input-select .selectize-control.multi .selectize-input .item { background: var(--purple-soft); color: var(--purple); border: none; border-radius: 0.3rem; }
+
+table.dataTable { font-size: 0.86rem; }
+table.dataTable thead th { background-color: var(--purple); color: #fff; font-weight: 600; white-space: nowrap; }
+table.dataTable thead input { font-size: 0.8rem; border-radius: 0.3rem; border: 1px solid #d4d7e2; padding: 0.15rem 0.35rem; width: 100%; }
+table.dataTable tbody tr:hover { background: #f1eef8; }
+table.dataTable td.wrap-cell { white-space: normal; min-width: 22rem; line-height: 1.35; }
+.dataTables_wrapper .dt-buttons { margin-bottom: 0.6rem; }
+.dataTables_wrapper .dt-button { border-radius: 0.45rem; font-size: 0.82rem; background: #fff; border: 1px solid #d4d7e2; }
+.dataTables_wrapper .dataTables_filter input { border-radius: 0.5rem; border: 1px solid #d4d7e2; padding: 0.3rem 0.6rem; }
+
+.download-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.6rem 0 1.4rem; }
+.download-row a { text-decoration: none; font-size: 0.84rem; font-weight: 600; color: var(--purple); border: 1px solid var(--purple); border-radius: 2rem; padding: 0.3rem 0.9rem; }
+.download-row a:hover { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+@media (max-width: 760px) { .summary-grid { grid-template-columns: 1fr; } }
+.summary-card { background: #fff; border: 1px solid var(--line); border-radius: 0.8rem; padding: 1.1rem 1.3rem 0.9rem; }
+.summary-card.wide { grid-column: 1 / -1; }
+.summary-card h3 { margin: 0 0 0.2rem; font-size: 1rem; font-weight: 700; }
+.summary-card .sub { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.9rem; }
+.bar-row { display: grid; grid-template-columns: minmax(7rem, 1.1fr) 3fr auto; align-items: center; gap: 0.7rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f1f6; font-size: 0.9rem; }
+.bar-row:last-child { border-bottom: none; }
+.bar-row.wide-label { grid-template-columns: minmax(16rem, 2.2fr) 2fr auto; }
+.bar-label { color: var(--ink); line-height: 1.3; }
+.bar-track { position: relative; height: 0.7rem; background: #f0f1f6; border-radius: 0.35rem; overflow: hidden; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--purple); border-radius: 0.35rem; }
+.bar-fill.teal { background: var(--teal); }
+.bar-fill.orange { background: var(--orange); }
+.bar-track.stacked { background: transparent; height: auto; display: grid; gap: 0.2rem; }
+.bar-track.stacked .lane { position: relative; height: 0.55rem; background: #f0f1f6; border-radius: 0.3rem; overflow: hidden; }
+.bar-val { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; color: var(--ink); font-weight: 600; }
+.bar-val small { color: var(--muted); font-weight: 400; margin-left: 0.3rem; }
+.legend { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.2rem 0 0.7rem; }
+.legend span::before { content: ""; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 0.2rem; margin-right: 0.35rem; vertical-align: -0.05rem; background: var(--purple); }
+.legend span.teal::before { background: var(--teal); }
+
+footer.page-footer { margin: 3rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.86rem; }
 </style>
 ```
 
-## Background
+```{r hero}
+div(
+  class = "hero",
+  h1("Evidence synthesis reporting item bank"),
+  p(sprintf(
+    "%s reporting items from %d evidence synthesis reporting guidelines (%d publications, %d checklists, %d to %d), each broken down into the %s reporting concepts it asks for. Filter, search and download the data below.",
+    format(n_items, big.mark = ","), n_guidelines, n_publications, n_checklists, year_min, year_max, format(n_concept_inst, big.mark = ",")
+  )),
+  div(
+    class = "hero-links",
+    a(href = "https://github.com/KyleMorrison99/synthesis_item_bank", target = "_blank", "GitHub repository"),
+    a(href = "https://doi.org/10.17605/OSF.IO/ZWCN2", target = "_blank", "Study registration (OSF)"),
+    a(href = "#datasets", "Browse the data"),
+    a(href = "#citation-and-reuse", "How to cite")
+  )
+)
 
-This datapage accompanies a systematic compilation of reporting items from evidence synthesis reporting guidelines. It provides a harmonised **item bank** and **concept-level dataset** that can be filtered by guideline, methodology, and discipline, and exported for reuse.
+```
 
 ::: callout-note
 ## How to use this page
 
-- Use the **Item bank** tab for individual reporting items and the **Concepts** tab for standardized concept mappings.
-- Filter with the controls above each table. Filters combine with AND logic.
-- Search within specific columns using the table header boxes, or use the global search box.
-- Use **⬇ Download filtered** for the current filtered view, or the full-dataset buttons for everything.
+- **Guidelines** lists each included publication with its type, methodology and discipline. **Reporting items** holds every item verbatim. **Concepts** holds the standardised reporting concepts extracted from each item.
+- Drop-down filters above each table combine with AND logic. The boxes under each column heading filter that column; the search box searches all columns.
+- **Download filtered** exports the rows currently matched by your filters and searches. The links under each table give the full CSV files.
+- The reporting item and concept tables can be joined on `checklist_item_id`; all three tables can be joined on `study_id`.
 :::
 
-## Datasets {.panel-tabset}
+## Datasets {#datasets .panel-tabset}
 
-### Item bank
+### Guidelines
 
-```{r load-items}
-data <- read_csv(
-  here("data", "item_bank_reporting_guideline_compiled.csv"),
-  locale = locale(encoding = "UTF-8")
-) |>
-  clean_utf8()
-
-study <- read_csv(
-  here("data", "item_bank_reporting_guideline.csv"),
-  locale = locale(encoding = "UTF-8")
-) |>
-  clean_utf8()
-
-items_joined <- data |>
-  left_join(
-    study |>
-      select(study_id, methodology_category, discipline),
-    by = "study_id"
-  ) |>
-  rename(
-    guideline = checklist,
-    methodology = methodology_category
-  ) |>
+```{r guidelines-data}
+guidelines_display <- study |>
+  select(study_id, title, year, journal, DOI) |>
+  left_join(guideline_attrs |> select(study_id, guideline_type, methodology, discipline), by = "study_id") |>
   mutate(
-    guideline = as.factor(guideline),
-    methodology = as.factor(methodology),
-    discipline = as.factor(discipline)
-  )
-
-items_display <- items_joined |>
-  select(
-    guideline,
-    study_id,
-    checklist_item_id,
-    methodology,
-    discipline,
-    section,
-    topic,
-    reporting_item_number,
-    reporting_item,
-    standardised_section,
-    language
+    year = as.integer(year),
+    doi = str_squish(DOI),
+    doi = if_else(is.na(doi) | doi == "", NA_character_,
+                  sprintf('<a href="https://doi.org/%s" target="_blank">%s</a>', doi, doi)),
+    across(c(guideline_type, methodology, discipline), as.factor)
   ) |>
-  clean_utf8()
+  select(
+    `Guideline ID` = study_id,
+    Title = title,
+    Year = year,
+    Journal = journal,
+    DOI = doi,
+    Type = guideline_type,
+    Methodology = methodology,
+    Discipline = discipline
+  ) |>
+  arrange(Year, `Guideline ID`)
 
-sd_items <- SharedData$new(
-  items_display,
-  key = ~checklist_item_id,
-  group = "items"
-)
+sd_guidelines <- SharedData$new(guidelines_display, group = "guidelines")
 ```
 
 ::: {.filter-panel}
 ::: {.filter-panel-title}
-Filter the item bank
-<button class="btn btn-outline-secondary reset-btn" onclick="location.reload()">Reset filters ↺</button>
+Filter the guidelines
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
 :::
 ::: {.filter-grid}
-```{r items-filters}
-filter_select("guideline_items", "Guideline", sd_items, ~guideline, multiple = TRUE)
-filter_select("methodology_items", "Methodology", sd_items, ~methodology, multiple = TRUE)
-filter_select("discipline_items", "Discipline", sd_items, ~discipline, multiple = TRUE)
+```{r guidelines-filters}
+filter_select("type_guidelines", "Guideline type", sd_guidelines, ~Type, multiple = TRUE)
+filter_select("methodology_guidelines", "Methodology", sd_guidelines, ~Methodology, multiple = TRUE)
+filter_select("discipline_guidelines", "Discipline", sd_guidelines, ~Discipline, multiple = TRUE)
+filter_slider("year_guidelines", "Publication year", sd_guidelines, ~Year, step = 1, round = 0)  # round = 0 prints 1999, not 1,999
 ```
 :::
 :::
 
-<div class="result-count">Use the filters and table search to narrow the view. The table below starts with <strong>10 rows</strong> per page.</div>
+```{r guidelines-table}
+datatable(
+  sd_guidelines,
+  filter = "top",
+  extensions = "Buttons",
+  rownames = FALSE,
+  escape = FALSE,
+  options = dt_options("guidelines_filtered", wide_cols = 1)
+)
+```
+
+<div class="table-note">One row per publication. A guideline published in several journals (for example PRISMA 2020) has several rows sharing one guideline ID.</div>
+
+<div class="download-row">
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline.csv")`">Full guideline table (CSV)</a>
+</div>
+
+### Reporting items
+
+```{r items-data}
+items_display <- items_real |>
+  left_join(guideline_attrs, by = "study_id") |>
+  mutate(
+    language = title_case_label(language),
+    standardised_section = title_case_label(standardised_section),
+    across(c(study_id, checklist, methodology, discipline, standardised_section, language), as.factor)
+  ) |>
+  select(
+    `Guideline ID` = study_id,
+    Checklist = checklist,
+    `Item ID` = checklist_item_id,
+    `Item no.` = reporting_item_number,
+    `Reporting item` = reporting_item,
+    Section = standardised_section,
+    `Section in guideline` = section,
+    Topic = topic,
+    Language = language,
+    Methodology = methodology,
+    Discipline = discipline,
+    Year = year
+  )
+
+sd_items <- SharedData$new(items_display, key = ~`Item ID`, group = "items")
+```
+
+::: {.filter-panel}
+::: {.filter-panel-title}
+Filter the reporting items
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
+:::
+::: {.filter-grid}
+```{r items-filters}
+filter_select("guideline_items", "Guideline", sd_items, ~`Guideline ID`, multiple = TRUE)
+filter_select("checklist_items", "Checklist", sd_items, ~Checklist, multiple = TRUE)
+filter_select("section_items", "Manuscript section", sd_items, ~Section, multiple = TRUE)
+filter_select("methodology_items", "Methodology", sd_items, ~Methodology, multiple = TRUE)
+filter_select("discipline_items", "Discipline", sd_items, ~Discipline, multiple = TRUE)
+filter_select("language_items", "Language", sd_items, ~Language, multiple = TRUE)
+```
+:::
+:::
 
 ```{r items-table}
 datatable(
   sd_items,
   filter = "top",
-  extensions = c("Buttons"),
+  extensions = "Buttons",
   rownames = FALSE,
-  options = dt_options("item_bank_filtered")
+  options = dt_options("item_bank_filtered", wide_cols = 4)
 )
 ```
 
-<div class="table-note">The filtered download exports the currently matched rows, not just the visible page.</div>
+<div class="table-note">Items are reproduced verbatim from each checklist. "Section" is the standardised manuscript section used in the analyses; "Section in guideline" is the heading used by the guideline itself. Five "not applicable" placeholder rows from the PRISMA-ScR checklist are not shown.</div>
 
-**Download full item bank datasets (all rows, unfiltered):**
-
-<div class="download-buttons">
-[⬇ Full item bank CSV](../data/item_bank_reporting_guideline_compiled.csv){.btn .btn-primary .btn-sm role="button"}
+<div class="download-row">
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline_compiled.csv")`">Full item bank (CSV)</a>
+<a href="`r paste0(github_raw, "tables_by_section.xlsx")`">Items by section (Excel)</a>
 </div>
 
 ### Concepts
 
-```{r load-concepts}
-concept <- read_csv(
-  here("data", "item_bank_reporting_guideline_concepts.csv"),
-  locale = locale(encoding = "UTF-8")
-) |>
-  clean_utf8()
-
-concept_joined <- concept |>
-  left_join(
-    study |>
-      select(study_id, methodology_category, discipline),
-    by = "study_id"
-  ) |>
-  rename(
-    guideline = checklist,
-    methodology = methodology_category
-  ) |>
+```{r concepts-data}
+concept_display <- concept_real |>
+  left_join(items_real |> select(checklist_item_id, reporting_item), by = "checklist_item_id") |>
+  left_join(guideline_attrs, by = "study_id") |>
   mutate(
-    guideline = as.factor(guideline),
-    methodology = as.factor(methodology),
-    discipline = as.factor(discipline)
+    standardised_section = title_case_label(standardised_section),
+    across(c(study_id, checklist, methodology, discipline, standardised_section, standardised_subsection), as.factor)
+  ) |>
+  select(
+    `Guideline ID` = study_id,
+    Checklist = checklist,
+    `Item ID` = checklist_item_id,
+    `Reporting item` = reporting_item,
+    Concept = standardised_reporting_item_elements,
+    Section = standardised_section,
+    Subsection = standardised_subsection,
+    Methodology = methodology,
+    Discipline = discipline,
+    Year = year
   )
 
-concept_display <- concept_joined |>
-  select(
-    study_id,
-    guideline,
-    checklist_item_id,
-    methodology,
-    discipline,
-    section,
-    topic,
-    reporting_item_number,
-    standardised_reporting_item_elements,
-    standardised_section,
-    standardised_subsection
-  ) |>
-  clean_utf8()
-
-sd_concepts <- SharedData$new(
-  concept_display,
-  key = ~paste(checklist_item_id, reporting_item_number),
-  group = "concepts"
-)
+sd_concepts <- SharedData$new(concept_display, group = "concepts")
 ```
 
 ::: {.filter-panel}
 ::: {.filter-panel-title}
-Filter the concept dataset
-<button class="btn btn-outline-secondary reset-btn" onclick="location.reload()">Reset filters ↺</button>
+Filter the concepts
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
 :::
 ::: {.filter-grid}
 ```{r concepts-filters}
-filter_select("guideline_concepts", "Guideline", sd_concepts, ~guideline, multiple = TRUE)
-filter_select("methodology_concepts", "Methodology", sd_concepts, ~methodology, multiple = TRUE)
-filter_select("discipline_concepts", "Discipline", sd_concepts, ~discipline, multiple = TRUE)
+filter_select("guideline_concepts", "Guideline", sd_concepts, ~`Guideline ID`, multiple = TRUE)
+filter_select("section_concepts", "Manuscript section", sd_concepts, ~Section, multiple = TRUE)
+filter_select("subsection_concepts", "Subsection", sd_concepts, ~Subsection, multiple = TRUE)
+filter_select("methodology_concepts", "Methodology", sd_concepts, ~Methodology, multiple = TRUE)
+filter_select("discipline_concepts", "Discipline", sd_concepts, ~Discipline, multiple = TRUE)
 ```
 :::
 :::
-
-<div class="result-count">Use the filters and table search to narrow the view. The table below starts with <strong>10 rows</strong> per page.</div>
 
 ```{r concepts-table}
 datatable(
   sd_concepts,
   filter = "top",
-  extensions = c("Buttons"),
+  extensions = "Buttons",
   rownames = FALSE,
-  options = dt_options("concepts_filtered")
+  options = dt_options("concepts_filtered", wide_cols = c(3, 4))
 )
 ```
 
-<div class="table-note">The filtered download exports the currently matched rows, not just the visible page.</div>
+<div class="table-note">One row per concept per item. An item that asks for several things has several rows; the same concept recurs across items and guidelines. Concepts are worded generically so they can be compared across methodologies ("Report the methodology used to conduct the evidence synthesis" rather than "Identify the report as a systematic review").</div>
 
-**Download full concept dataset (all rows, unfiltered):**
-
-<div class="download-buttons">
-[⬇ Full concepts CSV](../data/item_bank_reporting_guideline_long_pilot.csv){.btn .btn-primary .btn-sm role="button"}
+<div class="download-row">
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline_concepts.csv")`">Full concept table (CSV)</a>
+<a href="`r paste0(github_raw, "concept_tables_by_section.xlsx")`">Concepts by section (Excel)</a>
 </div>
+
+### Summary
+
+```{r summary-tables}
+section_levels <- c("Title", "Abstract", "Introduction", "Methodology", "Results", "Discussion", "Other information")
+
+items_by_section <- items_real |>
+  filter(str_to_lower(str_squish(language)) == "english") |>
+  mutate(section = factor(title_case_label(standardised_section), levels = section_levels)) |>
+  count(section, name = "items") |>
+  arrange(section)
+
+concepts_by_section <- concept_real |>
+  mutate(section = factor(title_case_label(standardised_section), levels = section_levels),
+         e = str_squish(standardised_reporting_item_elements)) |>
+  group_by(section) |>
+  summarise(instances = n(), unique = n_distinct(e), .groups = "drop") |>
+  arrange(section)
+
+guideline_sets <- concept_real |>
+  filter(str_to_lower(str_squish(study_id)) %in% str_to_lower(items_real$study_id)) |>
+  mutate(e = str_squish(standardised_reporting_item_elements)) |>
+  distinct(study_id, e)
+n_sets <- n_distinct(guideline_sets$study_id)
+top_concepts <- guideline_sets |>
+  count(e, name = "n_guidelines", sort = TRUE) |>
+  mutate(pct = 100 * n_guidelines / n_sets) |>
+  slice_head(n = 15)
+
+bar_row <- function(label, value, vmax, cls = "", wide = FALSE, suffix = NULL) {
+  div(class = paste("bar-row", if (wide) "wide-label"),
+      span(class = "bar-label", label),
+      span(class = "bar-track", span(class = paste("bar-fill", cls), style = sprintf("width:%.1f%%", 100 * value / vmax))),
+      span(class = "bar-val", format(value, big.mark = ","), if (!is.null(suffix)) tags$small(suffix)))
+}
+
+bar_row_stacked <- function(label, v1, v2, vmax) {
+  div(class = "bar-row",
+      span(class = "bar-label", label),
+      span(class = "bar-track stacked",
+           span(class = "lane", span(class = "bar-fill", style = sprintf("width:%.1f%%", 100 * v1 / vmax))),
+           span(class = "lane", span(class = "bar-fill teal", style = sprintf("width:%.1f%%", 100 * v2 / vmax)))),
+      span(class = "bar-val", format(v1, big.mark = ","), tags$small(paste0("/ ", v2))))
+}
+
+div(
+  class = "summary-grid",
+  div(
+    class = "summary-card",
+    h3("Reporting items by manuscript section"),
+    p(class = "sub", sprintf("%s English-language items across %d guidelines", format(sum(items_by_section$items), big.mark = ","), n_sets)),
+    lapply(seq_len(nrow(items_by_section)), function(i)
+      bar_row(as.character(items_by_section$section[i]), items_by_section$items[i], max(items_by_section$items)))
+  ),
+  div(
+    class = "summary-card",
+    h3("Concepts by manuscript section"),
+    p(class = "sub", sprintf("%s concept instances, %d unique concepts within sections", format(sum(concepts_by_section$instances), big.mark = ","), sum(concepts_by_section$unique))),
+    div(class = "legend", span("Concept instances"), span(class = "teal", "Unique concepts")),
+    lapply(seq_len(nrow(concepts_by_section)), function(i)
+      bar_row_stacked(as.character(concepts_by_section$section[i]), concepts_by_section$instances[i],
+                      concepts_by_section$unique[i], max(concepts_by_section$instances)))
+  ),
+  div(
+    class = "summary-card wide",
+    h3("Most widely requested concepts"),
+    p(class = "sub", sprintf("Share of the %d guidelines with extracted concepts that request each concept (top 15 of %s)", n_sets, format(n_distinct(guideline_sets$e), big.mark = ","))),
+    lapply(seq_len(nrow(top_concepts)), function(i)
+      bar_row(top_concepts$e[i], top_concepts$n_guidelines[i], n_sets, cls = "orange", wide = TRUE,
+              suffix = sprintf("of %d (%.0f%%)", n_sets, top_concepts$pct[i])))
+  )
+)
+```
 
 ## Citation and reuse
 
-If you use these data, please cite:
+If you use these data, please cite the accompanying paper (reference to be added on publication) and the repository:
 
-> [Add full paper citation here.]
+> Morrison K, Ivimey-Cook ER, Lagisz M, Mizuno A, Santana MS, Santos ESA, Sánchez-Tójar A, Simpson ZP, Grainger M, Macura B, Nakagawa S. An item bank of reporting items and concepts in evidence synthesis reporting guidelines. GitHub repository: <https://github.com/KyleMorrison99/synthesis_item_bank>.
 
-You are encouraged to fork or clone the GitHub repository backing this datapage, open issues for suggested improvements or corrections, and contribute extensions.
+The data and code are released under the licence in the repository. You are welcome to fork or clone the repository, open an issue to suggest corrections or additional guidelines, and build on the item bank for new reporting guidance.
+
+```{r footer}
+tags$footer(
+  class = "page-footer",
+  sprintf("Data page generated on %s from the current data files in the repository.", last_updated)
+)
+```

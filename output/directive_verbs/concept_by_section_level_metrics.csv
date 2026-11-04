@@ -1,0 +1,404 @@
+concept_section,concept,n_items_mapped,n_items_with_verb,n_checklists,n_distinct_verbs,verbs,included_in_summary
+Abstract,Report the eligibility criteria for the evidence synthesis,34,22,19,6,provide (12); specify (3); describe (2); include (2); report (2); indicate (1),TRUE
+Abstract,Report the method used to assess the risk of bias,30,21,18,5,provide (12); specify (4); indicate (2); report (2); describe (1),TRUE
+Abstract,Report any limitations in the studies included in the evidence synthesis,21,20,18,2,provide (17); state (3),TRUE
+Abstract,Report the implications of the evidence synthesis results,25,20,19,4,provide (17); describe (1); indicate (1); state (1),TRUE
+Abstract,Report the objectives of the evidence synthesis,22,19,17,3,provide (14); state (4); summarize (1),TRUE
+Abstract,Report the sources of support received for conducting the evidence synthesis,19,19,17,5,provide (11); specify (3); indicate (2); report (2); include (1),TRUE
+Abstract,Report background information on the topic of the evidence synthesis,26,18,14,3,provide (14); describe (2); state (2),TRUE
+Abstract,Report the strategy used to perform the meta-analysis,22,17,17,3,provide (13); indicate (3); describe (1),TRUE
+Abstract,Report the abstract in a structured format,14,13,13,2,provide (12); use (1),TRUE
+Abstract,Report whether there is a publicly available protocol for the evidence synthesis,13,13,11,3,provide (10); report (2); indicate (1),TRUE
+Abstract,Report an interpretation of the results,11,10,10,2,provide (7); state (3),TRUE
+Abstract,Report the summary effect size point estimates,12,8,8,5,include (2); present (2); provide (2); describe (1); state (1),TRUE
+Abstract,Report the questions the authors sought to address in the evidence synthesis,16,7,7,3,state (3); indicate (2); provide (2),TRUE
+Abstract,Report the registration number of the protocol,8,7,7,2,provide (5); report (2),TRUE
+Abstract,Report the total number of studies included in the evidence synthesis,8,7,5,3,give (3); include (2); indicate (2),TRUE
+Abstract,Report a measure of precision around the effect size point estimate for each study included in the meta-analysis,8,6,6,4,include (2); provide (2); describe (1); present (1),TRUE
+Abstract,Report the characteristics extracted from each of the included studies,7,6,6,3,describe (2); give (2); indicate (2),TRUE
+Abstract,Report the scientific literature databases used to conduct the literature search,8,6,6,3,specify (3); list (2); describe (1),TRUE
+Abstract,Report the dates that the scientific literature database searches were conducted,6,5,5,2,specify (3); list (2),TRUE
+Abstract,Report any strengths in the conducted evidence synthesis,5,4,4,2,provide (2); state (2),TRUE
+Abstract,Report a measure of statistical heterogeneity associated with the pooled effect size estimate,4,3,3,2,provide (2); present (1),TRUE
+Abstract,Report the direction of the pooled effect size point estimate,4,3,3,2,provide (2); present (1),TRUE
+Abstract,Report the interventions used in each study included in the evidence synthesis,3,3,3,2,state (2); provide (1),TRUE
+Abstract,Report the name of the registry holding the protocol,4,3,3,1,provide (3),TRUE
+Abstract,Report the number of studies included in the statistical syntheis,4,3,3,2,provide (2); present (1),TRUE
+Abstract,Report the outcomes used in each study included in the evidence synthesis,3,3,3,2,state (2); provide (1),TRUE
+Abstract,Report the populations used in each study included in the evidence synthesis,4,3,3,2,state (2); provide (1),TRUE
+Abstract,Report the registries used to conduct the literature search,3,3,3,1,specify (3),TRUE
+Abstract,Report a plain-language statement for the general public,2,2,2,2,include (1); provide (1),TRUE
+Abstract,Report the framework used to formulate the evidence synthesis question,3,2,2,1,provide (2),TRUE
+Abstract,Report the method used to visualise the results of the meta-analysis,2,2,2,1,specify (2),TRUE
+Abstract,Report the rationale for conducting the evidence synthesis,3,2,2,2,describe (1); provide (1),TRUE
+Abstract,Report the relevant comparators in the eligibility criteria of the evidence synthesis,2,2,2,1,state (2),TRUE
+Abstract,Report the results of the overall statistical syntheses,6,2,2,2,indicate (1); state (1),TRUE
+Abstract,Report the structure of each model used in the meta-analysis,3,2,2,2,give (1); state (1),TRUE
+Abstract,Report each of the data extraction variables extracted,2,1,1,1,describe (1),FALSE
+Abstract,Report the hypothesis addressed by the evidence synthesis,1,1,1,1,use (1),FALSE
+Abstract,Report the keywords used in the evidence synthesis,1,1,1,1,identify (1),FALSE
+Abstract,Report the measures of model performance,1,1,1,1,specify (1),FALSE
+Abstract,Report the method used to handle missing data required for meta-analysis,1,1,1,1,provide (1),FALSE
+Abstract,Report the methodology used to explore sources of heterogeneity,2,1,1,1,describe (1),FALSE
+Abstract,Report the number of studies included in the meta-analysis,1,1,1,1,present (1),FALSE
+Abstract,Report the primary results of the review,1,1,1,1,report (1),FALSE
+Abstract,Report the reason for exclusion for each study rejected at full-text screening,1,1,1,1,state (1),FALSE
+Abstract,Report the results from the certainty of the evidence assessment,1,1,1,1,present (1),FALSE
+Abstract,Report the strategy used to collect data from the studies included in the evidence synthesis,1,1,1,1,provide (1),FALSE
+Abstract,Report the study design of each study included in the evidence synthesis,1,1,1,1,provide (1),FALSE
+Abstract,Report the total number of records identified across all sources in the literature search strategy,1,1,1,1,state (1),FALSE
+Abstract,Report whether the data collection process was conducted independently,1,1,1,1,provide (1),FALSE
+Abstract,Report a discussion of the results,1,0,0,0,,FALSE
+Abstract,Report any limitations in the conducted evidence synthesis,2,0,0,0,,FALSE
+Abstract,Report each population for which data were extracted from the included studies,2,0,0,0,,FALSE
+Abstract,Report the data extraction strategy used in the review,2,0,0,0,,FALSE
+Abstract,Report the methodology used to conduct the evidence synthesis,3,0,0,0,,FALSE
+Abstract,Report the methodology used to conduct the evidence synthesis in the keywords,1,0,0,0,,FALSE
+Abstract,Report the outcomes for which data were extracted,2,0,0,0,,FALSE
+Abstract,Report the strategy for the data collection process,4,0,0,0,,FALSE
+Abstract,Report the strategy to perfom the literature search,7,0,0,0,,FALSE
+Discussion,Report an interpretation of the results,72,60,31,12,summarize (23); provide (19); compare (4); describe (3); present (3); include (2); discuss (1); draw (1); explain (1); explore (1); list (1); report (1),TRUE
+Discussion,Report any limitations in the conducted evidence synthesis,50,42,34,8,discuss (32); summarize (4); consider (1); identify (1); include (1); present (1); reflect (1); report (1),TRUE
+Discussion,Report the implications of the evidence synthesis results for future research,40,34,25,8,discuss (9); provide (9); summarize (9); consider (2); list (2); describe (1); include (1); make (1),TRUE
+Discussion,Report the implications of the evidence synthesis results,34,30,26,7,summarize (10); discuss (8); describe (4); provide (4); consider (2); make (1); present (1),TRUE
+Discussion,Report the implications of the evidence synthesis results for practice,32,29,26,6,summarize (10); discuss (7); provide (6); consider (3); list (2); describe (1),TRUE
+Discussion,Report any strengths in the conducted evidence synthesis,25,24,20,5,summarize (12); discuss (9); include (1); present (1); reflect (1),TRUE
+Discussion,Report the implications of the evidence synthesis results for policy,26,24,23,5,summarize (11); discuss (7); consider (3); list (2); describe (1),TRUE
+Discussion,Report any limitations in the studies included in the evidence synthesis,25,23,21,4,discuss (20); consider (1); describe (1); include (1),TRUE
+Discussion,Report a summary of the evidence included in the evidence synthesis,16,14,14,1,summarize (14),TRUE
+Discussion,Report any anticipated changes to the review in future versions of the review,2,2,1,2,describe (1); indicate (1),TRUE
+Discussion,Report a justification for any anticipated changes to the review in future versions,1,1,1,1,describe (1),FALSE
+Discussion,Report an interpretation of the certainty of evidence assessment results,1,1,1,1,summarize (1),FALSE
+Discussion,Report an interpretation of the heterogeneity assessment results,1,1,1,1,account (1),FALSE
+Discussion,Report an interpretation of the publication bias assessment results,2,1,1,1,summarize (1),FALSE
+Discussion,Report an interpretation of the risk of bias assessment results,1,1,1,1,summarize (1),FALSE
+Discussion,Report any remaining gaps in understanding identified following the review,2,1,1,1,describe (1),FALSE
+Discussion,Report the implications of missing data for the results of the evidence synthesis,1,1,1,1,discuss (1),FALSE
+Discussion,Report the implications of the evidence synthesis results for educators,1,1,1,1,describe (1),FALSE
+Discussion,Report the potential impact of the limitations in the evidence synthesis process,1,1,1,1,discuss (1),FALSE
+Discussion,Report an interpretation of the use of alternative priors,1,0,0,0,,FALSE
+Discussion,Report the generalisability of the results of the evidence synthesis,4,0,0,0,,FALSE
+Introduction,Report the rationale for conducting the evidence synthesis,42,39,32,8,describe (25); state (6); explain (3); articulate (1); define (1); include (1); provide (1); specify (1),TRUE
+Introduction,Report the questions the authors sought to address in the evidence synthesis,36,31,28,3,provide (21); describe (5); state (5),TRUE
+Introduction,Report background information on the topic of the evidence synthesis,33,25,19,6,describe (19); provide (2); define (1); include (1); present (1); state (1),TRUE
+Introduction,Report the framework used to formulate the evidence synthesis question,24,23,20,6,provide (16); break (2); state (2); list (1); show (1); use (1),TRUE
+Introduction,Report the objectives of the evidence synthesis,25,22,18,6,provide (9); state (6); describe (4); identify (1); include (1); report (1),TRUE
+Introduction,Report the rationale for selecting the methodology used to conduct the evidence synthesis,19,15,11,7,describe (7); explain (3); identify (1); indicate (1); justify (1); provide (1); state (1),TRUE
+Introduction,Report the interventions used in each study included in the evidence synthesis,8,4,4,3,provide (2); describe (1); include (1),TRUE
+Introduction,Report the populations used in each study included in the evidence synthesis,8,3,3,3,include (1); provide (1); state (1),TRUE
+Introduction,Report the rationale for selecting the study design of each study included in the evidence synthesis,7,3,3,3,describe (1); include (1); provide (1),TRUE
+Introduction,Report a logic model used in each study included in the evidence synthesis,2,2,2,2,consider (1); provide (1),TRUE
+Introduction,Report an evaluation of the interventions used in each study included in the evidence synthesis,2,2,2,2,describe (1); provide (1),TRUE
+Introduction,Report references to previous versions of the evidence synthesis,2,2,2,2,cite (1); explain (1),TRUE
+Introduction,Report the rationale for including the selected interventions in the studies included in the evidence synthesis,3,2,2,2,describe (1); explain (1),TRUE
+Introduction,Report an explanation of how the interventions used in each study included in the evidence synthesis may work,1,1,1,1,describe (1),FALSE
+Introduction,Report any assumptions made about the interventions used in each study included in the evidence synthesis,1,1,1,1,describe (1),FALSE
+Introduction,Report how disadvantage was defined in the rationale for the evidence synthesis,1,1,1,1,describe (1),FALSE
+Introduction,Report references to previously published evidence syntheses on the topic,1,1,1,1,reference (1),FALSE
+Introduction,Report the hypothesis addressed by the evidence synthesis,5,1,1,1,provide (1),FALSE
+Introduction,Report the methodology used to conduct the evidence synthesis,1,1,1,1,describe (1),FALSE
+Introduction,Report the outcomes used in each study included in the evidence synthesis,4,1,1,1,provide (1),FALSE
+Introduction,Report the potential implications of the results of the evidence synthesis,1,1,1,1,explain (1),FALSE
+Introduction,Report the role of stakeholders in formulating the objectives of the evidence synthesis,1,1,1,1,describe (1),FALSE
+Introduction,Report any limitations identified in the studies included in the review,1,0,0,0,,FALSE
+Introduction,Report the rationale for selecting the moderator variables included in the evidence synthesis,1,0,0,0,,FALSE
+Methodology,Report the method used to assess the risk of bias,64,53,34,9,describe (29); specify (14); state (4); conduct (1); identify (1); include (1); list (1); provide (1); report (1),TRUE
+Methodology,Report the method used to explore potential sources of heterogeneity,51,47,27,3,describe (42); report (3); specify (2),TRUE
+Methodology,Report the scientific literature databases used to conduct the literature search,57,42,37,11,describe (18); specify (8); detail (4); present (3); state (3); document (1); give (1); include (1); name (1); provide (1); search (1),TRUE
+Methodology,Report each of the data extraction variables extracted,62,40,28,8,list (17); describe (11); include (3); state (3); report (2); specify (2); define (1); inform (1),TRUE
+Methodology,Report the search terms used in each scientific literature database,50,40,32,8,present (18); provide (7); describe (6); state (3); include (2); specify (2); document (1); list (1),TRUE
+Methodology,Report the method used to assess study eligibility for inclusion in the evidence synthesis,47,39,33,7,describe (13); state (13); specify (6); explain (3); report (2); define (1); provide (1),TRUE
+Methodology,Report any limitations applied to the search strategy,37,34,27,7,present (16); describe (8); specify (4); state (3); cite (1); indicate (1); provide (1),TRUE
+Methodology,Report the strategy used to collect data from the studies included in the evidence synthesis,40,34,29,5,describe (24); specify (6); report (2); indicate (1); list (1),TRUE
+Methodology,Report the name of the effect size measure used,43,32,26,7,state (14); describe (7); specify (7); derive (1); inform (1); provide (1); report (1),TRUE
+Methodology,Report the method used in sensitivity analysis to test the robustness of the meta-analysis results,39,29,27,4,describe (26); allow (1); perform (1); provide (1),TRUE
+Methodology,Report the eligibility criteria for the evidence synthesis,43,28,21,8,specify (16); describe (3); state (3); report (2); define (1); include (1); list (1); provide (1),TRUE
+Methodology,Report the relevant interventions in the eligibility criteria of the evidence synthesis,31,26,19,2,specify (16); describe (10),TRUE
+Methodology,Report the dates that the scientific literature database searches were conducted,30,25,20,7,describe (9); specify (9); give (2); state (2); present (1); provide (1); report (1),TRUE
+Methodology,Report the number of reviewers who conducted the data collection process,31,25,23,4,describe (14); specify (7); report (3); state (1),TRUE
+Methodology,Report the relevant study designs in the eligibility criteria of the evidence synthesis,32,25,20,2,specify (15); describe (10),TRUE
+Methodology,Report the relevant timeframe in the eligibility criteria of the evidence synthesis,30,24,21,3,specify (15); describe (8); present (1),TRUE
+Methodology,Report the strategy used to perform the meta-analysis,32,24,21,5,describe (17); state (4); explain (1); specify (1); summarize (1),TRUE
+Methodology,Report the method used to assess risk of bias due to missing results,25,21,17,2,describe (14); specify (7),TRUE
+Methodology,Report the registries used to conduct the literature search,26,21,19,6,describe (8); specify (8); list (2); give (1); present (1); provide (1),TRUE
+Methodology,Report the relevant comparators in the eligibility criteria of the evidence synthesis,21,21,19,2,specify (16); describe (5),TRUE
+Methodology,Report the relevant populations in the eligibility criteria of the evidence synthesis,26,21,18,2,specify (13); describe (8),TRUE
+Methodology,Report the structure of each model used  to perform the meta-analysis,29,21,20,4,describe (17); report (2); inform (1); specify (1),TRUE
+Methodology,Report whether the data collection process was conducted independently,24,21,19,3,describe (14); specify (5); report (2),TRUE
+Methodology,Report how the risk of bias assessment was incorporated into the meta-analysis,20,20,20,2,describe (19); provide (1),TRUE
+Methodology,Report any contact with study authors to retrieve additional information relevant to the literature search strategy,28,19,17,6,describe (13); state (2); indicate (1); name (1); report (1); specify (1),TRUE
+Methodology,Report the method used to handle missing data required for meta-analysis,19,15,12,5,describe (6); list (6); report (1); specify (1); summarize (1),TRUE
+Methodology,Report the outcomes for which data were extracted,15,15,10,4,list (10); describe (2); report (2); consider (1),TRUE
+Methodology,Report any data transformations applied to prepare extracted data for meta-analysis,15,14,13,2,describe (13); report (1),TRUE
+Methodology,Report the methodology used to assess heterogeneity,17,14,12,4,describe (9); specify (3); provide (1); state (1),TRUE
+Methodology,Report the number of reviewers who conducted the selection process,16,14,13,5,specify (5); describe (4); report (2); state (2); define (1),TRUE
+Methodology,Report the method used to visualise the results of the meta-analysis,16,13,10,4,describe (7); report (4); display (1); present (1),TRUE
+Methodology,Report the studies which were used to conduct the citation search,22,13,10,3,specify (10); describe (2); provide (1),TRUE
+Methodology,Report any contact with study authors to retrieve additional information relevant to the data collection process,14,12,9,3,describe (6); report (5); provide (1),TRUE
+Methodology,Report the method used to assess the certainty of the evidence,12,12,7,2,describe (9); report (3),TRUE
+Methodology,Report the software used to perform the meta-analysis,13,11,9,5,describe (7); mention (1); reference (1); report (1); state (1),TRUE
+Methodology,Report the strategy to retrieve grey literature,12,11,11,2,describe (7); detail (4),TRUE
+Methodology,Report the tool(s) used to conduct the risk of bias assessment,11,10,7,3,specify (8); report (1); state (1),TRUE
+Methodology,Report the number of reviewers who conducted the risk of bias assessment,11,9,7,3,specify (6); report (2); describe (1),TRUE
+Methodology,Report the rationale for the eligibility criteria in the evidence synthesis,10,9,7,6,describe (2); explain (2); provide (2); indicate (1); justify (1); specify (1),TRUE
+Methodology,Report the search terms used in each registry,12,9,7,4,present (6); describe (1); provide (1); specify (1),TRUE
+Methodology,Report whether the literature screening was conducted independently,10,9,8,4,specify (4); describe (2); state (2); report (1),TRUE
+Methodology,Report any additional literature search strategies used in the evidence synthesis,9,8,5,5,describe (4); list (1); present (1); provide (1); report (1),TRUE
+Methodology,Report the rationale for selecting each of the data extraction variables,10,8,8,3,describe (5); list (2); provide (1),TRUE
+Methodology,Report the strategy used to perform the qualitative synthesis,9,8,6,1,describe (8),TRUE
+Methodology,Report the version number of the evidence synthesis,8,8,1,3,describe (3); specify (3); indicate (2),TRUE
+Methodology,Report how disagreements between reviewers in the risk of bias assessment were resolved,7,7,6,3,specify (5); indicate (1); report (1),TRUE
+Methodology,Report the use of automation tool(s) in the literature selection process,7,7,5,3,specify (5); describe (1); state (1),TRUE
+Methodology,Report whether risk of bias assessment was conducted independently,7,7,6,3,specify (5); indicate (1); report (1),TRUE
+Methodology,Report the agreement rate between the reviewers who conducted the data collection process,8,6,4,2,describe (5); identify (1),TRUE
+Methodology,Report the dependency structure between effect size measures accounted for in the meta-analysis,7,6,6,1,describe (6),TRUE
+Methodology,Report the relevant outcomes in the eligibility criteria of the evidence synthesis,8,6,6,4,specify (3); describe (1); list (1); state (1),TRUE
+Methodology,Report the use of automation tool(s) in the data collection process,6,6,6,1,specify (6),TRUE
+Methodology,Report each intervention for which data were extracted from the included studies,5,5,5,1,list (5),TRUE
+Methodology,Report the method used to determine which eligible studies were included in each meta-analysis,5,5,4,1,describe (5),TRUE
+Methodology,Report the software used to conduct the data collection process,5,5,4,4,describe (2); cite (1); specify (1); state (1),TRUE
+Methodology,Report the strategy used to estimate the comprehensiveness of the literature search,5,5,5,2,describe (4); report (1),TRUE
+Methodology,Report any update to the search strategy undertaken during the evidence synthesis,4,4,4,1,describe (4),TRUE
+Methodology,Report each population for which data were extracted from the included studies,4,4,4,1,list (4),TRUE
+Methodology,Report how agreement between reviewers for the risk of bias assessment outcomes was calculated,4,4,4,1,describe (4),TRUE
+Methodology,Report how articles authored by the screening team were handled during the selection process,4,4,4,1,describe (4),TRUE
+Methodology,Report the institutional subscriptions used to access the scientific literature databases,4,4,4,1,detail (4),TRUE
+Methodology,Report the languages used to search the registries,4,4,4,1,list (4),TRUE
+Methodology,Report the languages used to search the scientific literature databases,5,4,4,1,list (4),TRUE
+Methodology,Report the method used to assess consistency between reviewers who conducted the study selection process,4,4,4,1,describe (4),TRUE
+Methodology,Report the methodology used to identify key knowledge gaps among the included data characteristics,4,4,4,1,describe (4),TRUE
+Methodology,Report the rationale for selecting the strategy used to perform the meta-analysis,6,4,4,2,describe (3); explain (1),TRUE
+Methodology,Report the tool(s) used to conduct the certainity of evidence assessment,4,4,3,3,specify (2); describe (1); see (1),TRUE
+Methodology,Report the total number of organisational websites used to conduct the literature search,4,4,4,1,provide (4),TRUE
+Methodology,Report the total number of registries used to conduct the literature search,4,4,4,1,provide (4),TRUE
+Methodology,Report the total number of scientific literature databases used to conduct the literature search,4,4,4,1,provide (4),TRUE
+Methodology,Report an interpretation of the effect size measure used,3,3,3,2,state (2); describe (1),TRUE
+Methodology,Report any contact with organisations to retrieve additional information relevant to the literature search strategy,3,3,2,3,indicate (1); name (1); specify (1),TRUE
+Methodology,Report how disagreements between reviewers in the data collection process were resolved,4,3,3,2,describe (2); report (1),TRUE
+Methodology,Report how missing data in the synthesis was handled in the statistical analyses,4,3,3,3,describe (1); inform (1); report (1),TRUE
+Methodology,Report the dependency structure accounted for in the meta-analysis,7,3,3,1,describe (3),TRUE
+Methodology,Report the description for each of the data extraction variables,3,3,3,2,describe (2); provide (1),TRUE
+Methodology,Report the method used to handle missing data in the meta-analysis,4,3,3,3,describe (1); report (1); specify (1),TRUE
+Methodology,Report the moderator variables included in the meta-regression,3,3,3,2,provide (2); describe (1),TRUE
+Methodology,Report the rationale for selecting each moderator variable,3,3,3,1,provide (3),TRUE
+Methodology,Report the rationale for selecting the scientific literature databases used to conduct the literature search,4,3,3,2,describe (2); state (1),TRUE
+Methodology,Report the software packages used to perform the meta-analysis,3,3,3,3,describe (1); mention (1); reference (1),TRUE
+Methodology,Report the timeframe in which data were extracted,3,3,2,1,list (3),TRUE
+Methodology,Report which estimator was used to calculate the between-study variance,4,3,2,2,specify (2); describe (1),TRUE
+Methodology,Report any peer-review process used to assess the comprehensiveness of the literature search,2,2,2,2,describe (1); report (1),TRUE
+Methodology,Report each comparator from which data were extracted in the included studies,2,2,2,2,list (1); state (1),TRUE
+Methodology,Report how dependent effect sizes were handled during the study selection process,3,2,2,2,describe (1); report (1),TRUE
+Methodology,Report how the internally classified automation tool(s) used in the certainty assessment were trained,2,2,1,1,report (2),TRUE
+Methodology,Report the date the citation search was conducted,2,2,2,2,indicate (1); provide (1),TRUE
+Methodology,Report the eligibility criteria used to determine study inclusion in each meta-analysis,5,2,2,1,specify (2),TRUE
+Methodology,Report the formula used to calculate the effect size measure,6,2,2,2,describe (1); provide (1),TRUE
+Methodology,Report the formula used to calculate the sampling variance of the effect size measure,5,2,2,2,describe (1); inform (1),TRUE
+Methodology,Report the method used to assess consistency of data extraction between the reviewers who conducted screening,2,2,2,2,describe (1); provide (1),TRUE
+Methodology,Report the number of studies screened by more than one reviewer,2,2,2,1,describe (2),TRUE
+Methodology,Report the performance of any automation tool(s) used in the assessment of risk of bias due to missing results,2,2,1,1,report (2),TRUE
+Methodology,Report the rationale for selecting the models used to perform the meta-analysis,7,2,2,2,justify (1); specify (1),TRUE
+Methodology,Report the rationale for selecting the studies that were used to conduct the citation search,7,2,2,2,document (1); report (1),TRUE
+Methodology,Report the relevant geographical locations in the eligibility criteria of the evidence synthesis,6,2,2,1,describe (2),TRUE
+Methodology,Report the relevant languages in the eligibility criteria of the evidence synthesis,3,2,2,2,describe (1); specify (1),TRUE
+Methodology,Report the relevant publication status in the eligibility criteria of the evidence synthesis,10,2,2,2,describe (1); specify (1),TRUE
+Methodology,Report the software used to manage screening decisions during the study selection process,2,2,2,1,describe (2),TRUE
+Methodology,Report the source of the data extracted,3,2,1,1,describe (2),TRUE
+Methodology,Report the strategy used to select literature in additional languages,3,2,2,2,describe (1); report (1),TRUE
+Methodology,Report the version number of the software used to perform the meta-analysis,2,2,2,2,describe (1); reference (1),TRUE
+Methodology,Report whether individual patient (or equivalent) data was extracted,4,2,2,1,describe (2),TRUE
+Methodology,Report any alternative effect measures used as part of a sensitivity analysis,2,1,1,1,report (1),FALSE
+Methodology,Report any assumptions made during the data collection process,3,1,1,1,describe (1),FALSE
+Methodology,Report any changes made to the methodology since the previous version of the review,1,1,1,1,report (1),FALSE
+Methodology,Report any identified issues with the individual patient data items extracted,1,1,1,1,report (1),FALSE
+Methodology,Report any restrictions on the literature search strategy,1,1,1,1,report (1),FALSE
+Methodology,Report any tool(s) used to translate the scientific literature database search strings into additional languages,1,1,1,1,specify (1),FALSE
+Methodology,Report each data extraction variable used for moderator analysis,2,1,1,1,describe (1),FALSE
+Methodology,Report how crowdsourcing was incorporated into the literature selection process,1,1,1,1,give (1),FALSE
+Methodology,Report how dependent effect sizes were handled during the data collection process,1,1,1,1,describe (1),FALSE
+Methodology,Report how disagreements between reviewers in screening decisions were resolved,2,1,1,1,define (1),FALSE
+Methodology,Report how disagreements between reviewers in the certainty assessment were resolved,1,1,1,1,report (1),FALSE
+Methodology,Report how the internally classified automation tool(s) for the data collection process were trained,1,1,1,1,report (1),FALSE
+Methodology,Report how the internally classified automation tool(s) for the data collection process were validated,1,1,1,1,report (1),FALSE
+Methodology,Report how the internally classified automation tool(s) used in the certainty assessment were validated,1,1,1,1,report (1),FALSE
+Methodology,Report how the internally classified automation tool(s) used in the literature selection process was trained,1,1,1,1,identify (1),FALSE
+Methodology,Report how the internally classified automation tool(s) used in the literature selection process was validated,1,1,1,1,identify (1),FALSE
+Methodology,Report how the internally classified automation tool(s) used in the risk of bias assessment were validated,1,1,1,1,report (1),FALSE
+Methodology,Report how the risk of bias assessment was piloted,1,1,1,1,describe (1),FALSE
+Methodology,Report method to visualise the results from the certainty of the evidence assessment,1,1,1,1,describe (1),FALSE
+Methodology,Report quotations for each of the data extraction variables,1,1,1,1,include (1),FALSE
+Methodology,Report the arguments specified for each function used in the software to perform the meta-analysis,1,1,1,1,describe (1),FALSE
+Methodology,Report the automation tool(s) used in the literature selection process,1,1,1,1,cite (1),FALSE
+Methodology,Report the conceptual structure used to design the search terms in each scientific literature database,1,1,1,1,describe (1),FALSE
+Methodology,Report the experience of each of the people which conducted the literature search,4,1,1,1,consider (1),FALSE
+Methodology,Report the experience of the people who conducted the study selection process,2,1,1,1,describe (1),FALSE
+Methodology,Report the functions used in the analysis software for the meta-analysis,1,1,1,1,describe (1),FALSE
+Methodology,Report the measures of model performance,2,1,1,1,state (1),FALSE
+Methodology,Report the measures used to assess model performance,1,1,1,1,report (1),FALSE
+Methodology,Report the method used to assess for potential risk of bias due to missing studies,1,1,1,1,present (1),FALSE
+Methodology,Report the method used to calculate the fragility index for the meta-analysis,1,1,1,1,inform (1),FALSE
+Methodology,Report the method used to obtain posterior inferences,3,1,1,1,describe (1),FALSE
+Methodology,Report the methodology used to assess the certainty of evidence included in the review,1,1,1,1,describe (1),FALSE
+Methodology,Report the methodology used to assess the certainty of the evidence included in the review,1,1,1,1,describe (1),FALSE
+Methodology,Report the methodology used to update the literature search strategy,1,1,1,1,report (1),FALSE
+Methodology,Report the number of reviewers who conducted the certainty assessment,1,1,1,1,report (1),FALSE
+Methodology,Report the number of studies for which data collection was cross-checked,1,1,1,1,state (1),FALSE
+Methodology,Report the parameters that define the living review mode,1,1,1,1,specify (1),FALSE
+Methodology,Report the people who conducted the meta-analysis,1,1,1,1,identify (1),FALSE
+Methodology,Report the performance of the automation tool(s) used assess the certainty of evidence,1,1,1,1,report (1),FALSE
+Methodology,Report the planned retirement for the review,1,1,1,1,specify (1),FALSE
+Methodology,Report the planned schedule for updating the review,1,1,1,1,specify (1),FALSE
+Methodology,Report the process used to select among candidate models,2,1,1,1,describe (1),FALSE
+Methodology,Report the purpose of the literature search strategy,1,1,1,1,provide (1),FALSE
+Methodology,Report the rationale for not conducting a meta-analysis,1,1,1,1,describe (1),FALSE
+Methodology,Report the rationale for selecting the effect size measure used,1,1,1,1,provide (1),FALSE
+Methodology,Report the rationale for selecting the method used to visualise the results of the meta-analysis,1,1,1,1,report (1),FALSE
+Methodology,Report the rationale for the assumed dependency structure accounted for in the meta-analysis,1,1,1,1,justify (1),FALSE
+Methodology,Report the rationale for the method used to handle missing data in the meta-analysis,1,1,1,1,justify (1),FALSE
+Methodology,Report the rationale for the results of the certainty of evidence assessement used in the review,1,1,1,1,explain (1),FALSE
+Methodology,Report the records rejected by the automation tool(s) during the literature selection process,1,1,1,1,cite (1),FALSE
+Methodology,Report the registration number of the protocol,1,1,1,1,specify (1),FALSE
+Methodology,Report the reliability of the collected items based on challenges during the data collection process,1,1,1,1,declare (1),FALSE
+Methodology,Report the reuse of literature search strategies from other evidence syntheses,1,1,1,1,indicate (1),FALSE
+Methodology,Report the software used to deduplicate the search records during the literature search,1,1,1,1,describe (1),FALSE
+Methodology,Report the sources of information the literature search strategy sought,1,1,1,1,state (1),FALSE
+Methodology,Report the strategy used to collect data from the studies in additional languages,2,1,1,1,report (1),FALSE
+Methodology,Report the strategy used to deduplicate the search records during the scientific database search,1,1,1,1,remove (1),FALSE
+Methodology,Report the strategy used to develop the scientific literature database search string,1,1,1,1,indicate (1),FALSE
+Methodology,Report the strategy used to retrieve information from potentially relevant authors.,1,1,1,1,report (1),FALSE
+Methodology,Report the tool used to conduct the risk of bias assessment,1,1,1,1,specify (1),FALSE
+Methodology,Report the total number of people which conducted the literature search,3,1,1,1,describe (1),FALSE
+Methodology,Report the unit of replication,1,1,1,1,describe (1),FALSE
+Methodology,Report the use of any internally classified automation tool(s) in the data collection process,1,1,1,1,report (1),FALSE
+Methodology,Report the use of any internally classified automation tool(s) in the literature selection process,1,1,1,1,identify (1),FALSE
+Methodology,Report the use of automation tool(s) in designing the search string(s) in the literature database search,1,1,1,1,specify (1),FALSE
+Methodology,Report the use of automation tool(s) in the certainty of evidence assessment,1,1,1,1,report (1),FALSE
+Methodology,Report the use of automation tool(s) in the risk of bias assessment,1,1,1,1,specify (1),FALSE
+Methodology,Report the use of automation tool(s) in the the assessment of risk of bias due to missing results,1,1,1,1,report (1),FALSE
+Methodology,Report the use of crowdsourcing in the literature selection process,1,1,1,1,give (1),FALSE
+Methodology,Report the use of previously screened databases in the literature screening process,1,1,1,1,describe (1),FALSE
+Methodology,Report the version of automation tool(s) used in the literature selection process,1,1,1,1,cite (1),FALSE
+Methodology,Report the version of the internally classified automation tool(s) used in the data collection process,1,1,1,1,report (1),FALSE
+Methodology,Report the version of the internally classified automation tool(s) used in the literature selection process,1,1,1,1,identify (1),FALSE
+Methodology,Report the weighting scheme used to assign weight to each effect size estimate,2,1,1,1,specify (1),FALSE
+Methodology,Report whether a previously extracted dataset was used in the data collection process,1,1,1,1,describe (1),FALSE
+Methodology,Report whether any of the analysis were not pre-specified,1,1,1,1,identify (1),FALSE
+Methodology,Report whether any of the planned analysis could not be performed,1,1,1,1,report (1),FALSE
+Methodology,Report whether any of the sensitivity analysis were not pre-specified,1,1,1,1,identify (1),FALSE
+Methodology,Report whether certainty of evidence was conducted independently,1,1,1,1,report (1),FALSE
+Methodology,Report whether the literature search was comprehensive,1,1,1,1,define (1),FALSE
+Methodology,Report any corrections applied to the effect size measure used,1,0,0,0,,FALSE
+Methodology,Report each study design for which data were extracted from the included studies,1,0,0,0,,FALSE
+Methodology,Report the agreement rate between reviewers who conducted the study selection process,1,0,0,0,,FALSE
+Methodology,Report the aspects of the studies examined for eligibility,3,0,0,0,,FALSE
+Methodology,Report the bibliographic fields that were searched in each scientific literature database,1,0,0,0,,FALSE
+Methodology,Report the experience of the reviewers who conducted the data collection process,2,0,0,0,,FALSE
+Methodology,Report the experience of the reviewers who conducted the literature search,3,0,0,0,,FALSE
+Methodology,Report the method used to account for heteroscedasticity in effect size measures,1,0,0,0,,FALSE
+Methodology,Report the method used to identify outlying or influential studies,1,0,0,0,,FALSE
+Methodology,Report the number of individual patient data items extracted,2,0,0,0,,FALSE
+Methodology,Report the prior distribution(s) specified for a Bayesian meta-analysis,1,0,0,0,,FALSE
+Methodology,Report the rationale for including each study in relation to the objectives of the review,2,0,0,0,,FALSE
+Methodology,Report the rationale for selecting study authors to contact for additional information,1,0,0,0,,FALSE
+Methodology,Report the rationale for selecting the tool(s) used to conduct the risk of bias assessment,1,0,0,0,,FALSE
+Methodology,Report the relevant data formats in the eligibility criteria of the evidence synthesis,1,0,0,0,,FALSE
+Methodology,Report the response rate of authors who were contacted for data collection,2,0,0,0,,FALSE
+Methodology,Report the search strategy used to identify grey literature,1,0,0,0,,FALSE
+Methodology,Report the statistical power of the meta-analysis,1,0,0,0,,FALSE
+Methodology,Report the strategy to perfom the literature search,3,0,0,0,,FALSE
+Methodology,Report the strategy to perform the individual patient data meta-analysis,4,0,0,0,,FALSE
+Methodology,Report the strategy used to search for literature in additional languages,2,0,0,0,,FALSE
+Methodology,Report the total number of authors contacted for information regarding the study selection process,1,0,0,0,,FALSE
+Methodology,Report the total number of authors who were contacted for information regarding the data collection process,1,0,0,0,,FALSE
+Methodology,Report the type of data extracted from each of the included studies,1,0,0,0,,FALSE
+Methodology,Report the use of controlled-vocabulary term explosion in the search strategy,3,0,0,0,,FALSE
+Methodology,Report the version of the scientific literature databases used to conduct the literature search,2,0,0,0,,FALSE
+Methodology,Report the year that the studies used to conduct the citation search were published,1,0,0,0,,FALSE
+Methodology,Report whether the contacted authors provided the data in its entirity or only a proportion,1,0,0,0,,FALSE
+Methodology,Report whether the data extraction variables were selected a priori,1,0,0,0,,FALSE
+Methodology,Report whether the literature search strategy was systematic,1,0,0,0,,FALSE
+Methodology,Report whether the prior distribution(s) were specified before data collection,1,0,0,0,,FALSE
+Other information,Report the sources of support received for conducting the evidence synthesis,47,39,30,6,describe (27); provide (5); indicate (3); state (2); acknowledge (1); list (1),TRUE
+Other information,Report the name of the registry holding the protocol,36,35,26,4,indicate (20); provide (13); register (1); report (1),TRUE
+Other information,Report the registration number of the protocol,35,33,25,4,indicate (20); provide (11); register (1); report (1),TRUE
+Other information,Report whether there is a publicly available protocol for the evidence synthesis,37,33,25,6,indicate (21); provide (8); preregister (1); register (1); report (1); state (1),TRUE
+Other information,Report the raw data extracted from each of the studies included in the evidence synthesis,24,21,12,7,report (9); declare (5); provide (2); share (2); describe (1); include (1); present (1),TRUE
+Other information,Report any deviations from the registered protocol,18,15,14,5,describe (10); identify (2); detail (1); justify (1); report (1),TRUE
+Other information,Report the full code used to conduct the analysis of the evidence synthesis,14,13,9,4,report (9); share (2); describe (1); include (1),TRUE
+Other information,Report the description associated with each data extraction variable,13,12,8,3,report (8); share (3); describe (1),TRUE
+Other information,Report any conflicts of interest that may influence the conduct or results of the evidence synthesis,11,8,6,5,declare (2); disclose (2); report (2); acknowledge (1); describe (1),TRUE
+Other information,Report the contribution of each author to the review,5,5,5,3,describe (2); list (2); provide (1),TRUE
+Other information,Report the institutional affiliation of each author,9,4,4,2,provide (3); describe (1),TRUE
+Other information,Report each study from which data were collected in the reference list,4,3,2,3,check (1); list (1); provide (1),TRUE
+Other information,Report the contact details for each author,7,3,3,2,provide (2); list (1),TRUE
+Other information,Report the full name of each author,7,3,3,1,provide (3),TRUE
+Other information,Report the study design of each study included in the evidence synthesis,3,3,1,3,describe (1); indicate (1); provide (1),TRUE
+Other information,Report any ethics approval sought for the evidence synthesis,4,2,2,2,provide (1); state (1),TRUE
+Other information,Report how any conflicts of interest were managed,2,2,2,2,describe (1); report (1),TRUE
+Other information,Report any reporting guidelines used to prepare the evidence synthesis,3,1,1,1,specify (1),FALSE
+Other information,Report the conditions under which the extracted data are available,1,1,1,1,provide (1),FALSE
+Other information,Report the contact details each corresponding author,1,1,1,1,provide (1),FALSE
+Other information,Report the planned timeline for the evidence synthesis as specified in the protocol,1,1,1,1,report (1),FALSE
+Other information,Report the qualifications of each author,1,1,1,1,describe (1),FALSE
+Other information,Report the version number of the evidence synthesis,1,1,1,1,describe (1),FALSE
+Results,Report the results of the risk of bias assessment,57,54,28,5,present (41); provide (4); report (4); summarize (4); consider (1),TRUE
+Results,Report the results of the study selection process,65,54,32,8,provide (18); give (13); describe (11); cite (6); report (3); assess (1); identify (1); use (1),TRUE
+Results,Report the characteristics extracted from each of the studies included in the evidence synthesis,58,46,27,11,present (16); cite (7); provide (5); report (5); state (4); summarize (3); describe (2); consider (1); disclose (1); document (1); tabulate (1),TRUE
+Results,Report a measure of statistical heterogeneity associated with the pooled effect size estimate,45,44,20,7,present (24); give (13); describe (2); report (2); include (1); provide (1); summarize (1),TRUE
+Results,Report a measure of precision around the pooled effect size point estimate,30,28,22,5,present (23); report (2); describe (1); provide (1); summarize (1),TRUE
+Results,Report the results from each of the sensitivity analysis,26,26,22,5,give (12); present (8); report (4); consider (1); provide (1),TRUE
+Results,Report each of the studies excluded during full-text screening,31,25,24,5,give (12); cite (6); provide (5); identify (1); report (1),TRUE
+Results,Report the results of any analyses used to explore sources of heterogeneity,25,21,16,5,give (12); report (5); present (2); include (1); provide (1),TRUE
+Results,Report the pooled effect size point estimate,20,18,15,3,present (16); report (1); summarize (1),TRUE
+Results,Report the effect size point estimates for each study included in the meta-analysis,20,17,14,3,present (13); report (3); provide (1),TRUE
+Results,Report the total number of studies included in the evidence synthesis,18,17,17,5,give (12); report (2); document (1); identify (1); provide (1),TRUE
+Results,Report a flow diagram summarising the outcomes of the study selection process,16,16,16,4,give (13); identify (1); provide (1); use (1),TRUE
+Results,Report the total number of records identified across all sources in the literature search strategy,15,14,12,3,describe (11); provide (2); document (1),TRUE
+Results,Report a citation for each of the studies included in the evidence synthesis,14,13,10,3,cite (6); present (5); report (2),TRUE
+Results,Report a measure of precision around the effect size point estimate for each study included in the meta-analysis,17,13,10,4,present (9); report (2); indicate (1); provide (1),TRUE
+Results,Report the results from the certainty of the evidence assessment,15,12,9,5,present (8); communicate (1); consider (1); provide (1); report (1),TRUE
+Results,Report the results of the assessment of risk of bias due to missing results,14,11,7,5,present (6); consider (2); describe (1); provide (1); report (1),TRUE
+Results,Report the complete results from the meta-analysis,12,10,9,6,present (4); provide (2); report (1); specify (1); summarize (1); synthesize (1),TRUE
+Results,Report the direction of the pooled effect size point estimate,8,8,7,4,present (4); provide (2); describe (1); summarize (1),TRUE
+Results,Report the sample size from each of the studies included in the meta-analysis,8,8,8,2,present (7); state (1),TRUE
+Results,Report the data characteristics of studies included in the meta-analysis,7,7,7,4,report (3); present (2); integrate (1); provide (1),TRUE
+Results,Report a visualisation of the characteristics from each of the studies included in the evidence synthesis,4,4,4,3,describe (2); provide (1); summarize (1),TRUE
+Results,Report any changes to the results during the update of the review,4,4,2,3,describe (2); indicate (1); report (1),TRUE
+Results,Report the reason for exclusion for each study rejected at full-text screening,11,4,4,3,state (2); describe (1); list (1),TRUE
+Results,Report a table of the characteristics of each of the studies included in the evidence synthesis,3,3,1,2,report (2); describe (1),TRUE
+Results,Report quotations for each of the characteristics extracted from each of the studies included in the evidence synthesis,4,3,3,2,provide (2); quote (1),TRUE
+Results,Report the counts of events and non-events in each study included in the meta-analysis,3,3,3,1,report (3),TRUE
+Results,Report a measure of precision of the results of any analyses used to explore sources of heterogeneity,2,2,2,2,provide (1); report (1),TRUE
+Results,Report a visualisation of the pooled effect size point estimate,3,2,2,1,present (2),TRUE
+Results,Report the magnitude of the pooled effect size point estimate,2,2,2,1,provide (2),TRUE
+Results,Report the number of records remaining after duplicate removal,2,2,2,1,provide (2),TRUE
+Results,Report the results from the model selection process,2,2,2,2,describe (1); present (1),TRUE
+Results,Report the statistical significance of the results of any analyses used to explore sources of heterogeneity,2,2,1,1,report (2),TRUE
+Results,Report a visualisation of the heterogeneity assessment results,1,1,1,1,report (1),FALSE
+Results,Report any additional studies found when updating the literature search strategy,1,1,1,1,indicate (1),FALSE
+Results,Report any changes to the screening process results during the update of the review,1,1,1,1,describe (1),FALSE
+Results,Report any issues identified in the individual patient data,1,1,1,1,report (1),FALSE
+Results,Report any limitations in the characteristics of the studies included in the evidence synthesis,1,1,1,1,provide (1),FALSE
+Results,Report the consistency of study selection process outcomes between reviewers,3,1,1,1,give (1),FALSE
+Results,Report the graphical output used to assess risk of bias due to missing results,1,1,1,1,present (1),FALSE
+Results,Report the p-value associated with the pooled effect size point estimate,2,1,1,1,describe (1),FALSE
+Results,Report the p-value associated with the statistical test for risk of bias due to missing results,1,1,1,1,report (1),FALSE
+Results,Report the pooled effect size point estimate for any analyses used to explore sources of heterogeneity,1,1,1,1,provide (1),FALSE
+Results,Report the rationale for each risk of bias assessment judgement,1,1,1,1,present (1),FALSE
+Results,Report the records rejected by the automation tool(s) during the literature screening process,1,1,1,1,indicate (1),FALSE
+Results,Report the relationship between each of the study characteristics,1,1,1,1,describe (1),FALSE
+Results,Report the results of any analysis conducted due to the living mode,1,1,1,1,report (1),FALSE
+Results,Report the results of the qualitative syntheses,2,1,1,1,present (1),FALSE
+Results,Report the studies included in the meta-analysis,1,1,1,1,indicate (1),FALSE
+Results,Report the total number of studies used in the heterogeneiety investigation,1,1,1,1,report (1),FALSE
+Results,Report what triggered the current version of the living systematic review,1,1,1,1,describe (1),FALSE
+Results,Report the extracted description for each data extraction variable from each included study,2,0,0,0,,FALSE
+Results,Report the screening decisions made by each reviewer who conducted the study selection process,2,0,0,0,,FALSE
+Title,Report the methodology used to conduct the evidence synthesis,54,48,43,8,identify (38); select (4); consider (1); include (1); indicate (1); make (1); specify (1); use (1),TRUE
+Title,Report the version number of the evidence synthesis,11,7,7,4,select (4); consider (1); identify (1); provide (1),TRUE
+Title,Report the objectives of the evidence synthesis,5,5,5,4,indicate (2); identify (1); report (1); use (1),TRUE
+Title,Report the populations used in each study included in the evidence synthesis,6,5,5,3,identify (2); state (2); report (1),TRUE
+Title,Report the interventions used in each study included in the evidence synthesis,6,4,4,4,mention (1); report (1); specify (1); state (1),TRUE
+Title,Report the outcomes used in each study included in the evidence synthesis,3,3,3,2,identify (2); include (1),TRUE
+Title,Report the study design of each study included in the evidence synthesis,3,3,3,3,consider (1); indicate (1); specify (1),TRUE
+Title,Report the comparators used in each study included in the evidence synthesis,1,1,1,1,state (1),FALSE
+Title,Report the reliability of the conclusion in the evidence synthesis,1,1,1,1,include (1),FALSE
