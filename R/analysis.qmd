@@ -2597,7 +2597,7 @@ heatmap_data <- all_pairs %>%
 # 5) Heatmap plot — panel b
 # =========================================================
 
-plot_b_overlap <- ggplot(, aes(x = g1, y = g2, fill = jaccard)) +
+plot_b_overlap <- ggplot(heatmap_data, aes(x = g1, y = g2, fill = jaccard)) +
   geom_tile(color = "white", linewidth = 0.4) +
   scale_fill_gradient(
     low = "#f4f7f5",
