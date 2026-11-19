@@ -1,6 +1,5 @@
 ---
-title: "Evidence synthesis reporting item bank"
-subtitle: "Reporting items and concepts from 59 evidence synthesis reporting guidelines, searchable and downloadable"
+title: "An item bank of reporting items and concepts in evidence synthesis reporting guidelines "
 format:
   html:
     theme: cosmo
@@ -33,11 +32,41 @@ suppressPackageStartupMessages({
 })
 
 # ---- helpers ---------------------------------------------------------------
-clean_utf8 <- function(df) {
-  df |> mutate(across(where(is.character), ~ iconv(.x, from = "", to = "UTF-8", sub = "")))
+# keep valid UTF-8 as is; re-read anything else as latin1 (e.g. "M\xc9TODOS")
+fix_encoding <- function(x) {
+  bad <- !is.na(x) & !validUTF8(x)
+  x[bad] <- iconv(x[bad], from = "latin1", to = "UTF-8", sub = "")
+  x
+}
+clean_utf8 <- function(df) df |> mutate(across(where(is.character), fix_encoding))
+
+# capitalisation used for every categorical value shown on the page:
+# trims spaces, turns all-caps headings ("ABSTRACT") into sentence case and
+# starts every value with a capital letter, leaving acronyms (IPD, PICOS) alone
+cap_first <- function(x) {
+  x <- str_squish(as.character(x))
+  x[x %in% c("", "NA")] <- NA_character_
+  shout <- !is.na(x) & x == str_to_upper(x) & str_detect(x, "\\p{L}{5,}")
+  x[shout] <- str_to_sentence(x[shout])
+  if_else(is.na(x), NA_character_, paste0(str_to_upper(str_sub(x, 1, 1)), str_sub(x, 2)))
 }
 
-title_case_label <- function(x) str_to_sentence(str_squish(x))
+# sentence case for controlled vocabularies ("Living Mode Characteristics" ->
+# "Living mode characteristics"); acronyms and proper nouns are kept
+keep_capitalised <- c("Bayesian", "Chinese", "English", "Portuguese", "Spanish")
+sentence_case <- function(x) {
+  x <- cap_first(x)
+  vapply(x, function(s) {
+    if (is.na(s)) return(NA_character_)
+    w <- str_split(s, " ")[[1]]
+    if (length(w) > 1) {
+      core <- str_remove_all(w[-1], "[[:punct:]]")
+      lower <- str_detect(core, "^\\p{Lu}\\p{Ll}+$") & !core %in% keep_capitalised
+      w[-1][lower] <- str_to_lower(w[-1][lower])
+    }
+    paste(w, collapse = " ")
+  }, character(1), USE.NAMES = FALSE)
+}
 
 dt_buttons <- function(filename_stub) {
   list(
@@ -72,14 +101,19 @@ dt_options <- function(filename_stub, wide_cols = integer(0), page_length = 10) 
   )
 }
 
-github_raw <- "https://github.com/KyleMorrison99/synthesis_item_bank/raw/main/data/"
+github_url <- "https://github.com/KyleMorrison99/synthesis_item_bank"
+github_raw <- paste0(github_url, "/raw/main/data/")
+page_url   <- "https://kylemorrison99.github.io/synthesis_item_bank/"
+osf_url    <- "https://doi.org/10.17605/OSF.IO/ZWCN2"
 ```
 
 ```{r load}
 #| include: false
 data <- read_csv(here("data", "item_bank_reporting_guideline_compiled.csv"),
                  locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
-  clean_utf8()
+  clean_utf8() |>
+  # the Spanish PRISMA 2020 abstract checklist carries its checklist name as study_id
+  mutate(study_id = recode(study_id, "yepes.nunez_2021_abstracts" = "yepes.nunez_2021"))
 
 study <- read_csv(here("data", "item_bank_reporting_guideline.csv"),
                   locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
@@ -88,37 +122,136 @@ study <- read_csv(here("data", "item_bank_reporting_guideline.csv"),
 
 concept <- read_csv(here("data", "item_bank_reporting_guideline_concepts.csv"),
                     locale = locale(encoding = "UTF-8"), show_col_types = FALSE) |>
-  clean_utf8()
+  clean_utf8() |>
+  mutate(study_id = recode(study_id, "yepes.nunez_2021_abstracts" = "yepes.nunez_2021"))
+
+# ---- guideline names -------------------------------------------------------
+# short, recognisable name for each guideline ID (acronym where the guideline has one)
+guideline_names <- tribble(
+  ~study_id,           ~guideline_name,
+  "moher_1999",        "QUOROM",
+  "stroup_2000",       "MOOSE",
+  "peters_2006",       "Reporting guidelines for systematic reviews of animal experiments",
+  "moher_2009",        "PRISMA 2009",
+  "riley_2010",        "Individual participant data meta-analysis: rationale, conduct and reporting",
+  "eden_2011",         "Standards for reporting systematic reviews",
+  "kable_2012",        "12-step guideline for documenting a search strategy",
+  "tong_2012",         "ENTREQ",
+  "welch_2012",        "PRISMA-Equity 2012",
+  "zumsteg_2012",      "Systematic review checklist for life cycle assessment data",
+  "wong_2013",         "RAMESES (realist syntheses)",
+  "wong_2013a",        "RAMESES (meta-narrative reviews)",
+  "beller_2013",       "PRISMA for Abstracts",
+  "ohlssen_2013",      "Reporting of drug safety Bayesian network meta-analyses",
+  "stanley_2013",      "Meta-analysis of economics research reporting guidelines",
+  "obrien_2014",       "SRQR",
+  "atkinson_2014",     "Reporting standards for literature searches and inclusion criteria",
+  "gordon_2014",       "STORIES",
+  "hutton_2015",       "PRISMA-NMA",
+  "moher_2015",        "PRISMA-P 2015",
+  "stewart_2015",      "PRISMA-IPD",
+  "galvao_2015",       "PRISMA 2009 (Portuguese translation)",
+  "wong_2016",         "RAMESES II",
+  "lakens_2016",       "Six recommendations for reproducible meta-analyses",
+  "zorzela_2016",      "PRISMA harms",
+  "murad_2017",        "Reporting guidelines for meta-epidemiological research",
+  "guise_2017",        "PRISMA-CI",
+  "mcgrath_2017",      "Recommendations for reporting diagnostic test accuracy reviews",
+  "tricco_2018",       "PRISMA-ScR",
+  "APA_2018",          "MARS (APA)",
+  "bougioukas_2018",   "PRIO-harms",
+  "levitt_2018",       "JARS-Qual (APA)",
+  "muller_2018",       "Ten simple rules for neuroimaging meta-analysis",
+  "haddaway_2018",     "ROSES",
+  "cohen_2018",        "PRISMA-DTA for Abstracts",
+  "mcinnes_2018",      "PRISMA-DTA",
+  "france_2019",       "eMERGe",
+  "wang_2019",         "PRISMA for acupuncture",
+  "campbell_2020",     "SWiM",
+  "harvranek_2020",    "Reporting guidelines for meta-analysis in economics",
+  "odea_2020",         "PRISMA-EcoEvo",
+  "zhang_2020",        "PRISMA-CHM 2020",
+  "zhang_2020a",       "PRISMA for moxibustion 2020",
+  "ardern_2021",       "PERSiST",
+  "brooke_2021",       "MOOSE (2021)",
+  "page_2021",         "PRISMA 2020",
+  "rethlefsen_2021",   "PRISMA-S",
+  "sanchezmeca_2021",  "REGEMA",
+  "yepes.nunez_2021",  "PRISMA 2020 (Spanish translation)",
+  "peters_2022",       "Reporting items for scoping review protocols",
+  "bonetti_2022",      "Standards for meta-analyses of pharmacist-led medication review",
+  "gates_2022",        "PRIOR",
+  "zhao_2022",         "Reporting guideline for animal experiment reviews in traditional Chinese medicine",
+  "galvao_2022",       "PRISMA 2020 (Portuguese translation)",
+  "snell_2023",        "TRIPOD-SRMA",
+  "montazeri_2023",    "BIBLIO",
+  "akl_2024",          "PRISMA-LSR",
+  "elsman_2024",       "PRISMA-COSMIN for OMIs 2024",
+  "stevens_2025",      "Interim guidance for reporting rapid reviews"
+)
 
 # one row per guideline (first publication kept) for joining attributes onto items and concepts
 guideline_attrs <- study |>
   transmute(
     study_id,
-    guideline_type = title_case_label(recode(str_to_lower(str_squish(guideline_extension)),
-                                             origional = "original")),
-    methodology = title_case_label(methodology_category),
-    discipline = title_case_label(discipline),
+    guideline_type = sentence_case(recode(str_to_lower(str_squish(guideline_extension)),
+                                          origional = "original")),
+    methodology = sentence_case(methodology_category),
+    discipline = sentence_case(discipline),
     year = as.integer(year)
   ) |>
-  distinct(study_id, .keep_all = TRUE)
+  distinct(study_id, .keep_all = TRUE) |>
+  left_join(guideline_names, by = "study_id") |>
+  mutate(guideline_name = coalesce(guideline_name, study_id))
+
+# ---- standardised tables (used on the page and offered as downloads) -------
+items_real <- data |>
+  filter(!is.na(standardised_section)) |>                                # drops "not applicable" placeholder rows
+  mutate(
+    language = sentence_case(language),
+    standardised_section = sentence_case(standardised_section),
+    section = cap_first(section),
+    topic = cap_first(topic)
+  )
+
+concept_real <- concept |>
+  filter(!is.na(standardised_reporting_item_elements)) |>
+  mutate(
+    standardised_reporting_item_elements = cap_first(standardised_reporting_item_elements),
+    standardised_section = sentence_case(standardised_section),
+    standardised_subsection = sentence_case(standardised_subsection)
+  )
+
+study_std <- study |>
+  mutate(
+    guideline_extension = sentence_case(recode(str_to_lower(str_squish(guideline_extension)), origional = "original")),
+    methodology_category = sentence_case(methodology_category),
+    discipline = sentence_case(discipline)
+  ) |>
+  left_join(guideline_names, by = "study_id") |>
+  relocate(guideline_name, .after = study_id)
+
+dl_dir <- here("data", "datapage")
+dir.create(dl_dir, showWarnings = FALSE, recursive = TRUE)
+write_csv(study_std |> select(-any_of(c("JCR", "comment"))), file.path(dl_dir, "guidelines.csv"), na = "")
+write_csv(items_real |> left_join(guideline_names, by = "study_id") |> relocate(guideline_name, .after = study_id),
+          file.path(dl_dir, "reporting_items.csv"), na = "")
+write_csv(concept_real |> left_join(guideline_names, by = "study_id") |> relocate(guideline_name, .after = study_id),
+          file.path(dl_dir, "concepts.csv"), na = "")
 
 # ---- headline numbers ------------------------------------------------------
 n_guidelines   <- n_distinct(study$study_id)
 n_publications <- nrow(study)
 n_checklists   <- n_distinct(data$checklist)
-items_real     <- data |> filter(!is.na(standardised_section))          # drops "not applicable" placeholder rows
 n_items        <- nrow(items_real)
-n_items_en     <- sum(str_to_lower(str_squish(items_real$language)) == "english")
-n_languages    <- n_distinct(str_to_lower(str_squish(data$language)))
-concept_real   <- concept |> filter(!is.na(standardised_reporting_item_elements))
+n_items_en     <- sum(items_real$language == "English")
+n_languages    <- n_distinct(items_real$language)
 n_concept_inst <- nrow(concept_real)
-n_concept_uniq <- concept_real |>
-  mutate(s = str_to_sentence(str_squish(standardised_section)),
-         e = str_squish(standardised_reporting_item_elements)) |>
-  distinct(s, e) |> nrow()
+n_concept_uniq <- n_distinct(concept_real$standardised_reporting_item_elements)
 year_min <- min(study$year, na.rm = TRUE)
 year_max <- max(study$year, na.rm = TRUE)
 last_updated <- format(Sys.Date(), "%d %B %Y")
+this_year <- format(Sys.Date(), "%Y")
 ```
 
 ```{=html}
@@ -152,22 +285,24 @@ body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-
 .hero-links a {
   color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.55);
   border-radius: 2rem; padding: 0.35rem 0.95rem; font-size: 0.86rem; font-weight: 600;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.08); cursor: pointer;
 }
 .hero-links a:hover { background: var(--orange); border-color: var(--orange); }
 
-
-h2 { font-weight: 700; font-size: 1.35rem; margin-top: 2.2rem; padding-bottom: 0.35rem; border-bottom: 2px solid var(--line); }
 h3 { font-weight: 600; font-size: 1.1rem; margin-top: 1.4rem; }
 .callout { border-radius: 0.7rem; }
 a { color: var(--teal); }
+.lead-text { color: var(--muted); max-width: 62rem; margin: 0 0 1.1rem; }
 
-.panel-tabset .nav-tabs { border-bottom: 2px solid var(--line); margin-bottom: 1rem; }
-.panel-tabset .nav-link { font-weight: 600; color: var(--muted); border: none; padding: 0.6rem 1.1rem; }
+/* main tabs */
+#main-tabs > .nav-tabs { border-bottom: 2px solid var(--line); margin-bottom: 1.2rem; position: sticky; top: 0; z-index: 20; background: #fff; flex-wrap: wrap; }
+.panel-tabset .nav-link { font-weight: 600; color: var(--muted); border: none; padding: 0.7rem 1.15rem; }
+.panel-tabset .nav-link:hover { color: var(--purple); }
 .panel-tabset .nav-link.active { color: var(--purple); border-bottom: 3px solid var(--purple); background: transparent; }
 
 .filter-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 0.8rem; padding: 1rem 1.15rem 0.6rem; margin-bottom: 1rem; }
 .filter-panel-title { font-weight: 700; font-size: 0.92rem; color: var(--ink); margin-bottom: 0.7rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.filter-grid > .cell, .filter-grid > .cell > .cell-output-display { display: contents; }
 .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.6rem 1.1rem; }
 .filter-grid label, .filter-grid .control-label { font-weight: 600; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.2rem; }
 .reset-btn { font-size: 0.76rem; padding: 0.15rem 0.7rem; border-radius: 1rem; border-color: var(--purple); color: var(--purple); }
@@ -182,6 +317,8 @@ table.dataTable thead th { background-color: var(--purple); color: #fff; font-we
 table.dataTable thead input { font-size: 0.8rem; border-radius: 0.3rem; border: 1px solid #d4d7e2; padding: 0.15rem 0.35rem; width: 100%; }
 table.dataTable tbody tr:hover { background: #f1eef8; }
 table.dataTable td.wrap-cell { white-space: normal; min-width: 22rem; line-height: 1.35; }
+table.dataTable td ul.refs { margin: 0; padding-left: 1rem; }
+table.dataTable td ul.refs li { margin-bottom: 0.25rem; }
 .dataTables_wrapper .dt-buttons { margin-bottom: 0.6rem; }
 .dataTables_wrapper .dt-button { border-radius: 0.45rem; font-size: 0.82rem; background: #fff; border: 1px solid #d4d7e2; }
 .dataTables_wrapper .dataTables_filter input { border-radius: 0.5rem; border: 1px solid #d4d7e2; padding: 0.3rem 0.6rem; }
@@ -190,20 +327,42 @@ table.dataTable td.wrap-cell { white-space: normal; min-width: 22rem; line-heigh
 .download-row a { text-decoration: none; font-size: 0.84rem; font-weight: 600; color: var(--purple); border: 1px solid var(--purple); border-radius: 2rem; padding: 0.3rem 0.9rem; }
 .download-row a:hover { background: var(--teal); border-color: var(--teal); color: #fff; }
 
+/* overview: headline numbers */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.8rem; margin: 0 0 1.4rem; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.9rem 1rem; }
+.kpi .num { white-space: nowrap; font-size: 1.5rem; font-weight: 700; color: var(--purple); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi .lab { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+/* overview: explore cards */
+.explore-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; margin: 0 0 1.6rem; }
+.explore-card { display: block; text-align: left; background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--purple); border-radius: 0.8rem; padding: 0.95rem 1.1rem; cursor: pointer; transition: box-shadow .15s, transform .15s; font: inherit; color: inherit; width: 100%; }
+.explore-card:hover, .explore-card:focus-visible { box-shadow: 0 6px 18px rgba(31,35,53,0.10); transform: translateY(-2px); outline: none; }
+.explore-card.teal { border-left-color: var(--teal); }
+.explore-card.orange { border-left-color: var(--orange); }
+.explore-card.green { border-left-color: var(--green); }
+.explore-card .t { font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
+.explore-card .d { font-size: 0.85rem; color: var(--muted); line-height: 1.35; }
+.explore-card .go { font-size: 0.8rem; font-weight: 600; color: var(--purple); margin-top: 0.5rem; }
+
+/* overview: charts */
 .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
 @media (max-width: 760px) { .summary-grid { grid-template-columns: 1fr; } }
 .summary-card { background: #fff; border: 1px solid var(--line); border-radius: 0.8rem; padding: 1.1rem 1.3rem 0.9rem; }
 .summary-card.wide { grid-column: 1 / -1; }
 .summary-card h3 { margin: 0 0 0.2rem; font-size: 1rem; font-weight: 700; }
 .summary-card .sub { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.9rem; }
-.bar-row { display: grid; grid-template-columns: minmax(7rem, 1.1fr) 3fr auto; align-items: center; gap: 0.7rem; padding: 0.3rem 0; border-bottom: 1px solid #f0f1f6; font-size: 0.9rem; }
+.bar-row { display: grid; grid-template-columns: minmax(7rem, 1.1fr) 3fr auto; align-items: center; gap: 0.7rem; padding: 0.3rem 0.3rem; border-bottom: 1px solid #f0f1f6; font-size: 0.9rem; border-radius: 0.4rem; }
 .bar-row:last-child { border-bottom: none; }
 .bar-row.wide-label { grid-template-columns: minmax(16rem, 2.2fr) 2fr auto; }
+.bar-row.clickable { cursor: pointer; }
+.bar-row.clickable:hover, .bar-row.clickable:focus-visible { background: #f1eef8; outline: none; }
+.bar-row.clickable:hover .bar-label { color: var(--purple); text-decoration: underline; }
 .bar-label { color: var(--ink); line-height: 1.3; }
 .bar-track { position: relative; height: 0.7rem; background: #f0f1f6; border-radius: 0.35rem; overflow: hidden; }
 .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--purple); border-radius: 0.35rem; }
 .bar-fill.teal { background: var(--teal); }
 .bar-fill.orange { background: var(--orange); }
+.bar-fill.green { background: var(--green); }
 .bar-track.stacked { background: transparent; height: auto; display: grid; gap: 0.2rem; }
 .bar-track.stacked .lane { position: relative; height: 0.55rem; background: #f0f1f6; border-radius: 0.3rem; overflow: hidden; }
 .bar-val { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; color: var(--ink); font-weight: 600; }
@@ -211,73 +370,359 @@ table.dataTable td.wrap-cell { white-space: normal; min-width: 22rem; line-heigh
 .legend { display: flex; gap: 1rem; font-size: 0.8rem; color: var(--muted); margin: 0.2rem 0 0.7rem; }
 .legend span::before { content: ""; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 0.2rem; margin-right: 0.35rem; vertical-align: -0.05rem; background: var(--purple); }
 .legend span.teal::before { background: var(--teal); }
+.click-hint { font-size: 0.78rem; color: var(--muted); margin: -0.4rem 0 0.6rem; font-style: italic; }
+
+.col-chart { display: flex; align-items: flex-end; gap: 3px; height: 150px; padding: 0 0 0.2rem; border-bottom: 1px solid var(--line); }
+.col-chart .col { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; min-width: 0; }
+.col-chart .col .n { font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-bottom: 2px; }
+.col-chart .col .b { width: 100%; background: var(--teal); border-radius: 3px 3px 0 0; min-height: 0; }
+.col-chart .col.empty .b { background: transparent; }
+.col-axis { display: flex; gap: 3px; margin-top: 0.25rem; }
+.col-axis span { flex: 1 1 0; font-size: 0.66rem; color: var(--muted); text-align: center; min-width: 0; overflow: visible; white-space: nowrap; }
+
+@media (max-width: 600px) {
+  .hero { padding: 1.4rem 1.2rem 1.2rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .summary-card { padding: 0.9rem 0.9rem 0.7rem; }
+  .bar-row, .bar-row.wide-label { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0.25rem; }
+  .bar-row .bar-label { grid-column: 1 / -1; }
+  .var-table td.v { white-space: normal; }
+}
+.bar-row > * { min-width: 0; }
+
+/* variables and values */
+.var-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.3rem 0 1.6rem; }
+.var-table th { text-align: left; background: var(--panel); color: var(--ink); font-weight: 700; padding: 0.5rem 0.7rem; border-bottom: 2px solid var(--line); }
+.var-table td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.var-table td.v { white-space: nowrap; font-weight: 600; }
+.var-table td.v code { display: block; font-weight: 400; font-size: 0.78rem; color: var(--muted); background: none; padding: 0; margin-top: 0.15rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip { display: inline-block; background: #f1eef8; color: var(--purple); border-radius: 1rem; padding: 0.1rem 0.6rem; font-size: 0.8rem; line-height: 1.5; }
+.chip small { color: var(--muted); margin-left: 0.25rem; }
+.free-text { color: var(--muted); font-style: italic; font-size: 0.84rem; }
+
+/* citation */
+.cite-box > :last-child { margin-bottom: 0; }
+.cite-box { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--purple); border-radius: 0.6rem; padding: 0.9rem 1.1rem; margin: 0.5rem 0 1.2rem; }
 
 footer.page-footer { margin: 3rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.86rem; }
 </style>
+
+<script>
+// ---- tab navigation helpers ------------------------------------------------
+window.esib = (function () {
+  const hashToTab = {
+    overview: "Overview", guidelines: "Guideline key", items: "Reporting items",
+    concepts: "Concepts", variables: "Variables and values", cite: "Cite and reuse"
+  };
+  function tabLinks() { return Array.from(document.querySelectorAll("#main-tabs > .nav-tabs .nav-link")); }
+  function show(key) {
+    const label = hashToTab[key] || key;
+    const link = tabLinks().find(a => a.textContent.trim() === label);
+    if (!link) return null;
+    bootstrap.Tab.getOrCreateInstance(link).show();
+    const pane = document.querySelector(link.getAttribute("data-bs-target"));
+    const top = document.getElementById("main-tabs");
+    if (top) top.scrollIntoView({ behavior: "smooth", block: "start" });
+    return pane;
+  }
+  function setSelect(inputId, value) {
+    const sel = document.querySelector("#" + inputId + " select");
+    if (sel && sel.selectize) { sel.selectize.setValue(value === null ? [] : [value]); return true; }
+    return false;
+  }
+  function filter(key, inputId, value) {
+    show(key);
+    setTimeout(() => setSelect(inputId, value), 80);
+  }
+  function search(key, text) {
+    const pane = show(key);
+    if (!pane || !window.jQuery) return;
+    setTimeout(() => {
+      jQuery(pane).find("table").each(function () {
+        if (jQuery.fn.dataTable.isDataTable(this)) jQuery(this).DataTable().search(text).draw();
+      });
+      jQuery(pane).find(".dataTables_filter input").val(text);
+    }, 80);
+  }
+  function reset(key) {
+    history.replaceState(null, "", "#" + key);
+    location.reload();
+  }
+  function onKey(ev, fn) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); fn(); } }
+  document.addEventListener("DOMContentLoaded", function () {
+    // keep the address bar in step with the open tab so links and reloads land on it
+    tabLinks().forEach(a => a.addEventListener("shown.bs.tab", function () {
+      const key = Object.keys(hashToTab).find(k => hashToTab[k] === a.textContent.trim());
+      if (key) history.replaceState(null, "", "#" + key);
+      if (window.jQuery && jQuery.fn.dataTable) {
+        jQuery(jQuery.fn.dataTable.tables(true)).DataTable().columns.adjust();
+      }
+    }));
+    const key = location.hash.replace("#", "");
+    if (hashToTab[key]) setTimeout(() => show(key), 0);
+  });
+  return { show, filter, search, reset, onKey };
+})();
+</script>
 ```
 
 ```{r hero}
+hero_link <- function(label, key) {
+  a(href = paste0("#", key), onclick = sprintf("esib.show('%s'); return false;", key), label)
+}
 div(
   class = "hero",
-  h1("Evidence synthesis reporting item bank"),
+    h1("An item bank of reporting items and concepts in evidence synthesis reporting guidelines"),
   p(sprintf(
-    "%s reporting items from %d evidence synthesis reporting guidelines (%d publications, %d checklists, %d to %d), each broken down into the %s reporting concepts it asks for. Filter, search and download the data below.",
+    "%s reporting items from %d evidence synthesis reporting guidelines (%d publications, %d checklists, %d to %d), each broken down into the %s reporting concepts it asks for. Explore the overview, then filter, search and download the data.",
     format(n_items, big.mark = ","), n_guidelines, n_publications, n_checklists, year_min, year_max, format(n_concept_inst, big.mark = ",")
   )),
   div(
     class = "hero-links",
-    a(href = "https://github.com/KyleMorrison99/synthesis_item_bank", target = "_blank", "GitHub repository"),
-    a(href = "https://doi.org/10.17605/OSF.IO/ZWCN2", target = "_blank", "Study registration (OSF)"),
-    a(href = "#datasets", "Browse the data"),
-    a(href = "#citation-and-reuse", "How to cite")
+    a(href = github_url, target = "_blank", "GitHub repository"),
+    a(href = osf_url, target = "_blank", "Study registration (OSF)"),
+    hero_link("Guideline key", "guidelines"),
+    hero_link("Browse the data", "items"),
+    hero_link("How to cite", "cite")
   )
 )
-
 ```
 
-::: callout-note
-## How to use this page
+::: {.panel-tabset #main-tabs}
 
-- **Guidelines** lists each included publication with its type, methodology and discipline. **Reporting items** holds every item verbatim. **Concepts** holds the standardised reporting concepts extracted from each item.
+## Overview
+
+```{r overview}
+section_levels <- c("Title", "Abstract", "Introduction", "Methodology", "Results", "Discussion", "Other information")
+
+# ---- chart data -------------------------------------------------------------
+per_year <- guideline_attrs |>
+  count(year, name = "n") |>
+  right_join(tibble(year = seq(year_min, year_max)), by = "year") |>
+  mutate(n = coalesce(n, 0L)) |>
+  arrange(year)
+
+count_guidelines <- function(var) {
+  guideline_attrs |>
+    count(value = .data[[var]], name = "n", sort = TRUE) |>
+    filter(!is.na(value))
+}
+by_type        <- count_guidelines("guideline_type")
+by_methodology <- count_guidelines("methodology")
+by_discipline  <- count_guidelines("discipline")
+
+items_by_section <- items_real |>
+  filter(language == "English") |>
+  mutate(section = factor(standardised_section, levels = section_levels)) |>
+  count(section, name = "items") |>
+  arrange(section)
+
+concepts_by_section <- concept_real |>
+  mutate(section = factor(standardised_section, levels = section_levels)) |>
+  group_by(section) |>
+  summarise(instances = n(), unique = n_distinct(standardised_reporting_item_elements), .groups = "drop") |>
+  arrange(section)
+
+guideline_sets <- concept_real |>
+  filter(study_id %in% items_real$study_id) |>
+  distinct(study_id, e = standardised_reporting_item_elements)
+n_sets <- n_distinct(guideline_sets$study_id)
+top_concepts <- guideline_sets |>
+  count(e, name = "n_guidelines", sort = TRUE) |>
+  mutate(pct = 100 * n_guidelines / n_sets) |>
+  slice_head(n = 15)
+
+# ---- building blocks --------------------------------------------------------
+js_str <- function(x) gsub("'", "\\\\'", x)
+
+bar_row <- function(label, value, vmax, cls = "", wide = FALSE, suffix = NULL, action = NULL, hint = NULL) {
+  div(class = paste("bar-row", if (wide) "wide-label", if (!is.null(action)) "clickable"),
+      onclick = action,
+      onkeydown = if (!is.null(action)) sprintf("esib.onKey(event, function(){ %s })", action),
+      tabindex = if (!is.null(action)) "0",
+      role = if (!is.null(action)) "button",
+      title = hint,
+      span(class = "bar-label", label),
+      span(class = "bar-track", span(class = paste("bar-fill", cls), style = sprintf("width:%.1f%%", 100 * value / vmax))),
+      span(class = "bar-val", format(value, big.mark = ","), if (!is.null(suffix)) tags$small(suffix)))
+}
+
+bar_row_stacked <- function(label, v1, v2, vmax, action = NULL, hint = NULL) {
+  div(class = paste("bar-row", if (!is.null(action)) "clickable"),
+      onclick = action,
+      onkeydown = if (!is.null(action)) sprintf("esib.onKey(event, function(){ %s })", action),
+      tabindex = if (!is.null(action)) "0",
+      role = if (!is.null(action)) "button",
+      title = hint,
+      span(class = "bar-label", label),
+      span(class = "bar-track stacked",
+           span(class = "lane", span(class = "bar-fill", style = sprintf("width:%.1f%%", 100 * v1 / vmax))),
+           span(class = "lane", span(class = "bar-fill teal", style = sprintf("width:%.1f%%", 100 * v2 / vmax)))),
+      span(class = "bar-val", format(v1, big.mark = ","), tags$small(paste0("/ ", v2))))
+}
+
+guideline_bar_card <- function(title, df, input_id, cls) {
+  div(
+    class = "summary-card",
+    h3(title),
+    p(class = "sub", sprintf("Number of the %d guidelines", n_guidelines)),
+    lapply(seq_len(nrow(df)), function(i)
+      bar_row(df$value[i], df$n[i], max(df$n), cls = cls,
+              action = sprintf("esib.filter('guidelines', '%s', '%s')", input_id, js_str(df$value[i])),
+              hint = "Show these guidelines in the guideline key"))
+  )
+}
+
+explore_card <- function(title, desc, key, cls = "") {
+  tags$button(type = "button", class = paste("explore-card", cls), onclick = sprintf("esib.show('%s')", key),
+              div(class = "t", title), div(class = "d", desc), div(class = "go", HTML("Open &rarr;")))
+}
+
+kpi <- function(num, lab) div(class = "kpi", div(class = "num", num), div(class = "lab", lab))
+
+# ---- page -------------------------------------------------------------------
+tagList(
+  p(class = "lead-text",
+    "The charts below summarise the item bank. Click any bar to open the matching rows in the data tables, or use the cards to go straight to a table."),
+  div(
+    class = "kpi-grid",
+    kpi(n_guidelines, "Reporting guidelines"),
+    kpi(n_publications, "Publications"),
+    kpi(n_checklists, "Checklists"),
+    kpi(format(n_items, big.mark = ","), "Reporting items"),
+    kpi(format(n_concept_inst, big.mark = ","), "Concept instances"),
+    kpi(format(n_concept_uniq, big.mark = ","), "Unique concepts"),
+    kpi(HTML(sprintf("%d&ndash;%d", year_min, year_max)), "Publication years"),
+    kpi(n_languages, "Languages")
+  ),
+  div(
+    class = "explore-grid",
+    explore_card("Guideline key", "Look up what each guideline ID refers to: name, references, type, methodology and discipline.", "guidelines"),
+    explore_card("Reporting items", sprintf("All %s items, reproduced verbatim from each checklist.", format(n_items, big.mark = ",")), "items", "teal"),
+    explore_card("Concepts", "The standardised reporting concepts that each item asks for.", "concepts", "orange"),
+    explore_card("Variables and values", "What each column means and the values you can filter on.", "variables", "green")
+  ),
+  div(
+    class = "summary-grid",
+    div(
+      class = "summary-card wide",
+      h3("Guidelines by year of first publication"),
+      p(class = "sub", sprintf("%d guidelines, %d to %d", n_guidelines, year_min, year_max)),
+      div(class = "col-chart",
+          lapply(seq_len(nrow(per_year)), function(i) {
+            div(class = paste("col", if (per_year$n[i] == 0) "empty"),
+                title = sprintf("%d: %d guideline%s", per_year$year[i], per_year$n[i], if (per_year$n[i] == 1) "" else "s"),
+                span(class = "n", if (per_year$n[i] > 0) per_year$n[i]),
+                div(class = "b", style = sprintf("height:%.1f%%", 85 * per_year$n[i] / max(per_year$n))))
+          })),
+      div(class = "col-axis",
+          lapply(per_year$year, function(y) span(if (y %% 5 == 0 || y == year_min || y == year_max) y else "")))
+    ),
+    guideline_bar_card("Guideline type", by_type, "type_guidelines", ""),
+    guideline_bar_card("Discipline", by_discipline, "discipline_guidelines", "teal"),
+    div(class = "summary-card wide",
+        h3("Methodology"),
+        p(class = "sub", sprintf("Number of the %d guidelines", n_guidelines)),
+        lapply(seq_len(nrow(by_methodology)), function(i)
+          bar_row(by_methodology$value[i], by_methodology$n[i], max(by_methodology$n), cls = "green", wide = TRUE,
+                  action = sprintf("esib.filter('guidelines', 'methodology_guidelines', '%s')", js_str(by_methodology$value[i])),
+                  hint = "Show these guidelines in the guideline key"))),
+    div(
+      class = "summary-card",
+      h3("Reporting items by manuscript section"),
+      p(class = "sub", sprintf("%s English-language items across %d guidelines", format(sum(items_by_section$items), big.mark = ","), n_sets)),
+      lapply(seq_len(nrow(items_by_section)), function(i)
+        bar_row(as.character(items_by_section$section[i]), items_by_section$items[i], max(items_by_section$items),
+                action = sprintf("esib.filter('items', 'section_items', '%s')", items_by_section$section[i]),
+                hint = "Show these reporting items"))
+    ),
+    div(
+      class = "summary-card",
+      h3("Concepts by manuscript section"),
+      p(class = "sub", sprintf("%s concept instances, %d unique concepts within sections", format(sum(concepts_by_section$instances), big.mark = ","), sum(concepts_by_section$unique))),
+      div(class = "legend", span("Concept instances"), span(class = "teal", "Unique concepts")),
+      lapply(seq_len(nrow(concepts_by_section)), function(i)
+        bar_row_stacked(as.character(concepts_by_section$section[i]), concepts_by_section$instances[i],
+                        concepts_by_section$unique[i], max(concepts_by_section$instances),
+                        action = sprintf("esib.filter('concepts', 'section_concepts', '%s')", concepts_by_section$section[i]),
+                        hint = "Show these concepts"))
+    ),
+    div(
+      class = "summary-card wide",
+      h3("Most widely requested concepts"),
+      p(class = "sub", sprintf("Share of the %d guidelines with extracted concepts that request each concept (top 15 of %s)", n_sets, format(n_distinct(guideline_sets$e), big.mark = ","))),
+      lapply(seq_len(nrow(top_concepts)), function(i)
+        bar_row(top_concepts$e[i], top_concepts$n_guidelines[i], n_sets, cls = "orange", wide = TRUE,
+                suffix = sprintf("of %d (%.0f%%)", n_sets, top_concepts$pct[i]),
+                action = sprintf("esib.search('concepts', '%s')", js_str(top_concepts$e[i])),
+                hint = "Show every item that asks for this concept"))
+    )
+  )
+)
+```
+
+::: {.callout-note title="How to use the data tables"}
+
+- **Guideline key** links each guideline ID to the guideline's name and references. **Reporting items** holds every item verbatim. **Concepts** holds the standardised reporting concepts extracted from each item. **Variables and values** explains each column and lists the values available for filtering.
 - Drop-down filters above each table combine with AND logic. The boxes under each column heading filter that column; the search box searches all columns.
 - **Download filtered** exports the rows currently matched by your filters and searches. The links under each table give the full CSV files.
-- The reporting item and concept tables can be joined on `checklist_item_id`; all three tables can be joined on `study_id`.
+- The reporting item and concept tables can be joined on `checklist_item_id`; all three tables can be joined on `study_id` (shown as *Guideline ID*).
 :::
 
-## Datasets {#datasets .panel-tabset}
-
-### Guidelines
+## Guideline key
 
 ```{r guidelines-data}
-guidelines_display <- study |>
-  select(study_id, title, year, journal, DOI) |>
-  left_join(guideline_attrs |> select(study_id, guideline_type, methodology, discipline), by = "study_id") |>
-  mutate(
-    year = as.integer(year),
-    doi = str_squish(DOI),
-    doi = if_else(is.na(doi) | doi == "", NA_character_,
-                  sprintf('<a href="https://doi.org/%s" target="_blank">%s</a>', doi, doi)),
-    across(c(guideline_type, methodology, discipline), as.factor)
+fmt_ref <- function(title, journal, year, doi) {
+  doi <- str_squish(doi)
+  doi_html <- if_else(is.na(doi) | doi == "", "",
+                      sprintf(' <a href="https://doi.org/%s" target="_blank">doi:%s</a>', doi, doi))
+  journal <- if_else(is.na(journal) | str_squish(journal) %in% c("", "NA"), "", paste0(" <em>", str_squish(journal), "</em>."))
+  sprintf("%s.%s %s.%s", str_remove(str_squish(title), "[.]$"), journal, year, doi_html)
+}
+
+checklists_per_guideline <- data |>
+  group_by(study_id) |>
+  summarise(checklists = paste(sort(unique(checklist)), collapse = "; "), .groups = "drop")
+items_per_guideline <- items_real |> count(study_id, name = "n_items")
+
+guideline_key <- study |>
+  mutate(ref = fmt_ref(title, journal, year, DOI)) |>
+  group_by(study_id) |>
+  summarise(
+    title = first(str_squish(title)),
+    n_publications = n(),
+    references = paste0('<ul class="refs">', paste0("<li>", ref, "</li>", collapse = ""), "</ul>"),
+    .groups = "drop"
   ) |>
+  left_join(guideline_attrs, by = "study_id") |>
+  left_join(checklists_per_guideline, by = "study_id") |>
+  left_join(items_per_guideline, by = "study_id") |>
+  mutate(across(c(guideline_type, methodology, discipline), as.factor)) |>
+  arrange(year, study_id) |>
   select(
     `Guideline ID` = study_id,
+    Guideline = guideline_name,
     Title = title,
     Year = year,
-    Journal = journal,
-    DOI = doi,
     Type = guideline_type,
     Methodology = methodology,
-    Discipline = discipline
-  ) |>
-  arrange(Year, `Guideline ID`)
+    Discipline = discipline,
+    Checklists = checklists,
+    Items = n_items,
+    Publications = n_publications,
+    References = references
+  )
 
-sd_guidelines <- SharedData$new(guidelines_display, group = "guidelines")
+sd_guidelines <- SharedData$new(guideline_key, key = ~`Guideline ID`, group = "guidelines")
 ```
+
+<p class="lead-text">Each guideline ID (`study_id` in the data files) is usually the first author's surname (or organisation) and the year of the guideline's first publication. Use this key to see which guideline an ID refers to. Guidelines published in several journals list every publication under References.</p>
 
 ::: {.filter-panel}
 ::: {.filter-panel-title}
 Filter the guidelines
-<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="esib.reset('guidelines')">Reset all filters</button>
 :::
 ::: {.filter-grid}
 ```{r guidelines-filters}
@@ -296,28 +741,26 @@ datatable(
   extensions = "Buttons",
   rownames = FALSE,
   escape = FALSE,
-  options = dt_options("guidelines_filtered", wide_cols = 1)
+  options = dt_options("guideline_key_filtered", wide_cols = c(2, 10))
 )
 ```
 
-<div class="table-note">One row per publication. A guideline published in several journals (for example PRISMA 2020) has several rows sharing one guideline ID.</div>
+<div class="table-note">One row per guideline. "Guideline" is a short name (the acronym where the guideline has one). "Type" says whether the guideline is an original guideline, an update, an extension or a translation of another guideline.</div>
 
 <div class="download-row">
-<a href="`r paste0(github_raw, "item_bank_reporting_guideline.csv")`">Full guideline table (CSV)</a>
+<a href="`r paste0(github_raw, "datapage/guidelines.csv")`">Guideline table, one row per publication (CSV)</a>
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline.csv")`">Original guideline file (CSV)</a>
 </div>
 
-### Reporting items
+## Reporting items
 
 ```{r items-data}
 items_display <- items_real |>
   left_join(guideline_attrs, by = "study_id") |>
-  mutate(
-    language = title_case_label(language),
-    standardised_section = title_case_label(standardised_section),
-    across(c(study_id, checklist, methodology, discipline, standardised_section, language), as.factor)
-  ) |>
+  mutate(across(c(study_id, guideline_name, checklist, methodology, discipline, standardised_section, language), as.factor)) |>
   select(
     `Guideline ID` = study_id,
+    Guideline = guideline_name,
     Checklist = checklist,
     `Item ID` = checklist_item_id,
     `Item no.` = reporting_item_number,
@@ -337,11 +780,11 @@ sd_items <- SharedData$new(items_display, key = ~`Item ID`, group = "items")
 ::: {.filter-panel}
 ::: {.filter-panel-title}
 Filter the reporting items
-<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="esib.reset('items')">Reset all filters</button>
 :::
 ::: {.filter-grid}
 ```{r items-filters}
-filter_select("guideline_items", "Guideline", sd_items, ~`Guideline ID`, multiple = TRUE)
+filter_select("guideline_items", "Guideline", sd_items, ~Guideline, multiple = TRUE)
 filter_select("checklist_items", "Checklist", sd_items, ~Checklist, multiple = TRUE)
 filter_select("section_items", "Manuscript section", sd_items, ~Section, multiple = TRUE)
 filter_select("methodology_items", "Methodology", sd_items, ~Methodology, multiple = TRUE)
@@ -357,29 +800,28 @@ datatable(
   filter = "top",
   extensions = "Buttons",
   rownames = FALSE,
-  options = dt_options("item_bank_filtered", wide_cols = 4)
+  options = dt_options("item_bank_filtered", wide_cols = 5)
 )
 ```
 
-<div class="table-note">Items are reproduced verbatim from each checklist. "Section" is the standardised manuscript section used in the analyses; "Section in guideline" is the heading used by the guideline itself. Five "not applicable" placeholder rows from the PRISMA-ScR checklist are not shown.</div>
+<div class="table-note">Items are reproduced verbatim from each checklist. "Section" is the standardised manuscript section used in the analyses; "Section in guideline" and "Topic" are the headings used by the guideline itself (capitalised consistently, otherwise unchanged). Five "not applicable" placeholder rows from the PRISMA-ScR checklist are not shown.</div>
 
 <div class="download-row">
-<a href="`r paste0(github_raw, "item_bank_reporting_guideline_compiled.csv")`">Full item bank (CSV)</a>
+<a href="`r paste0(github_raw, "datapage/reporting_items.csv")`">Reporting items as shown here (CSV)</a>
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline_compiled.csv")`">Original item bank file (CSV)</a>
 <a href="`r paste0(github_raw, "tables_by_section.xlsx")`">Items by section (Excel)</a>
 </div>
 
-### Concepts
+## Concepts
 
 ```{r concepts-data}
 concept_display <- concept_real |>
   left_join(items_real |> select(checklist_item_id, reporting_item), by = "checklist_item_id") |>
   left_join(guideline_attrs, by = "study_id") |>
-  mutate(
-    standardised_section = title_case_label(standardised_section),
-    across(c(study_id, checklist, methodology, discipline, standardised_section, standardised_subsection), as.factor)
-  ) |>
+  mutate(across(c(study_id, guideline_name, checklist, methodology, discipline, standardised_section, standardised_subsection), as.factor)) |>
   select(
     `Guideline ID` = study_id,
+    Guideline = guideline_name,
     Checklist = checklist,
     `Item ID` = checklist_item_id,
     `Reporting item` = reporting_item,
@@ -397,11 +839,11 @@ sd_concepts <- SharedData$new(concept_display, group = "concepts")
 ::: {.filter-panel}
 ::: {.filter-panel-title}
 Filter the concepts
-<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="location.reload()">Reset all filters</button>
+<button class="btn btn-outline-secondary btn-sm reset-btn" onclick="esib.reset('concepts')">Reset all filters</button>
 :::
 ::: {.filter-grid}
 ```{r concepts-filters}
-filter_select("guideline_concepts", "Guideline", sd_concepts, ~`Guideline ID`, multiple = TRUE)
+filter_select("guideline_concepts", "Guideline", sd_concepts, ~Guideline, multiple = TRUE)
 filter_select("section_concepts", "Manuscript section", sd_concepts, ~Section, multiple = TRUE)
 filter_select("subsection_concepts", "Subsection", sd_concepts, ~Subsection, multiple = TRUE)
 filter_select("methodology_concepts", "Methodology", sd_concepts, ~Methodology, multiple = TRUE)
@@ -416,97 +858,126 @@ datatable(
   filter = "top",
   extensions = "Buttons",
   rownames = FALSE,
-  options = dt_options("concepts_filtered", wide_cols = c(3, 4))
+  options = dt_options("concepts_filtered", wide_cols = c(4, 5))
 )
 ```
 
 <div class="table-note">One row per concept per item. An item that asks for several things has several rows; the same concept recurs across items and guidelines. Concepts are worded generically so they can be compared across methodologies ("Report the methodology used to conduct the evidence synthesis" rather than "Identify the report as a systematic review").</div>
 
 <div class="download-row">
-<a href="`r paste0(github_raw, "item_bank_reporting_guideline_concepts.csv")`">Full concept table (CSV)</a>
+<a href="`r paste0(github_raw, "datapage/concepts.csv")`">Concepts as shown here (CSV)</a>
+<a href="`r paste0(github_raw, "item_bank_reporting_guideline_concepts.csv")`">Original concept file (CSV)</a>
 <a href="`r paste0(github_raw, "concept_tables_by_section.xlsx")`">Concepts by section (Excel)</a>
 </div>
 
-### Summary
+## Variables and values
 
-```{r summary-tables}
-section_levels <- c("Title", "Abstract", "Introduction", "Methodology", "Results", "Discussion", "Other information")
+<p class="lead-text">Every column in the three tables, the column name it has in the CSV files, and, for categorical variables, every value it can take (with the number of rows that have it). Use these values in the drop-down filters and the column filter boxes.</p>
 
-items_by_section <- items_real |>
-  filter(str_to_lower(str_squish(language)) == "english") |>
-  mutate(section = factor(title_case_label(standardised_section), levels = section_levels)) |>
-  count(section, name = "items") |>
-  arrange(section)
+```{r variables}
+value_chips <- function(x, order = NULL) {
+  x <- x[!is.na(x)]
+  tb <- table(x)
+  lv <- if (is.null(order)) names(sort(tb, decreasing = TRUE)) else intersect(order, names(tb))
+  div(class = "chips", lapply(lv, function(v) span(class = "chip", v, tags$small(format(tb[[v]], big.mark = ",")))))
+}
+free_text <- function(x, what = "values") {
+  span(class = "free-text", sprintf("Free text: %s distinct %s.", format(n_distinct(x[!is.na(x)]), big.mark = ","), what))
+}
+range_text <- function(x) span(class = "free-text", sprintf("Whole number from %d to %d.", min(x, na.rm = TRUE), max(x, na.rm = TRUE)))
 
-concepts_by_section <- concept_real |>
-  mutate(section = factor(title_case_label(standardised_section), levels = section_levels),
-         e = str_squish(standardised_reporting_item_elements)) |>
-  group_by(section) |>
-  summarise(instances = n(), unique = n_distinct(e), .groups = "drop") |>
-  arrange(section)
-
-guideline_sets <- concept_real |>
-  filter(str_to_lower(str_squish(study_id)) %in% str_to_lower(items_real$study_id)) |>
-  mutate(e = str_squish(standardised_reporting_item_elements)) |>
-  distinct(study_id, e)
-n_sets <- n_distinct(guideline_sets$study_id)
-top_concepts <- guideline_sets |>
-  count(e, name = "n_guidelines", sort = TRUE) |>
-  mutate(pct = 100 * n_guidelines / n_sets) |>
-  slice_head(n = 15)
-
-bar_row <- function(label, value, vmax, cls = "", wide = FALSE, suffix = NULL) {
-  div(class = paste("bar-row", if (wide) "wide-label"),
-      span(class = "bar-label", label),
-      span(class = "bar-track", span(class = paste("bar-fill", cls), style = sprintf("width:%.1f%%", 100 * value / vmax))),
-      span(class = "bar-val", format(value, big.mark = ","), if (!is.null(suffix)) tags$small(suffix)))
+var_row <- function(label, column, description, values) {
+  tags$tr(tags$td(class = "v", label, tags$code(column)), tags$td(description), tags$td(values))
+}
+var_table <- function(...) {
+  tags$table(class = "var-table",
+             tags$thead(tags$tr(tags$th("Variable"), tags$th("Description"), tags$th("Values"))),
+             tags$tbody(...))
 }
 
-bar_row_stacked <- function(label, v1, v2, vmax) {
-  div(class = "bar-row",
-      span(class = "bar-label", label),
-      span(class = "bar-track stacked",
-           span(class = "lane", span(class = "bar-fill", style = sprintf("width:%.1f%%", 100 * v1 / vmax))),
-           span(class = "lane", span(class = "bar-fill teal", style = sprintf("width:%.1f%%", 100 * v2 / vmax)))),
-      span(class = "bar-val", format(v1, big.mark = ","), tags$small(paste0("/ ", v2))))
-}
-
-div(
-  class = "summary-grid",
-  div(
-    class = "summary-card",
-    h3("Reporting items by manuscript section"),
-    p(class = "sub", sprintf("%s English-language items across %d guidelines", format(sum(items_by_section$items), big.mark = ","), n_sets)),
-    lapply(seq_len(nrow(items_by_section)), function(i)
-      bar_row(as.character(items_by_section$section[i]), items_by_section$items[i], max(items_by_section$items)))
+tagList(
+  h3("Guideline key"),
+  var_table(
+    var_row("Guideline ID", "study_id", "Identifier for the guideline: usually the first author's surname (or organisation) and the year of first publication.",
+            span(class = "free-text", sprintf("%d IDs; see the Guideline key tab.", n_guidelines))),
+    var_row("Guideline", "guideline_name", "Short name of the guideline (its acronym where it has one).",
+            span(class = "free-text", sprintf("%d names; see the Guideline key tab.", n_distinct(guideline_attrs$guideline_name)))),
+    var_row("Title", "title", "Title of the guideline's first publication.", free_text(study$title, "titles")),
+    var_row("Year", "year", "Year of the guideline's first publication.", range_text(guideline_attrs$year)),
+    var_row("Type", "guideline_extension", "Whether the guideline is new (original) or builds on another guideline.", value_chips(guideline_attrs$guideline_type)),
+    var_row("Methodology", "methodology_category", "Type of evidence synthesis the guideline covers.", value_chips(guideline_attrs$methodology)),
+    var_row("Discipline", "discipline", "Field the guideline was developed for.", value_chips(guideline_attrs$discipline)),
+    var_row("Checklists", "checklist", "Checklists published with the guideline (for example a main checklist and an abstract checklist).",
+            span(class = "free-text", sprintf("%d checklists; see the Checklist variable below.", n_checklists))),
+    var_row("Items", "-", "Number of reporting items in the guideline's checklists.", span(class = "free-text", "Count.")),
+    var_row("Publications / References", "journal, DOI", "Every publication of the guideline (journal, year and DOI).", span(class = "free-text", sprintf("%d publications.", n_publications)))
   ),
-  div(
-    class = "summary-card",
-    h3("Concepts by manuscript section"),
-    p(class = "sub", sprintf("%s concept instances, %d unique concepts within sections", format(sum(concepts_by_section$instances), big.mark = ","), sum(concepts_by_section$unique))),
-    div(class = "legend", span("Concept instances"), span(class = "teal", "Unique concepts")),
-    lapply(seq_len(nrow(concepts_by_section)), function(i)
-      bar_row_stacked(as.character(concepts_by_section$section[i]), concepts_by_section$instances[i],
-                      concepts_by_section$unique[i], max(concepts_by_section$instances)))
+  h3("Reporting items"),
+  var_table(
+    var_row("Guideline ID", "study_id", "Guideline the item comes from (see Guideline key).", span(class = "free-text", sprintf("%d IDs.", n_distinct(items_real$study_id)))),
+    var_row("Guideline", "guideline_name", "Short name of the guideline.", span(class = "free-text", "See Guideline key.")),
+    var_row("Checklist", "checklist", "Checklist the item belongs to; a guideline can have several.", value_chips(items_real$checklist, order = sort(unique(items_real$checklist)))),
+    var_row("Item ID", "checklist_item_id", "Unique identifier for the item; joins items to concepts.", free_text(items_real$checklist_item_id, "IDs")),
+    var_row("Item no.", "reporting_item_number", "Item number as printed in the checklist.", free_text(items_real$reporting_item_number)),
+    var_row("Reporting item", "reporting_item", "Item text, verbatim.", free_text(items_real$reporting_item, "items")),
+    var_row("Section", "standardised_section", "Standardised manuscript section.", value_chips(items_real$standardised_section, order = section_levels)),
+    var_row("Section in guideline", "section", "Section heading used by the guideline.", free_text(items_real$section, "headings")),
+    var_row("Topic", "topic", "Topic heading used by the guideline.", free_text(items_real$topic, "headings")),
+    var_row("Language", "language", "Language of the checklist.", value_chips(items_real$language)),
+    var_row("Methodology", "methodology_category", "Taken from the guideline (see Guideline key).", value_chips(guideline_attrs$methodology)),
+    var_row("Discipline", "discipline", "Taken from the guideline (see Guideline key).", value_chips(guideline_attrs$discipline)),
+    var_row("Year", "year", "Year of the guideline's first publication.", range_text(guideline_attrs$year))
   ),
-  div(
-    class = "summary-card wide",
-    h3("Most widely requested concepts"),
-    p(class = "sub", sprintf("Share of the %d guidelines with extracted concepts that request each concept (top 15 of %s)", n_sets, format(n_distinct(guideline_sets$e), big.mark = ","))),
-    lapply(seq_len(nrow(top_concepts)), function(i)
-      bar_row(top_concepts$e[i], top_concepts$n_guidelines[i], n_sets, cls = "orange", wide = TRUE,
-              suffix = sprintf("of %d (%.0f%%)", n_sets, top_concepts$pct[i])))
+  h3("Concepts"),
+  var_table(
+    var_row("Guideline ID, Guideline, Checklist, Item ID, Reporting item", "study_id, guideline_name, checklist, checklist_item_id, reporting_item",
+            "As in the reporting items table.", span(class = "free-text", "See above.")),
+    var_row("Concept", "standardised_reporting_item_elements", "Standardised reporting concept requested by the item.",
+            span(class = "free-text", sprintf("%s distinct concepts; the most common are shown on the Overview tab.", format(n_concept_uniq, big.mark = ",")))),
+    var_row("Section", "standardised_section", "Standardised manuscript section of the concept.", value_chips(concept_real$standardised_section, order = section_levels)),
+    var_row("Subsection", "standardised_subsection", "Standardised subsection within the manuscript section.", value_chips(concept_real$standardised_subsection, order = sort(unique(concept_real$standardised_subsection)))),
+    var_row("Methodology, Discipline, Year", "methodology_category, discipline, year", "Taken from the guideline (see above).", span(class = "free-text", "See above."))
   )
 )
 ```
 
-## Citation and reuse
+<div class="table-note">Categorical values have been capitalised consistently on this page (for example "English", not "english"). The "as shown here" downloads use the same values; the original files are unchanged.</div>
 
-If you use these data, please cite the accompanying paper (reference to be added on publication) and the repository:
+## Cite and reuse
 
-> Morrison K, Ivimey-Cook ER, Lagisz M, Mizuno A, Santana MS, Santos ESA, Sánchez-Tójar A, Simpson ZP, Grainger M, Macura B, Nakagawa S. An item bank of reporting items and concepts in evidence synthesis reporting guidelines. GitHub repository: <https://github.com/KyleMorrison99/synthesis_item_bank>.
+If you use these data, please cite the accompanying paper (the full reference will be added on publication) and the data page:
 
-The data and code are released under the licence in the repository. You are welcome to fork or clone the repository, open an issue to suggest corrections or additional guidelines, and build on the item bank for new reporting guidance.
+::: {.cite-box}
+**Paper**<br>
+Morrison K, Ivimey-Cook ER, Lagisz M, Mizuno A, Santana MS, Santos ESA, Sánchez-Tójar A, Simpson ZP, Grainger M, Macura B, Nakagawa S. An item bank of reporting items and concepts in evidence synthesis reporting guidelines. *In preparation.* Study registration: <`r osf_url`>.
+:::
+
+::: {.cite-box}
+**Data page and data**<br>
+Morrison K, Ivimey-Cook ER, Lagisz M, Mizuno A, Santana MS, Santos ESA, Sánchez-Tójar A, Simpson ZP, Grainger M, Macura B, Nakagawa S (`r this_year`). Evidence synthesis reporting item bank [data set and interactive data page]. <`r page_url`>. Data and code: <`r github_url`>. Accessed `r last_updated`.
+:::
+
+BibTeX:
+
+```{r bibtex}
+#| results: asis
+fence <- strrep("`", 3)
+bib <- c(
+  paste0("@misc{morrison_item_bank_", this_year, ","),
+  "  author       = {Morrison, K. and Ivimey-Cook, E. R. and Lagisz, M. and Mizuno, A. and Santana, M. S. and Santos, E. S. A. and S{\\'a}nchez-T{\\'o}jar, A. and Simpson, Z. P. and Grainger, M. and Macura, B. and Nakagawa, S.},",
+  "  title        = {Evidence synthesis reporting item bank},",
+  paste0("  year         = {", this_year, "},"),
+  "  howpublished = {Data set and interactive data page},",
+  paste0("  url          = {", page_url, "},"),
+  paste0("  note         = {Data and code: ", github_url, "}"),
+  "}"
+)
+cat(paste0(fence, "bibtex"), bib, fence, sep = "\n")
+```
+
+**Reuse.** The data and code are released under the [MIT licence](`r paste0(github_url, "/blob/main/LICENSE")`). You are welcome to fork or clone the [repository](`r github_url`), [open an issue](`r paste0(github_url, "/issues")`) to suggest corrections or additional guidelines, and build on the item bank for new reporting guidance.
+
+:::
 
 ```{r footer}
 tags$footer(
