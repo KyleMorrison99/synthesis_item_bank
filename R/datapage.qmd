@@ -1,5 +1,5 @@
 ---
-title: "Evidence synthesis reporting item bank"
+title: "An item bank of reporting items and concepts in evidence synthesis reporting guidelines"
 subtitle: "Reporting items and concepts from 59 evidence synthesis reporting guidelines, searchable and downloadable"
 format:
   html:
@@ -474,7 +474,7 @@ hero_link <- function(label, key) {
 }
 div(
   class = "hero",
-  h1("Evidence synthesis reporting item bank"),
+  h1("An item bank of reporting items and concepts in evidence synthesis reporting guidelines"),
   p(sprintf(
     "%s reporting items from %d evidence synthesis reporting guidelines (%d publications, %d checklists, %d to %d), each broken down into the %s reporting concepts it asks for. Explore the overview, then filter, search and download the data.",
     format(n_items, big.mark = ","), n_guidelines, n_publications, n_checklists, year_min, year_max, format(n_concept_inst, big.mark = ",")
