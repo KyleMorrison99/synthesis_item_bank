@@ -1059,18 +1059,6 @@ token_count_stats_fmt <- token_count_stats %>%
 
 token_count_stats_fmt
 
-mattr_stats <- lexdiv_stats %>%
-  summarise(
-    n_items = sum(!is.na(mattr_10)),
-    mean_mattr = mean(mattr_10, na.rm = TRUE),
-    sd_mattr = sd(mattr_10, na.rm = TRUE),
-    median_mattr = median(mattr_10, na.rm = TRUE),
-    min_mattr = min(mattr_10, na.rm = TRUE),
-    max_mattr = max(mattr_10, na.rm = TRUE)
-  )
-
-mattr_stats
-
 # =========================================================
 # 4) POS tagging for lexical density
 # =========================================================
