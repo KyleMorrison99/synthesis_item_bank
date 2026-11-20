@@ -6,6 +6,7 @@ format:
     toc: false
     page-layout: full
     output-file: index
+    embed-resources: true
     include-in-header:
       text: |
         <link rel="preconnect" href="https://fonts.googleapis.com">
