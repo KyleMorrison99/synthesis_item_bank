@@ -1,12 +1,12 @@
 ---
 title: "An item bank of reporting items and concepts in evidence synthesis reporting guidelines"
-subtitle: "Reporting items and concepts from 59 evidence synthesis reporting guidelines, searchable and downloadable"
 format:
   html:
     theme: cosmo
     toc: false
     page-layout: full
     output-file: index
+    embed-resources: true
     include-in-header:
       text: |
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -281,6 +281,7 @@ body { font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-
   margin: 0.5rem 0 1.5rem;
 }
 .hero h1 { color: #fff; font-weight: 700; font-size: 2rem; margin: 0 0 0.4rem; letter-spacing: -0.01em; }
+.hero h1 + .hero-links { margin-top: 1rem; }
 .hero p { color: rgba(255,255,255,0.9); max-width: 60rem; margin: 0 0 1.1rem; font-size: 1.02rem; }
 .hero-links { display: flex; gap: 0.6rem; flex-wrap: wrap; }
 .hero-links a {
@@ -327,12 +328,6 @@ table.dataTable td ul.refs li { margin-bottom: 0.25rem; }
 .download-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.6rem 0 1.4rem; }
 .download-row a { text-decoration: none; font-size: 0.84rem; font-weight: 600; color: var(--purple); border: 1px solid var(--purple); border-radius: 2rem; padding: 0.3rem 0.9rem; }
 .download-row a:hover { background: var(--teal); border-color: var(--teal); color: #fff; }
-
-/* overview: headline numbers */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 0.8rem; margin: 0 0 1.4rem; }
-.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 0.8rem; padding: 0.9rem 1rem; }
-.kpi .num { white-space: nowrap; font-size: 1.5rem; font-weight: 700; color: var(--purple); line-height: 1.1; font-variant-numeric: tabular-nums; }
-.kpi .lab { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
 
 /* overview: explore cards */
 .explore-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; margin: 0 0 1.6rem; }
@@ -475,10 +470,6 @@ hero_link <- function(label, key) {
 div(
   class = "hero",
   h1("An item bank of reporting items and concepts in evidence synthesis reporting guidelines"),
-  p(sprintf(
-    "%s reporting items from %d evidence synthesis reporting guidelines (%d publications, %d checklists, %d to %d), each broken down into the %s reporting concepts it asks for. Explore the overview, then filter, search and download the data.",
-    format(n_items, big.mark = ","), n_guidelines, n_publications, n_checklists, year_min, year_max, format(n_concept_inst, big.mark = ",")
-  )),
   div(
     class = "hero-links",
     a(href = github_url, target = "_blank", "GitHub repository"),
@@ -580,23 +571,10 @@ explore_card <- function(title, desc, key, cls = "") {
               div(class = "t", title), div(class = "d", desc), div(class = "go", HTML("Open &rarr;")))
 }
 
-kpi <- function(num, lab) div(class = "kpi", div(class = "num", num), div(class = "lab", lab))
-
 # ---- page -------------------------------------------------------------------
 tagList(
   p(class = "lead-text",
     "The charts below summarise the item bank. Click any bar to open the matching rows in the data tables, or use the cards to go straight to a table."),
-  div(
-    class = "kpi-grid",
-    kpi(n_guidelines, "Reporting guidelines"),
-    kpi(n_publications, "Publications"),
-    kpi(n_checklists, "Checklists"),
-    kpi(format(n_items, big.mark = ","), "Reporting items"),
-    kpi(format(n_concept_inst, big.mark = ","), "Concept instances"),
-    kpi(format(n_concept_uniq, big.mark = ","), "Unique concepts"),
-    kpi(HTML(sprintf("%d&ndash;%d", year_min, year_max)), "Publication years"),
-    kpi(n_languages, "Languages")
-  ),
   div(
     class = "explore-grid",
     explore_card("Guideline key", "Look up what each guideline ID refers to: name, references, type, methodology and discipline.", "guidelines"),
